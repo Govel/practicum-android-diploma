@@ -4,8 +4,9 @@ plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
     id("ru.practicum.android.diploma.plugins.developproperties")
-    id("com.google.devtools.ksp") version "1.9.22-1.0.17"
+    id("com.google.devtools.ksp")
     id("kotlin-parcelize")
+    alias(libs.plugins.kotlin.compose)
 }
 
 android {
@@ -80,7 +81,8 @@ dependencies {
     //Room (Database)
     implementation(libs.room.runtime)
     implementation(libs.room.ktx)
-    ksp(libs.androidx.room.compiler.v250)
+    ksp(libs.room.compiler)
+    //ksp("com.squareup.moshi:moshi-kotlin-codegen:1.15.2")
 
 
     //Glade and Coil (Image)

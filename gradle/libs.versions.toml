@@ -1,15 +1,11 @@
 [versions]
 
 # Build constants
-coilNetworkOkhttp = "3.4.0"
+
 compileSdk = "36"
 java = "VERSION_17"
-koinAndroidVersion = "3.4.3"
-koinCore = "4.2.1"
 material = "1.13.0"
 minSdk = "26"
-peko = "3.0.5"
-roomCompilerVersion = "2.5.0"
 targetSdk = "33"
 
 # AndroidX
@@ -27,31 +23,35 @@ detekt = "1.23.8"
 detektTwitterComposeRules = "0.0.26"
 
 # Versions Libs
-lifecycleLivedataKtx = "2.10.0"
-activityKtx = "1.12.2"
-retrofit = "2.11.0"
-converterGson = "2.9.0"
-roomRuntime = "2.6.1"
-roomKtx = "2.6.1"
-roomCompiler = "2.6.1"
-ui = "1.6.1"
-glide = "4.16.0"
+activityCompose = "1.13.0"
+activityKtx = "1.13.0"
+coilCompose = "2.7.0"
+coilNetworkOkhttp = "3.4.0"
+compiler = "5.0.5"
+converterGson = "3.0.0"
+foundation = "1.10.6"
+foundationLayout = "1.10.6"
+foundationLayoutVersion = "1.10.6"
+glide = "5.0.5"
 gson = "2.13.2"
-compiler = "4.16.0"
-activityCompose = "1.8.2"
-koinAndroid = "3.3.0"
+junitKtx = "1.3.0"
+koinAndroid = "4.2.1"
+koinCore = "4.2.1"
 kotlin = "2.3.20"
 kotlinxCoroutinesAndroid = "1.10.2"
-navigationCompose = "2.7.7"
+lifecycleLivedataKtx = "2.10.0"
 material3 = "1.4.0"
-coilCompose = "2.6.0"
-uiToolingPreview = "1.10.1"
-uiTooling = "1.10.1"
-foundationLayout = "1.10.1"
-uiGraphics = "1.10.1"
-foundation = "1.10.2"
-foundationLayoutVersion = "1.10.2"
-junitKtx = "1.3.0"
+navigationCompose = "2.9.7"
+peko = "3.0.5"
+retrofit = "3.0.0"
+roomRuntime = "2.8.4"
+roomCompilerVersion = "2.8.4"
+roomKtx = "2.8.4"
+roomCompiler = "2.8.4"
+ui = "1.10.6"
+uiGraphics = "1.10.6"
+uiTooling = "1.10.6"
+uiToolingPreview = "1.10.6"
 
 [libraries]
 
@@ -63,8 +63,8 @@ constraintlayout = { module = "androidx.constraintlayout:constraintlayout", vers
 core = { module = "androidx.core:core-ktx", version.ref = "coreKtx" }
 
 # UI
-koin-android-v343 = { module = "io.insert-koin:koin-android", version.ref = "koinAndroidVersion" }
-koin-androidx-compose = { module = "io.insert-koin:koin-androidx-compose", version.ref = "koinAndroidVersion" }
+koin-android-v343 = { module = "io.insert-koin:koin-android", version.ref = "koinCore" }
+koin-androidx-compose = { module = "io.insert-koin:koin-androidx-compose", version.ref = "koinCore" }
 koin-core = { module = "io.insert-koin:koin-core", version.ref = "koinCore" }
 material = { module = "com.google.android.material:material", version.ref = "material" }
 
@@ -128,5 +128,4 @@ androidx-junit-ktx = { group = "androidx.test.ext", name = "junit-ktx", version.
 [bundles]
 
 [plugins]
-kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
 kotlin-compose = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }

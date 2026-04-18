@@ -72,38 +72,35 @@ dependencies {
     androidTestImplementation(libs.junit.ext)
     androidTestImplementation(libs.espresso.core)
 
-    //Retrofit and Gson
+    // Retrofit and Gson
     implementation(libs.gson)
     implementation(libs.converter.gson)
     implementation(libs.retrofit)
 
-
-    //Room (Database)
+    // Room (Database)
     implementation(libs.room.runtime)
     implementation(libs.room.ktx)
     ksp(libs.room.compiler)
-    //ksp("com.squareup.moshi:moshi-kotlin-codegen:1.15.2")
 
-
-    //Glade and Coil (Image)
+    // Glade and Coil (Image)
     implementation(libs.glide)
     ksp(libs.glide.compiler)
     implementation(libs.coil.compose)
     implementation(libs.coil.network.okhttp)
 
-    //Lifecycle
+    // Lifecycle
     implementation(libs.androidx.lifecycle.livedata.ktx)
     implementation(libs.androidx.lifecycle.viewmodel.ktx)
 
-    //Coroutines
+    // Coroutines
     implementation(libs.kotlinx.coroutines.android)
 
-    //Koin
+    // Koin
     implementation(libs.koin.core)
     implementation(libs.koin.android.v343)
     implementation(libs.koin.androidx.compose)
 
-    //Compose
+    // Compose
     implementation(libs.activity.compose)
     implementation(libs.androidx.foundation.layout)
     implementation(libs.androidx.junit.ktx)
@@ -113,11 +110,10 @@ dependencies {
     implementation(libs.navigation.compose)
     implementation(libs.ui.graphics)
 
-    //Preview and test Compose
+    // Preview and test Compose
     implementation(libs.ui.tooling.preview)
     debugImplementation(libs.ui.tooling)
 
-    //Peko
+    // Peko
     implementation(libs.peko)
-
 }

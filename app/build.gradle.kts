@@ -4,6 +4,8 @@ plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
     id("ru.practicum.android.diploma.plugins.developproperties")
+    id("com.google.devtools.ksp") version "1.9.22-1.0.17"
+    id("kotlin-parcelize")
 }
 
 android {
@@ -32,8 +34,18 @@ android {
         sourceCompatibility = JavaVersion.VERSION_17
         targetCompatibility = JavaVersion.VERSION_17
     }
+
+    composeOptions {
+        kotlinCompilerExtensionVersion = "1.5.10"
+    }
+
+    ksp {
+        arg("room.schemaLocation", "$projectDir/schemas")
+    }
+
     buildFeatures {
         buildConfig = true
+        compose = true
     }
 }
 
@@ -44,14 +56,66 @@ kotlin {
 }
 
 dependencies {
-    implementation(libs.core.ktx)
+
+    implementation(libs.activity.ktx)
     implementation(libs.appcompat)
+    implementation(libs.core)
+    implementation(libs.koin.android)
+    implementation(libs.ui)
 
     // UI layer libraries
-    implementation(libs.material)
     implementation(libs.constraintlayout)
+    implementation(libs.material)
 
     testImplementation(libs.junit4)
     androidTestImplementation(libs.junit.ext)
     androidTestImplementation(libs.espresso.core)
+
+    //Retrofit and Gson
+    implementation(libs.gson)
+    implementation(libs.converter.gson)
+    implementation(libs.retrofit)
+
+
+    //Room (Database)
+    implementation(libs.room.runtime)
+    implementation(libs.room.ktx)
+    ksp(libs.androidx.room.compiler.v250)
+
+
+    //Glade and Coil (Image)
+    implementation(libs.glide)
+    ksp(libs.glide.compiler)
+    implementation(libs.coil.compose)
+    implementation(libs.coil.network.okhttp)
+
+    //Lifecycle
+    implementation(libs.androidx.lifecycle.livedata.ktx)
+    implementation(libs.androidx.lifecycle.viewmodel.ktx)
+
+    //Coroutines
+    implementation(libs.kotlinx.coroutines.android)
+
+    //Koin
+    implementation(libs.koin.core)
+    implementation(libs.koin.android.v343)
+    implementation(libs.koin.androidx.compose)
+
+    //Compose
+    implementation(libs.activity.compose)
+    implementation(libs.androidx.foundation.layout)
+    implementation(libs.androidx.junit.ktx)
+    implementation(libs.foundation)
+    implementation(libs.foundation.layout)
+    implementation(libs.material3)
+    implementation(libs.navigation.compose)
+    implementation(libs.ui.graphics)
+
+    //Preview and test Compose
+    implementation(libs.ui.tooling.preview)
+    debugImplementation(libs.ui.tooling)
+
+    //Peko
+    implementation(libs.peko)
+
 }

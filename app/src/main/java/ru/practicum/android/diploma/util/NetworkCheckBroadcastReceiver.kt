@@ -13,7 +13,6 @@ import ru.practicum.android.diploma.R
 class NetworkCheckBroadcastReceiver : BroadcastReceiver() {
     @RequiresPermission(Manifest.permission.ACCESS_NETWORK_STATE)
     override fun onReceive(context: Context?, intent: Intent?) {
-
         if (intent?.action != ConnectivityManager.CONNECTIVITY_ACTION) return
 
         val connectivityManager = context?.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
@@ -27,8 +26,5 @@ class NetworkCheckBroadcastReceiver : BroadcastReceiver() {
         if (!isConnected) {
             Toast.makeText(context, R.string.error_no_connection, Toast.LENGTH_LONG).show()
         }
-
     }
-
-
 }

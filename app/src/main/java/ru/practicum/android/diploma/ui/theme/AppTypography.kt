@@ -41,7 +41,6 @@ object AppTypography {
     )
 
 }
-
 val MaterialTypography = Typography(
     displayLarge = AppTypography.bold32,
     titleLarge = AppTypography.medium22,
@@ -49,6 +48,3 @@ val MaterialTypography = Typography(
     bodyLarge = AppTypography.regular16,
     bodySmall = AppTypography.regular12
 )
-
-
-

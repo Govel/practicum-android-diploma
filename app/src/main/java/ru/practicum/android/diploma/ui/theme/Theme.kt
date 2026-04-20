@@ -1,5 +1,3 @@
-@file:Suppress("MagicNumber")
-
 package ru.practicum.android.diploma.ui.theme
 
 import androidx.compose.foundation.isSystemInDarkTheme
@@ -53,4 +51,3 @@ fun AppTheme(
         content = content
     )
 }
-

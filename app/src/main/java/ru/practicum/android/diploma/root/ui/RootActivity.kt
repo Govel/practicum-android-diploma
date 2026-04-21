@@ -4,10 +4,8 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.ui.Modifier
 import ru.practicum.android.diploma.BuildConfig
@@ -20,8 +18,7 @@ class RootActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             AppTheme {
-                Scaffold(modifier = Modifier.fillMaxSize()
-                    .background(MaterialTheme.colorScheme.onPrimary)){ innerPadding ->
+                Scaffold(modifier = Modifier.fillMaxSize()){ innerPadding ->
                     ProjectNavHost(
                         modifier = Modifier.padding(innerPadding))
                 }
@@ -35,5 +32,4 @@ class RootActivity : ComponentActivity() {
     private fun networkRequestExample(accessToken: String) {
         // ...
     }
-
 }

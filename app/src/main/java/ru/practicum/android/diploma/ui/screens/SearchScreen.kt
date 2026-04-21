@@ -25,11 +25,11 @@ import ru.practicum.android.diploma.R
 
 @Composable
 fun SearchScreen(
-    onFilter:() -> Unit,
-    onVacancies:()-> Unit
+    onFilter: () -> Unit,
+    onVacancies: () -> Unit
 
-){
-    Row (
+) {
+    Row(
         modifier = Modifier
         .fillMaxSize()
         .height(64.dp)
@@ -90,11 +90,7 @@ fun SearchScreen(
         ) {
             Text(
                 text = stringResource(R.string.vacancies),
-                style = MaterialTheme.typography.titleLarge
-            )
-
+                style = MaterialTheme.typography.titleLarge)
         }
-
     }
-
 }

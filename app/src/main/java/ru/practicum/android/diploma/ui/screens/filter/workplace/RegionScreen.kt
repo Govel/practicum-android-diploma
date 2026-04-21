@@ -1,4 +1,4 @@
-package ru.practicum.android.diploma.ui.screens
+package ru.practicum.android.diploma.ui.screens.filter.workplace
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
@@ -12,15 +12,14 @@ import androidx.compose.ui.res.stringResource
 import ru.practicum.android.diploma.R
 
 @Composable
-fun FavoritesScreen() {
+fun RegionScreen() {
     Box(
         modifier = Modifier.fillMaxSize()
             .background(MaterialTheme.colorScheme.onPrimary),
         contentAlignment = Alignment.Center,
-
         ) {
         Text(
-            text = stringResource(R.string.favorites),
+            text = stringResource(R.string.region),
             style = MaterialTheme.typography.titleLarge)
     }
 }

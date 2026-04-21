@@ -12,18 +12,14 @@ import androidx.compose.ui.res.stringResource
 import ru.practicum.android.diploma.R
 
 @Composable
-fun VacancyDetailScreen(
-
-){
+fun VacancyDetailScreen() {
     Box(
         modifier = Modifier.fillMaxSize()
             .background(MaterialTheme.colorScheme.onPrimary),
         contentAlignment = Alignment.Center,
-
         ) {
         Text(
             text = stringResource(R.string.vacancies),
             style = MaterialTheme.typography.titleLarge)
     }
-
 }

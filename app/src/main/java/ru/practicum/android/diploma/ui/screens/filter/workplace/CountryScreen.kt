@@ -14,12 +14,14 @@ import ru.practicum.android.diploma.R
 @Composable
 fun CountryScreen() {
     Box(
-        modifier = Modifier.fillMaxSize()
+        modifier = Modifier
+            .fillMaxSize()
             .background(MaterialTheme.colorScheme.onPrimary),
-        contentAlignment = Alignment.Center,
-        ) {
+        contentAlignment = Alignment.Center
+    ) {
         Text(
             text = stringResource(R.string.country),
-            style = MaterialTheme.typography.titleLarge)
+            style = MaterialTheme.typography.titleLarge
+        )
     }
 }

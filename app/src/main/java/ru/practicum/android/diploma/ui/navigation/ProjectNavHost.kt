@@ -17,33 +17,33 @@ fun ProjectNavHost(
     navController: NavHostController = rememberNavController(),
     modifier: Modifier = Modifier
 ) {
-        NavHost(
-            navController = navController,
-            startDestination = "search_screen",
-            modifier = modifier
-        ){
-            composable("search_screen") {
-                SearchScreen(
-                    onFilter = {navController.navigate("filter_screen")},
-                    onVacancies = {navController.navigate("vacancy_screen")}
-                )
-            }
-
-            composable("favorites_screen") {
-                FavoritesScreen()
-            }
-
-            composable("team_screen") {
-                TeamScreen()
-            }
-
-            composable("filter_screen") {
-                FilterScreen()
-            }
-
-            composable("vacancy_screen") {
-                VacancyDetailScreen()
-            }
-
+    NavHost(
+        navController = navController,
+        startDestination = "search_screen",
+        modifier = modifier
+    ) {
+        composable("search_screen") {
+            SearchScreen(
+                onFilter = { navController.navigate("filter_screen") },
+                onVacancies = { navController.navigate("vacancy_screen") }
+            )
         }
+
+        composable("favorites_screen") {
+            FavoritesScreen()
+        }
+
+        composable("team_screen") {
+            TeamScreen()
+        }
+
+        composable("filter_screen") {
+            FilterScreen()
+        }
+
+        composable("vacancy_screen") {
+            VacancyDetailScreen()
+        }
+
+    }
 }

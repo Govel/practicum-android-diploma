@@ -31,31 +31,35 @@ fun SearchScreen(
 ) {
     Row(
         modifier = Modifier
-        .fillMaxSize()
-        .height(64.dp)
-        .background(MaterialTheme.colorScheme.onPrimary)
-        .padding(top = 24.dp),
+            .fillMaxSize()
+            .height(64.dp)
+            .background(MaterialTheme.colorScheme.onPrimary)
+            .padding(top = 24.dp),
         verticalAlignment = Alignment.Top,
         horizontalArrangement = Arrangement.Center
     ) {
         Column(
-            modifier = Modifier.fillMaxHeight()
+            modifier = Modifier
+                .fillMaxHeight()
                 .weight(0.5F)
                 .padding(vertical = 19.dp)
                 .padding(start = 16.dp),
-            horizontalAlignment = Alignment.Start,
+            horizontalAlignment = Alignment.Start
         ) {
-        Text(
-            text = stringResource(R.string.search_vacancies),
-            style = MaterialTheme.typography.titleLarge)
-    }
-        Column(modifier = Modifier.fillMaxSize()
-            .weight(0.5F)
-            .background(MaterialTheme.colorScheme.onPrimary)
-            .padding(vertical = 8.dp)
-            .padding(end = 8.dp),
-            horizontalAlignment = Alignment.End) {
-
+            Text(
+                text = stringResource(R.string.search_vacancies),
+                style = MaterialTheme.typography.titleLarge
+            )
+        }
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .weight(0.5F)
+                .background(MaterialTheme.colorScheme.onPrimary)
+                .padding(vertical = 8.dp)
+                .padding(end = 8.dp),
+            horizontalAlignment = Alignment.End
+        ) {
             Button(
                 onClick = onFilter,
                 enabled = true,
@@ -90,7 +94,8 @@ fun SearchScreen(
         ) {
             Text(
                 text = stringResource(R.string.vacancies),
-                style = MaterialTheme.typography.titleLarge)
+                style = MaterialTheme.typography.titleLarge
+            )
         }
     }
 }

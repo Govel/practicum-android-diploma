@@ -10,16 +10,18 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import ru.practicum.android.diploma.R
+
 @Composable
 fun FilterScreen() {
     Box(
-        modifier = Modifier.fillMaxSize()
+        modifier = Modifier
+            .fillMaxSize()
             .background(MaterialTheme.colorScheme.onPrimary),
-        contentAlignment = Alignment.Center,
-        ) {
+        contentAlignment = Alignment.Center
+    ) {
         Text(
             text = stringResource(R.string.filter_settings),
             style = MaterialTheme.typography.titleLarge,
-            )
+        )
     }
 }

@@ -18,9 +18,10 @@ class RootActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             AppTheme {
-                Scaffold(modifier = Modifier.fillMaxSize()){ innerPadding ->
+                Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
                     ProjectNavHost(
-                        modifier = Modifier.padding(innerPadding))
+                        modifier = Modifier.padding(innerPadding)
+                    )
                 }
             }
         }

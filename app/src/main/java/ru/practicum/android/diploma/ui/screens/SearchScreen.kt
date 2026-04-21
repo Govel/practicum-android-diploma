@@ -1,3 +1,5 @@
+@file:Suppress("MagicNumber")
+
 package ru.practicum.android.diploma.ui.screens
 
 import androidx.compose.foundation.background
@@ -81,7 +83,6 @@ fun SearchScreen(
         modifier = Modifier.fillMaxSize(),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
-
     ) {
         Button(
             modifier = Modifier.wrapContentWidth(),

@@ -3,6 +3,7 @@
     <string name="error_no_connection">Отсутствует подключение к сети интернет</string>
 
     <string name="search_vacancies">Поиск вакансий</string>
+    <string name="vacancies">Вакансия</string>
     <string name="main">Главная</string>
     <string name="favorites">Избранное</string>
     <string name="team">Команда</string>

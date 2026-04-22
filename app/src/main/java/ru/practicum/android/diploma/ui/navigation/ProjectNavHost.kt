@@ -5,8 +5,8 @@ import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
-import androidx.navigation.compose.rememberNavController
 import ru.practicum.android.diploma.ui.screens.FavoritesScreen
+import ru.practicum.android.diploma.ui.screens.Routes
 import ru.practicum.android.diploma.ui.screens.SearchScreen
 import ru.practicum.android.diploma.ui.screens.TeamScreen
 import ru.practicum.android.diploma.ui.screens.VacancyDetailScreen
@@ -14,34 +14,34 @@ import ru.practicum.android.diploma.ui.screens.filter.FilterScreen
 
 @Composable
 fun ProjectNavHost(
-    navController: NavHostController = rememberNavController(),
+    navController: NavHostController,
     modifier: Modifier = Modifier
 ) {
     NavHost(
         navController = navController,
-        startDestination = "search_screen",
+        startDestination = Routes.SEARCH,
         modifier = modifier
     ) {
-        composable("search_screen") {
+        composable(Routes.SEARCH) {
             SearchScreen(
-                onFilter = { navController.navigate("filter_screen") },
-                onVacancies = { navController.navigate("vacancy_screen") }
+                onFilter = { navController.navigate(Routes.FILTER) },
+                onVacancies = { navController.navigate(Routes.VACANCY) }
             )
         }
 
-        composable("favorites_screen") {
+        composable(Routes.FAVORITES) {
             FavoritesScreen()
         }
 
-        composable("team_screen") {
+        composable(Routes.TEAM) {
             TeamScreen()
         }
 
-        composable("filter_screen") {
+        composable(Routes.FILTER) {
             FilterScreen()
         }
 
-        composable("vacancy_screen") {
+        composable(Routes.VACANCY) {
             VacancyDetailScreen()
         }
 

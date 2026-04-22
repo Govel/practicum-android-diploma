@@ -4,7 +4,6 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.getValue
@@ -14,7 +13,7 @@ import androidx.navigation.compose.rememberNavController
 import ru.practicum.android.diploma.BuildConfig
 import ru.practicum.android.diploma.ui.navigation.BottomNavigationBar
 import ru.practicum.android.diploma.ui.navigation.ProjectNavHost
-import ru.practicum.android.diploma.ui.navigation.ScreenNavItem
+import ru.practicum.android.diploma.ui.screens.Routes
 import ru.practicum.android.diploma.ui.theme.AppTheme
 
 class RootActivity : ComponentActivity() {
@@ -24,20 +23,13 @@ class RootActivity : ComponentActivity() {
         setContent {
             val navController = rememberNavController()
             val backStackEntry by navController.currentBackStackEntryAsState()
-            val currentRoute = backStackEntry?.destination?.route?.substringBefore("?") ?: ScreenNavItem.Main.route
+            val currentRoute = backStackEntry?.destination?.route?.substringBefore("?") ?: Routes.SEARCH
 
             val bottomRoutes = listOf(
-                ScreenNavItem.Main.route,
-                ScreenNavItem.Favorites.route,
-                ScreenNavItem.Team.route
+                Routes.SEARCH,
+                Routes.FAVORITES,
+                Routes.TEAM
             )
-
-            val currentScreen = when(currentRoute){
-//                ScreenNavItem.Main.route -> ScreenNavItem.Main
-                ScreenNavItem.Favorites.route ->  ScreenNavItem.Favorites
-                ScreenNavItem.Team.route -> ScreenNavItem.Team
-                else -> ScreenNavItem.Main
-            }
 
             AppTheme {
                 Scaffold(
@@ -45,12 +37,13 @@ class RootActivity : ComponentActivity() {
                         if (currentRoute in bottomRoutes) {
                             BottomNavigationBar(
                                 navController = navController,
-                                currentRoute = currentScreen
+                                currentRoute = currentRoute,
                             )
                         }
                     }
                 ) { innerPadding ->
                     ProjectNavHost(
+                        navController = navController,
                         modifier = Modifier.padding(innerPadding)
                     )
                 }

@@ -20,24 +20,29 @@ class NetworkClientImpl(
         ) as ConnectivityManager
         val network = connectivityManager.activeNetwork ?: return false
         val capabilities = connectivityManager.getNetworkCapabilities(network)
-        return capabilities?.hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR) == true ||
+        val hasInternet = capabilities?.hasCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET)
+        val isPreferredTransport = capabilities?.hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR) == true ||
             capabilities?.hasTransport(NetworkCapabilities.TRANSPORT_WIFI) == true ||
             capabilities?.hasTransport(NetworkCapabilities.TRANSPORT_ETHERNET) == true
+        return hasInternet ?: false && isPreferredTransport
     }
 
     private suspend fun apiCall(
-        doRequest: suspend () -> NetworkResponse
+        doRequest: suspend () -> Any?
     ): NetworkResponse {
         if (!isConnected()) {
-            return NetworkResponse().apply { resultCode = NO_CONNECTION }
+            return NetworkResponse().apply { resultCode = NetworkResponse.NO_CONNECTION }
         }
         return withContext(Dispatchers.IO) {
             try {
-                val result: NetworkResponse = doRequest()
-                result.apply { resultCode = OK_RESULT }
+                val result = doRequest()
+                NetworkResponse().apply {
+                    resultCode = NetworkResponse.OK_RESULT
+                    data = result
+                }
             } catch (ex: HttpException) {
                 Log.e("error", "Error: ${ex.message}")
-                NetworkResponse().apply { resultCode = BAD_REQUEST }
+                NetworkResponse().apply { resultCode = NetworkResponse.BAD_REQUEST }
             }
         }
     }
@@ -63,14 +68,7 @@ class NetworkClientImpl(
         return apiCall { hhApi.getIndustries() }
     }
 
-    override suspend fun doRequestVacancyById(id: Int): NetworkResponse {
+    override suspend fun doRequestVacancyById(id: String): NetworkResponse {
         return apiCall { hhApi.getVacancyById(id = id) }
     }
-
-    companion object {
-        const val OK_RESULT = 200
-        const val BAD_REQUEST = 400
-        const val NO_CONNECTION = -1
-    }
-
 }

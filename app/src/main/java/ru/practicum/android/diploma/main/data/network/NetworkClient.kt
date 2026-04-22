@@ -10,5 +10,5 @@ interface NetworkClient {
 
     suspend fun doRequestIndustries(): NetworkResponse
 
-    suspend fun doRequestVacancyById(id: Int): NetworkResponse
+    suspend fun doRequestVacancyById(id: String): NetworkResponse
 }

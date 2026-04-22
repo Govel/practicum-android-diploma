@@ -11,15 +11,14 @@ import ru.practicum.android.diploma.main.data.network.NetworkClient
 import ru.practicum.android.diploma.main.data.network.NetworkClientImpl
 
 private const val HH_BASE_URL = "https://android-diploma.education-services.ru"
+private const val DB_NAME = "database.db"
 
 val dataModule = module {
     single {
-        Room.databaseBuilder(androidContext(), AppDatabase::class.java, "database.db").build()
+        Room.databaseBuilder(androidContext(), AppDatabase::class.java, DB_NAME).build()
     }
 
-    single {
-        get<AppDatabase>().favoriteVacancyDao()
-    }
+    single { AppDatabase.getInstance(androidContext()) }
 
     single<HhApi> {
         Retrofit.Builder()

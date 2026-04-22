@@ -20,11 +20,11 @@ interface HhApi {
     ): VacanciesResponse
 
     @GET("areas")
-    suspend fun getAreas(): FilterAreasResponse
+    suspend fun getAreas(): List<FilterAreasResponse>
 
     @GET("industries")
-    suspend fun getIndustries(): FilterIndustryResponse
+    suspend fun getIndustries(): List<FilterIndustryResponse>
 
-    @GET("vacancies")
-    suspend fun getVacancyById(@Path("id") id: Int): VacancyDetailResponse
+    @GET("vacancies/{id}")
+    suspend fun getVacancyById(@Path("id") id: String): VacancyDetailResponse
 }

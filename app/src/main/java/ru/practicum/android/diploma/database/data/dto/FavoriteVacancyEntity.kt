@@ -10,7 +10,7 @@ import androidx.room.PrimaryKey
 )
 data class FavoriteVacancyEntity(
     @PrimaryKey
-    val id: Long,
+    val id: String,
     val name: String,
     val salary: String?,
     val address: String?,

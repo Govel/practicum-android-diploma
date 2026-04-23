@@ -13,6 +13,7 @@
     <string name="no_internet">Нет интернета</string>
     <string name="failed_to_get_vacancies">Не удалось получить список вакансий</string>
     <string name="vacancy_not_found">Вакансия не найдена или удалена</string>
+    <string name="no_such_vacancies">Таких вакансий нет</string>
     <string name="empty_list">Список пуст</string>
     <string name="server_error">Ошибка сервера</string>
 

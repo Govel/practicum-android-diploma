@@ -31,12 +31,12 @@ object VacanciesMapper {
         if (from != "") {
             result = "От $from"
             if (to != "") {
-                result.plus(" до $to")
+                result += " до $to"
             }
         } else {
             result = to
         }
-        result.plus(" $currency")
+        result += " $currency"
         return result
     }
 

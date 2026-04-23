@@ -1,10 +1,10 @@
 package ru.practicum.android.diploma.main.data.network
 
 import ru.practicum.android.diploma.main.data.dto.NetworkResponse
-import ru.practicum.android.diploma.main.data.model.VacancyFilterRequest
+import ru.practicum.android.diploma.main.domain.models.VacancyFilter
 
 interface NetworkClient {
-    suspend fun doRequestVacancies(filter: VacancyFilterRequest): NetworkResponse
+    suspend fun doRequestVacancies(filter: VacancyFilter): NetworkResponse
 
     suspend fun doRequestAreas(): NetworkResponse
 

@@ -8,7 +8,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import retrofit2.HttpException
 import ru.practicum.android.diploma.main.data.dto.NetworkResponse
-import ru.practicum.android.diploma.main.data.model.VacancyFilter
+import ru.practicum.android.diploma.main.domain.models.VacancyFilter
 
 class NetworkClientImpl(
     private val hhApi: HhApi,

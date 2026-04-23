@@ -99,6 +99,7 @@ fun SearchScreen(
                 containerColor = MaterialTheme.colorScheme.onPrimary,
                 navigationIconContentColor = MaterialTheme.colorScheme.onSecondary
             )
+
         )
 
         Surface(
@@ -112,7 +113,6 @@ fun SearchScreen(
                 value = searchText,
                 onValueChange = {
                     searchText = it
-
                 },
                 placeholder = {
                     Text(
@@ -152,7 +152,8 @@ fun SearchScreen(
                 colors = OutlinedTextFieldDefaults.colors(
                     focusedBorderColor = MaterialTheme.colorScheme.surfaceVariant,
                     unfocusedBorderColor = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.3f),
-                    cursorColor = MaterialTheme.colorScheme.primary)
+                    cursorColor = MaterialTheme.colorScheme.primary
+                )
             )
         }
         if (isLoading) {
@@ -173,7 +174,6 @@ fun SearchScreen(
                     .padding(horizontal = 16.dp),
                 verticalArrangement = Arrangement.Center,
                 horizontalAlignment = Alignment.CenterHorizontally
-
             ) {
                 Image(
                     modifier = Modifier
@@ -332,8 +332,8 @@ fun VacancyCard(
 data class TempVacancyCard(
     val id: String,
     val name: String,
-    val company: String,
+    val company: String?,
     val city: String,
-    val salary: String,
+    val salary: String?,
     val logo: String?
 )

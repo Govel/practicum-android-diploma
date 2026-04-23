@@ -8,7 +8,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import retrofit2.HttpException
 import ru.practicum.android.diploma.main.data.dto.NetworkResponse
-import ru.practicum.android.diploma.main.data.model.VacancyFilter
+import ru.practicum.android.diploma.main.data.model.VacancyFilterRequest
 
 class NetworkClientImpl(
     private val hhApi: HhApi,
@@ -47,7 +47,7 @@ class NetworkClientImpl(
         }
     }
 
-    override suspend fun doRequestVacancies(filter: VacancyFilter): NetworkResponse {
+    override suspend fun doRequestVacancies(filter: VacancyFilterRequest): NetworkResponse {
         return apiCall {
             hhApi.getVacancies(
                 area = filter.area,

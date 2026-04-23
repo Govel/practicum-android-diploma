@@ -36,9 +36,9 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.setValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -108,10 +108,8 @@ fun SearchScreen(
                 .fillMaxWidth()
                 .padding(horizontal = 16.dp, vertical = 8.dp)
         ) {
-
             OutlinedTextField(
                 value = searchText,
-
                 onValueChange = {
                     searchText = it
 
@@ -154,10 +152,7 @@ fun SearchScreen(
                 colors = OutlinedTextFieldDefaults.colors(
                     focusedBorderColor = MaterialTheme.colorScheme.surfaceVariant,
                     unfocusedBorderColor = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.3f),
-                    cursorColor = MaterialTheme.colorScheme.primary,
-
-                    )
-
+                    cursorColor = MaterialTheme.colorScheme.primary)
             )
         }
         if (isLoading) {
@@ -165,17 +160,12 @@ fun SearchScreen(
                 modifier = Modifier
                     .fillMaxSize(),
                 contentAlignment = Alignment.Center
-
             ) {
-
                 CircularProgressIndicator(
                     color = MaterialTheme.colorScheme.primary,
-                    modifier = Modifier.size(48.dp),
-
-                    )
-
+                    modifier = Modifier.size(48.dp)
+                )
             }
-
         } else if (isNetworkError) {
             Column(
                 modifier = Modifier
@@ -193,7 +183,6 @@ fun SearchScreen(
                     painter = painterResource(R.drawable.no_internet),
                     contentDescription = null
                 )
-
                 Text(
                     modifier = Modifier,
                     text = stringResource(R.string.no_internet),
@@ -201,15 +190,12 @@ fun SearchScreen(
                     style = MaterialTheme.typography.titleLarge,
                 )
             }
-
         } else if (searchResultsEmpty) {
-
             Column(
                 modifier = Modifier
                     .fillMaxSize()
                     .padding(horizontal = 16.dp),
                 horizontalAlignment = Alignment.CenterHorizontally
-
             ) {
                 Surface(
                     color = MaterialTheme.colorScheme.primary,
@@ -341,6 +327,7 @@ fun VacancyCard(
         }
     }
 }
+
 // для теста
 data class TempVacancyCard(
     val id: String,

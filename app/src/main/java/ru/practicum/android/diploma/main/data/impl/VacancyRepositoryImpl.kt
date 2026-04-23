@@ -6,14 +6,14 @@ import ru.practicum.android.diploma.main.data.dto.NetworkResponse
 import ru.practicum.android.diploma.main.data.dto.VacanciesResponse
 import ru.practicum.android.diploma.main.data.mapper.VacanciesMapper
 import ru.practicum.android.diploma.main.data.model.VacanciesSearchState
-import ru.practicum.android.diploma.main.data.model.VacancyFilterRequest
+import ru.practicum.android.diploma.main.domain.models.VacancyFilter
 import ru.practicum.android.diploma.main.data.network.NetworkClient
 import ru.practicum.android.diploma.main.domain.api.VacanciesRepository
 import ru.practicum.android.diploma.main.domain.models.Resource
 import ru.practicum.android.diploma.main.domain.models.VacancyCard
 
 class VacancyRepositoryImpl(val networkClient: NetworkClient) : VacanciesRepository {
-    override fun searchVacancies(expression: VacancyFilterRequest): Flow<Resource<List<VacancyCard>?>> = flow {
+    override fun searchVacancies(expression: VacancyFilter): Flow<Resource<List<VacancyCard>?>> = flow {
         val response = networkClient.doRequestVacancies(expression)
         when (response.resultCode) {
             NetworkResponse.NO_CONNECTION -> {

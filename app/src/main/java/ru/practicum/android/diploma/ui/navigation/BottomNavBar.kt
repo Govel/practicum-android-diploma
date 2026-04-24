@@ -27,11 +27,7 @@ fun BottomNavigationBar(
     navController: NavHostController,
     currentRoute: String?
 ) {
-    val items = listOf(
-        ScreenNavItem.Main,
-        ScreenNavItem.Favorites,
-        ScreenNavItem.Team
-    )
+    val items = ScreenNavItem.items
 
     val colorsNavigation = NavigationBarItemDefaults.colors(
         selectedIconColor = MaterialTheme.colorScheme.primary,

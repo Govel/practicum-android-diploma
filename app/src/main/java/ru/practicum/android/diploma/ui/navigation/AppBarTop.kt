@@ -29,13 +29,14 @@ data class ActionBack(
 
 data class ActionFilter(
     val isView: Boolean = false,
-    val onClick: (() -> Unit)? = null
+    val onClick: (() -> Unit)? = null,
+    val isActive: Boolean = false,
 )
 
 data class ActionFavorites(
     val isView: Boolean = false,
     val onClick: (() -> Unit)? = null,
-    val isFavorites: Boolean = false
+    val isActive: Boolean = false
 )
 
 data class ActionShare(
@@ -44,6 +45,7 @@ data class ActionShare(
 )
 
 const val WEIGHT_COLUMN = 0.5f
+
 @Composable
 fun AppBarTop(
     title: String,
@@ -121,37 +123,76 @@ private fun AppButtonAction(
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.End,
     ) {
-        if (filter.isView) {
-            Icon(
-                painter = painterResource(id = R.drawable.ic_filter_off__24),
-                contentDescription = stringResource(R.string.filter_settings),
-                tint = Color.Unspecified,
-                modifier = Modifier
-                    .padding(end = 20.dp)
-                    .clickable { filter.onClick?.invoke() },
-            )
-        }
+        FilterIcon(filter)
 
-        if (share.isView) {
-            Icon(
-                painter = painterResource(id = R.drawable.ic_sharing_24),
-                contentDescription = null,
-                tint = Color.Unspecified,
-                modifier = Modifier
-                    .padding(end = 20.dp)
-                    .clickable { share.onClick?.invoke() },
-            )
-        }
+        ShareIcon(share)
 
-        if (favorites.isView) {
-            Icon(
-                painter = painterResource(id = R.drawable.ic_favorites_off__24),
-                contentDescription = stringResource(R.string.favorites),
-                tint = Color.Unspecified,
-                modifier = Modifier
-                    .padding(end = 20.dp)
-                    .clickable { favorites.onClick?.invoke() },
-            )
-        }
+        FavoritesIcon(favorites)
     }
+}
+
+@Composable
+private fun FilterIcon(
+    filter: ActionFilter
+) {
+    if (!filter.isView) return
+
+    val iconActive = if (filter.isActive) {
+        R.drawable.ic_filter_on__24
+    } else {
+        R.drawable.ic_filter_off__24
+    }
+
+    val colorActive = if (filter.isActive) {
+        MaterialTheme.colorScheme.primary
+    } else {
+        MaterialTheme.colorScheme.onSurfaceVariant
+    }
+
+    Icon(
+        painter = painterResource(id = iconActive),
+        contentDescription = stringResource(R.string.filter_settings),
+        tint = Color.Unspecified,
+        modifier = Modifier
+            .padding(end = 20.dp)
+            .clickable { filter.onClick?.invoke() },
+    )
+}
+
+@Composable
+private fun ShareIcon(
+    share: ActionShare
+) {
+    if (!share.isView) return
+
+    Icon(
+        painter = painterResource(id = R.drawable.ic_sharing_24),
+        contentDescription = null,
+        tint = Color.Unspecified,
+        modifier = Modifier
+            .padding(end = 20.dp)
+            .clickable { share.onClick?.invoke() },
+    )
+}
+
+@Composable
+private fun FavoritesIcon(
+    favorites: ActionFavorites
+) {
+    if (!favorites.isView) return
+
+    val iconActive = if (favorites.isActive) {
+        R.drawable.ic_favorites_on__24
+    } else {
+        R.drawable.ic_favorites_off__24
+    }
+
+    Icon(
+        painter = painterResource(id = iconActive),
+        contentDescription = stringResource(R.string.favorites),
+        tint = Color.Unspecified,
+        modifier = Modifier
+            .padding(end = 20.dp)
+            .clickable { favorites.onClick?.invoke() },
+    )
 }

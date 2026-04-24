@@ -58,7 +58,7 @@ fun TeamScreen() {
                 contentDescription = stringResource(R.string.team),
                 contentScale = ContentScale.Crop,
                 modifier = Modifier
-                    .fillMaxSize()
+                    .fillMaxWidth()
                     .padding(top = 24.dp)
                     .clip(RoundedCornerShape(20.dp))
             )

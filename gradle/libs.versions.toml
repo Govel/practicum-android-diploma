@@ -32,7 +32,7 @@ converterGson = "3.0.0"
 foundation = "1.10.6"
 gson = "2.13.2"
 junitKtx = "1.3.0"
-koinAndroid = "4.2.1"
+koinAndroid = "3.5.3"
 kotlin = "2.3.20"
 kotlinxCoroutinesAndroid = "1.10.2"
 lifecycleLivedataKtx = "2.10.0"
@@ -47,6 +47,8 @@ ui = "1.10.6"
 uiGraphics = "1.10.6"
 uiTooling = "1.10.6"
 uiToolingPreview = "1.10.6"
+lifecycleRuntimeCompose = "2.10.0"
+runtime = "1.11.0"
 
 [libraries]
 
@@ -57,6 +59,8 @@ constraintlayout = { module = "androidx.constraintlayout:constraintlayout", vers
 core = { module = "androidx.core:core-ktx", version.ref = "coreKtx" }
 
 # UI
+koin-androidx-compose = { module = "io.insert-koin:koin-androidx-compose", version.ref = "koinAndroid" }
+koin-core = { module = "io.insert-koin:koin-core", version.ref = "koinAndroid" }
 material = { module = "com.google.android.material:material", version.ref = "material" }
 
 # Testing
@@ -109,6 +113,8 @@ room-ktx = { group = "androidx.room", name = "room-ktx", version.ref = "roomKtx"
 room-runtime = { group = "androidx.room", name = "room-runtime", version.ref = "roomRuntime" }
 
 androidx-junit-ktx = { group = "androidx.test.ext", name = "junit-ktx", version.ref = "junitKtx" }
+androidx-lifecycle-runtime-compose = { group = "androidx.lifecycle", name = "lifecycle-runtime-compose", version.ref = "lifecycleRuntimeCompose" }
+androidx-runtime = { group = "androidx.compose.runtime", name = "runtime", version.ref = "runtime" }
 
 [bundles]
 

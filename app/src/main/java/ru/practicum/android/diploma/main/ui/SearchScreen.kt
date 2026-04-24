@@ -1,6 +1,6 @@
 @file:Suppress("MagicNumber")
 
-package ru.practicum.android.diploma.ui.screens.search
+package ru.practicum.android.diploma.main.ui
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -17,7 +17,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentSize
-import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -32,9 +31,8 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBar
-import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -51,51 +49,46 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil.compose.AsyncImage
+import org.koin.androidx.compose.koinViewModel
 import ru.practicum.android.diploma.R
+import ru.practicum.android.diploma.main.domain.models.VacancyCard
+import ru.practicum.android.diploma.ui.navigation.ActionBack
+import ru.practicum.android.diploma.ui.navigation.ActionFilter
+import ru.practicum.android.diploma.ui.navigation.AppBarTop
+
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SearchScreen(
     onFilter: () -> Unit = {},
     isFilterActive: Boolean = false,
+    viewModel: SearchViewModel = koinViewModel()
 ) {
+    val state by viewModel.state.collectAsStateWithLifecycle()
     var searchText by remember { mutableStateOf("") }
     val focusManager = LocalFocusManager.current
-    val isLoading: Boolean = false
-    val isNetworkError: Boolean = false
-    val searchResultsEmpty: Boolean = false
-    val vacancies: List<TempVacancyCard> = emptyList()
-    val totalCount: Int = 0
+
+    LaunchedEffect(state.searchText) {
+        if (searchText != state.searchText) {
+            searchText = state.searchText
+        }
+    }
 
     Column(
         modifier = Modifier
             .fillMaxSize()
             .background(MaterialTheme.colorScheme.onPrimary),
     ) {
-        TopAppBar(
-            title = {
-                Text(
-                    modifier = Modifier
-                        .fillMaxWidth(),
-                    text = stringResource(R.string.search_vacancies),
-                    color = MaterialTheme.colorScheme.onBackground,
-                    style = MaterialTheme.typography.titleLarge,
-                )
-            },
-
-            actions = {
-                FilterIconButton(
-                    isFilterActive = isFilterActive,
-                    onFilterClick = onFilter
-                )
-            },
-
-            colors = TopAppBarDefaults.topAppBarColors(
-                containerColor = MaterialTheme.colorScheme.onPrimary,
-                navigationIconContentColor = MaterialTheme.colorScheme.onSecondary
+        AppBarTop(
+            title = stringResource(R.string.search_vacancies),
+            back = ActionBack(isView = false),
+            filter = ActionFilter(
+                isView = true,
+                onClick = onFilter,
+                isActive = isFilterActive
             )
-
         )
 
         Surface(
@@ -107,8 +100,9 @@ fun SearchScreen(
         ) {
             OutlinedTextField(
                 value = searchText,
-                onValueChange = {
-                    searchText = it
+                onValueChange = { newText ->
+                    searchText = newText
+                    viewModel.onSearchTextChanged(newText)
                 },
                 placeholder = {
                     Text(
@@ -128,7 +122,7 @@ fun SearchScreen(
                     } else {
                         IconButton(onClick = {
                             searchText = ""
-                            // viewModel.searchDebounced("")
+                            viewModel.clearSearch()
                             focusManager.clearFocus()
                         }) {
                             Icon(
@@ -152,7 +146,7 @@ fun SearchScreen(
                 )
             )
         }
-        if (isLoading) {
+        if (state.isLoading && state.vacancies.isEmpty()) {
             Box(
                 modifier = Modifier
                     .fillMaxSize(),
@@ -163,7 +157,7 @@ fun SearchScreen(
                     modifier = Modifier.size(48.dp)
                 )
             }
-        } else if (isNetworkError) {
+        } else if (state.isNetworkError) {
             Column(
                 modifier = Modifier
                     .fillMaxSize(),
@@ -186,7 +180,7 @@ fun SearchScreen(
                     style = MaterialTheme.typography.titleLarge,
                 )
             }
-        } else if (searchResultsEmpty) {
+        } else if ((state.isEmptyResult && state.searchText.isNotEmpty())) {
             Column(
                 modifier = Modifier
                     .fillMaxSize(),
@@ -230,7 +224,7 @@ fun SearchScreen(
                 Spacer(modifier = Modifier.weight(0.3f))
             }
 
-        } else if (vacancies.isNotEmpty()) {
+        } else if (state.vacancies.isNotEmpty()) {
             Column(
                 modifier = Modifier.fillMaxSize(),
                 horizontalAlignment = Alignment.CenterHorizontally
@@ -243,7 +237,7 @@ fun SearchScreen(
                         .padding(top = 3.dp, bottom = 8.dp),
                 ) {
                     Text(
-                        text = "Найдено $totalCount вакансий",
+                        text = "Найдено ${state.totalCount} вакансий",
                         color = MaterialTheme.colorScheme.onPrimary,
                         style = MaterialTheme.typography.bodyMedium,
                         modifier = Modifier.padding(horizontal = 12.dp, vertical = 4.dp)
@@ -251,15 +245,21 @@ fun SearchScreen(
                 }
 
                 LazyColumn {
-                    items(vacancies) { vacancy ->
+                    items(state.vacancies, key = { it.id }) { vacancy ->
                         VacancyCard(
                             vacancy = vacancy,
-                            onClick = {}
+                            onClick = { viewModel.onVacancyClick(vacancy.id) }
                         )
+                        // Подгрузка следующей страницы при достижении конца списка
+                        if (state.vacancies.lastOrNull() == vacancy && state.hasMorePages && !state.isLoading) {
+                            LaunchedEffect(Unit) {
+                                viewModel.loadNextPage()
+                            }
+                        }
                     }
                 }
             }
-        } else {
+        } else if ((state.searchText.isEmpty())) {
             Box(
                 modifier = Modifier
                     .wrapContentSize()
@@ -279,7 +279,7 @@ fun SearchScreen(
 
 @Composable
 fun VacancyCard(
-    vacancy: TempVacancyCard,
+    vacancy: VacancyCard,
     onClick: () -> Unit
 ) {
     Row(
@@ -318,7 +318,7 @@ fun VacancyCard(
                 maxLines = 1
             )
             Text(
-                text = vacancy.salary ?: "зарплата не указана",
+                text = vacancy.salary ?:stringResource(R.string.salary_not_specified),
                 style = MaterialTheme.typography.bodyMedium,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
                 maxLines = 1
@@ -326,35 +326,6 @@ fun VacancyCard(
         }
     }
 }
-
-@Composable
-fun FilterIconButton(
-    isFilterActive: Boolean,
-    onFilterClick: () -> Unit
-) {
-    IconButton(onClick = onFilterClick) {
-        Icon(
-            modifier = Modifier.wrapContentWidth(),
-            painter = painterResource(R.drawable.ic_filter_off__24),
-            contentDescription = stringResource(R.string.filter_settings),
-            tint = if (isFilterActive) {
-                MaterialTheme.colorScheme.primary
-            } else {
-                MaterialTheme.colorScheme.onSurfaceVariant
-            }
-        )
-    }
-}
-
-// для теста
-data class TempVacancyCard(
-    val id: String,
-    val name: String,
-    val company: String?,
-    val city: String,
-    val salary: String?,
-    val logo: String?
-)
 
 @Preview
 @Composable

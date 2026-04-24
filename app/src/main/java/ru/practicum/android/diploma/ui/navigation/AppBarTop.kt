@@ -21,7 +21,6 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import ru.practicum.android.diploma.R
-import kotlin.invoke
 
 data class ActionBack(
     val isView: Boolean = false,
@@ -44,6 +43,7 @@ data class ActionShare(
     val onClick: (() -> Unit)? = null
 )
 
+const val WEIGHT_COLUMN = 0.5f
 @Composable
 fun AppBarTop(
     title: String,
@@ -70,7 +70,7 @@ fun AppBarTop(
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .weight(0.5f)
+                .weight(WEIGHT_COLUMN)
                 .padding(end = 8.dp),
             horizontalAlignment = Alignment.End,
             verticalArrangement = Arrangement.Center

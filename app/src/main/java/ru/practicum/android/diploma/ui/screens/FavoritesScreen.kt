@@ -5,8 +5,10 @@ import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -19,12 +21,12 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
@@ -52,6 +54,19 @@ fun FavoritesScreen() {
         Spacer(modifier = Modifier.padding(top = 16.dp))
 
         when (state) {
+            is FavoritesState.Loading -> {
+                Box(
+                    modifier = Modifier.fillMaxSize(),
+                    contentAlignment = Alignment.Center
+                ) {
+                    CircularProgressIndicator(
+                        modifier = Modifier
+                            .size(44.dp),
+                        color = MaterialTheme.colorScheme.primary
+                    )
+                }
+            }
+
             is FavoritesState.Empty -> {
                 PlaceholderNothingAndError(
                     title = R.string.empty_list,
@@ -123,9 +138,8 @@ private fun ItemVacancyDetails(
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(vertical = 8.dp, horizontal = 12.dp)
-            .clickable { onClick() },
-        verticalAlignment = Alignment.CenterVertically
+            .padding(vertical = 8.dp)
+            .clickable { onClick() }
     ) {
         AsyncImage(
             model = ImageRequest.Builder(LocalContext.current)
@@ -144,11 +158,13 @@ private fun ItemVacancyDetails(
             fallback = painterResource(R.drawable.ic_placeholder_32),
             modifier = Modifier
                 .size(48.dp)
-                .clip(RoundedCornerShape(12.dp)),
-
+                .border(
+                    color = MaterialTheme.colorScheme.surfaceVariant,
+                    width = 1.dp,
+                    shape = RoundedCornerShape(12.dp)
+                )
         )
-
-        Spacer(modifier = Modifier.width(8.dp))
+        Spacer(modifier = Modifier.width(12.dp))
 
         Column(
             modifier = Modifier.weight(1f)
@@ -251,4 +267,5 @@ sealed interface FavoritesState {
     data class Content(val vacancyCard: List<TempVacancyCard>) : FavoritesState
     data object Error : FavoritesState
     data object Empty : FavoritesState
+    data object Loading : FavoritesState
 }

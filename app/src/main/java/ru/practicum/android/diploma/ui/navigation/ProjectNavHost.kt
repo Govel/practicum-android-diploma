@@ -23,7 +23,8 @@ fun ProjectNavHost(
     ) {
         composable(Routes.SEARCH) {
             SearchScreen(
-                onFilter = { navController.navigate(Routes.FILTER) }
+                onFilter = { navController.navigate(Routes.FILTER) },
+                isFilterActive = false
             )
         }
 

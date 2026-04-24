@@ -25,7 +25,7 @@ detektTwitterComposeRules = "0.0.26"
 # Versions Libs
 activityCompose = "1.13.0"
 activityKtx = "1.13.0"
-coilCompose = "2.7.0"
+coilCompose = "3.4.0"
 coilNetworkOkhttp = "3.4.0"
 compiler = "5.0.5"
 converterGson = "3.0.0"
@@ -53,6 +53,7 @@ uiToolingPreview = "1.10.6"
 # AndroidX
 appcompat = { module = "androidx.appcompat:appcompat", version.ref = "appcompat" }
 coil-network-okhttp = { module = "io.coil-kt.coil3:coil-network-okhttp", version.ref = "coilNetworkOkhttp" }
+coil-svg = { module = "io.coil-kt.coil3:coil-svg", version.ref = "coilCompose" }
 constraintlayout = { module = "androidx.constraintlayout:constraintlayout", version.ref = "constraintlayout" }
 core = { module = "androidx.core:core-ktx", version.ref = "coreKtx" }
 
@@ -79,7 +80,7 @@ activity-ktx = { group = "androidx.activity", name = "activity-ktx", version.ref
 
 # Compose
 activity-compose = { group = "androidx.activity", name = "activity-compose", version.ref = "activityCompose" }
-coil-compose = { group = "io.coil-kt", name = "coil-compose", version.ref = "coilCompose" }
+coil-compose = { module = "io.coil-kt.coil3:coil-compose", version.ref = "coilCompose" }
 foundation = { group = "androidx.compose.foundation", name = "foundation", version.ref = "foundation" }
 material3 = { group = "androidx.compose.material3", name = "material3", version.ref = "material3" }
 navigation-compose = { group = "androidx.navigation", name = "navigation-compose", version.ref = "navigationCompose" }

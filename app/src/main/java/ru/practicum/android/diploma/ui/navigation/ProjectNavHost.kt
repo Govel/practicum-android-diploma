@@ -11,6 +11,7 @@ import ru.practicum.android.diploma.ui.screens.SearchScreen
 import ru.practicum.android.diploma.ui.screens.TeamScreen
 import ru.practicum.android.diploma.ui.screens.VacancyDetailScreen
 import ru.practicum.android.diploma.ui.screens.filter.FilterScreen
+import ru.practicum.android.diploma.ui.screens.vacancy1
 
 @Composable
 fun ProjectNavHost(
@@ -42,7 +43,7 @@ fun ProjectNavHost(
         }
 
         composable(Routes.VACANCY) {
-            VacancyDetailScreen()
+            VacancyDetailScreen(vacancy1())
         }
 
     }

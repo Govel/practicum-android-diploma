@@ -84,6 +84,7 @@ dependencies {
     // Coil (Image)
     implementation(libs.coil.compose)
     implementation(libs.coil.network.okhttp)
+    implementation(libs.coil.svg)
 
     // Lifecycle
     implementation(libs.androidx.lifecycle.livedata.ktx)

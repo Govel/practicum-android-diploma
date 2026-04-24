@@ -49,7 +49,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import ru.practicum.android.diploma.R
@@ -57,7 +57,8 @@ import ru.practicum.android.diploma.R
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SearchScreen(
-    onFilter: () -> Unit
+    onFilter: () -> Unit = {},
+    isFilterActive: Boolean = false,
 ) {
     var searchText by remember { mutableStateOf("") }
     val focusManager = LocalFocusManager.current
@@ -84,15 +85,10 @@ fun SearchScreen(
             },
 
             actions = {
-                IconButton(onFilter) {
-                    Icon(
-                        modifier = Modifier
-                            .wrapContentWidth(),
-                        painter = painterResource(R.drawable.ic_filter_off__24),
-                        contentDescription = stringResource(R.string.filter_settings),
-                        tint = Color.Unspecified,
-                    )
-                }
+                FilterIconButton(
+                    isFilterActive = isFilterActive,
+                    onFilterClick = onFilter
+                )
             },
 
             colors = TopAppBarDefaults.topAppBarColors(
@@ -151,7 +147,7 @@ fun SearchScreen(
                 singleLine = true,
                 colors = OutlinedTextFieldDefaults.colors(
                     focusedBorderColor = MaterialTheme.colorScheme.surfaceVariant,
-                    unfocusedBorderColor = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.3f),
+                    unfocusedBorderColor = Color.Transparent,
                     cursorColor = MaterialTheme.colorScheme.primary
                 )
             )
@@ -170,8 +166,7 @@ fun SearchScreen(
         } else if (isNetworkError) {
             Column(
                 modifier = Modifier
-                    .fillMaxSize()
-                    .padding(horizontal = 16.dp),
+                    .fillMaxSize(),
                 verticalArrangement = Arrangement.Center,
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
@@ -179,12 +174,13 @@ fun SearchScreen(
                     modifier = Modifier
                         .fillMaxWidth()
                         .height(233.dp)
+                        .padding(horizontal = 16.dp)
                         .padding(bottom = 16.dp),
                     painter = painterResource(R.drawable.no_internet),
                     contentDescription = null
                 )
                 Text(
-                    modifier = Modifier,
+                    modifier = Modifier.padding(horizontal = 46.dp),
                     text = stringResource(R.string.no_internet),
                     color = MaterialTheme.colorScheme.onBackground,
                     style = MaterialTheme.typography.titleLarge,
@@ -193,14 +189,15 @@ fun SearchScreen(
         } else if (searchResultsEmpty) {
             Column(
                 modifier = Modifier
-                    .fillMaxSize()
-                    .padding(horizontal = 16.dp),
+                    .fillMaxSize(),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 Surface(
                     color = MaterialTheme.colorScheme.primary,
                     shape = RoundedCornerShape(12.dp),
-                    modifier = Modifier.wrapContentSize(),
+                    modifier = Modifier
+                        .wrapContentSize()
+                        .padding(top = 3.dp, bottom = 8.dp),
                 ) {
                     Text(
                         text = stringResource(R.string.no_such_vacancies),
@@ -215,20 +212,22 @@ fun SearchScreen(
                 Image(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .height(233.dp),
+                        .height(233.dp)
+                        .padding(horizontal = 16.dp),
                     painter = painterResource(R.drawable.empty_cat),
                     contentDescription = null
                 )
                 Spacer(modifier = Modifier.height(16.dp))
 
                 Text(
+                    modifier = Modifier.padding(horizontal = 46.dp),
                     text = stringResource(R.string.failed_to_get_vacancies),
                     color = MaterialTheme.colorScheme.onBackground,
                     style = MaterialTheme.typography.titleLarge,
                     textAlign = TextAlign.Center
                 )
 
-                Spacer(modifier = Modifier.weight(0.5f))
+                Spacer(modifier = Modifier.weight(0.3f))
             }
 
         } else if (vacancies.isNotEmpty()) {
@@ -239,7 +238,9 @@ fun SearchScreen(
                 Surface(
                     color = MaterialTheme.colorScheme.primary,
                     shape = RoundedCornerShape(12.dp),
-                    modifier = Modifier.wrapContentSize(),
+                    modifier = Modifier
+                        .wrapContentSize()
+                        .padding(top = 3.dp, bottom = 8.dp),
                 ) {
                     Text(
                         text = "Найдено $totalCount вакансий",
@@ -285,14 +286,13 @@ fun VacancyCard(
         modifier = Modifier
             .fillMaxWidth()
             .clickable { onClick() }
-            .padding(16.dp),
-        verticalAlignment = Alignment.CenterVertically
+            .padding(horizontal = 16.dp, vertical = 9.dp),
     ) {
         AsyncImage(
             model = vacancy.logo,
             contentDescription = "Логотип компании",
             modifier = Modifier
-                .size(56.dp)
+                .size(48.dp)
                 .clip(RoundedCornerShape(12.dp)),
             contentScale = ContentScale.Crop,
             placeholder = painterResource(R.drawable.ic_placeholder_32),
@@ -308,8 +308,7 @@ fun VacancyCard(
                     vacancy.city?.let { append(", $it") }
                 },
                 style = MaterialTheme.typography.titleMedium,
-                maxLines = 1,
-                overflow = TextOverflow.Ellipsis
+                maxLines = 3
             )
 
             Text(
@@ -328,6 +327,25 @@ fun VacancyCard(
     }
 }
 
+@Composable
+fun FilterIconButton(
+    isFilterActive: Boolean,
+    onFilterClick: () -> Unit
+) {
+    IconButton(onClick = onFilterClick) {
+        Icon(
+            modifier = Modifier.wrapContentWidth(),
+            painter = painterResource(R.drawable.ic_filter_off__24),
+            contentDescription = stringResource(R.string.filter_settings),
+            tint = if (isFilterActive) {
+                MaterialTheme.colorScheme.primary
+            } else {
+                MaterialTheme.colorScheme.onSurfaceVariant
+            }
+        )
+    }
+}
+
 // для теста
 data class TempVacancyCard(
     val id: String,
@@ -337,3 +355,9 @@ data class TempVacancyCard(
     val salary: String?,
     val logo: String?
 )
+
+@Preview
+@Composable
+fun SearchScreenPreview() {
+    SearchScreen()
+}

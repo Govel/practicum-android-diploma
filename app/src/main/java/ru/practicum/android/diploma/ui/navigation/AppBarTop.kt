@@ -55,7 +55,6 @@ fun AppBarTop(
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(top = 24.dp)
             .height(64.dp)
             .background(MaterialTheme.colorScheme.onPrimary),
         verticalAlignment = Alignment.CenterVertically
@@ -94,7 +93,7 @@ private fun AppButtonBack(
             painter = painterResource(id = R.drawable.ic_arrow_back_24),
             contentDescription = null,
             modifier = Modifier
-                .padding(horizontal = 12.dp)
+                .padding(horizontal = 16.dp)
                 .clickable { onClick?.invoke() },
         )
     }
@@ -128,7 +127,7 @@ private fun AppButtonAction(
                 contentDescription = stringResource(R.string.filter_settings),
                 tint = Color.Unspecified,
                 modifier = Modifier
-                    .padding(end = 12.dp)
+                    .padding(end = 20.dp)
                     .clickable { filter.onClick?.invoke() },
             )
         }
@@ -139,7 +138,7 @@ private fun AppButtonAction(
                 contentDescription = null,
                 tint = Color.Unspecified,
                 modifier = Modifier
-                    .padding(end = 12.dp)
+                    .padding(end = 20.dp)
                     .clickable { share.onClick?.invoke() },
             )
         }
@@ -150,7 +149,7 @@ private fun AppButtonAction(
                 contentDescription = stringResource(R.string.favorites),
                 tint = Color.Unspecified,
                 modifier = Modifier
-                    .padding(end = 12.dp)
+                    .padding(end = 20.dp)
                     .clickable { favorites.onClick?.invoke() },
             )
         }

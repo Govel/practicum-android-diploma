@@ -4,13 +4,12 @@ import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
-import kotlinx.coroutines.flow.Flow
 import ru.practicum.android.diploma.database.data.dto.FavoriteVacancyEntity
 
 @Dao
 interface FavoriteVacancyDao {
     @Query("SELECT * FROM favorite_vacancy_table")
-    fun getFavoriteVacancy(): Flow<List<FavoriteVacancyEntity>>
+    suspend fun getFavoriteVacancy(): List<FavoriteVacancyEntity>
 
     @Insert(entity = FavoriteVacancyEntity::class, onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertFavoriteVacancy(favoriteVacancy: FavoriteVacancyEntity)

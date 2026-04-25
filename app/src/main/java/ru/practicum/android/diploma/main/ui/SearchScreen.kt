@@ -176,14 +176,14 @@ private fun SearchContent(state: SearchState, viewModel: SearchViewModel) {
                 Image(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .height(233.dp)
+                        .height(232.dp)
                         .padding(horizontal = 16.dp)
                         .padding(bottom = 16.dp),
                     painter = painterResource(R.drawable.no_internet),
                     contentDescription = null
                 )
                 Text(
-                    modifier = Modifier.padding(horizontal = 46.dp),
+                    modifier = Modifier.padding(horizontal = 48.dp),
                     text = stringResource(R.string.no_internet),
                     color = MaterialTheme.colorScheme.onBackground,
                     style = MaterialTheme.typography.titleLarge,
@@ -202,7 +202,7 @@ private fun SearchContent(state: SearchState, viewModel: SearchViewModel) {
                     shape = RoundedCornerShape(12.dp),
                     modifier = Modifier
                         .wrapContentSize()
-                        .padding(top = 3.dp, bottom = 8.dp),
+                        .padding(top = 4.dp, bottom = 8.dp),
                 ) {
                     Text(
                         text = stringResource(R.string.no_such_vacancies),
@@ -217,7 +217,7 @@ private fun SearchContent(state: SearchState, viewModel: SearchViewModel) {
                 Image(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .height(233.dp)
+                        .height(232.dp)
                         .padding(horizontal = 16.dp),
                     painter = painterResource(R.drawable.empty_cat),
                     contentDescription = null
@@ -225,7 +225,7 @@ private fun SearchContent(state: SearchState, viewModel: SearchViewModel) {
                 Spacer(modifier = Modifier.height(16.dp))
 
                 Text(
-                    modifier = Modifier.padding(horizontal = 46.dp),
+                    modifier = Modifier.padding(horizontal = 48.dp),
                     text = stringResource(R.string.failed_to_get_vacancies),
                     color = MaterialTheme.colorScheme.onBackground,
                     style = MaterialTheme.typography.titleLarge,
@@ -246,7 +246,7 @@ private fun SearchContent(state: SearchState, viewModel: SearchViewModel) {
                     shape = RoundedCornerShape(12.dp),
                     modifier = Modifier
                         .wrapContentSize()
-                        .padding(top = 3.dp, bottom = 8.dp),
+                        .padding(top = 4.dp, bottom = 8.dp),
                 ) {
                     Text(
                         text = "Найдено ${state.totalCount} вакансий",
@@ -300,7 +300,7 @@ fun VacancyCard(
         modifier = Modifier
             .fillMaxWidth()
             .clickable { onClick() }
-            .padding(horizontal = 16.dp, vertical = 9.dp),
+            .padding(horizontal = 16.dp, vertical = 8.dp),
     ) {
         AsyncImage(
             model = vacancy.logo,

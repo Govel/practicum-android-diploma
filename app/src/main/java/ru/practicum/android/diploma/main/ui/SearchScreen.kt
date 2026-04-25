@@ -99,7 +99,6 @@ fun SearchScreen(
                 .fillMaxWidth()
                 .padding(horizontal = 16.dp, vertical = 8.dp)
         ) {
-
             OutlinedTextField(
                 value = searchText,
                 onValueChange = { newText ->
@@ -113,7 +112,6 @@ fun SearchScreen(
                         style = MaterialTheme.typography.bodyLarge,
                     )
                 },
-
                 trailingIcon = {
                     if (searchText.isEmpty()) {
                         Icon(

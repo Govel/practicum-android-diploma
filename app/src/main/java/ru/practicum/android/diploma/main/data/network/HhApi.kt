@@ -1,6 +1,7 @@
 package ru.practicum.android.diploma.main.data.network
 
 import retrofit2.http.GET
+import retrofit2.http.Header
 import retrofit2.http.Path
 import retrofit2.http.Query
 import ru.practicum.android.diploma.filter.industry.data.dto.FilterIndustryResponse
@@ -11,6 +12,7 @@ import ru.practicum.android.diploma.vacancy.data.dto.VacancyDetailResponse
 interface HhApi {
     @GET("vacancies")
     suspend fun getVacancies(
+        @Header("Authorization") token: String,
         @Query("area") area: Int?,
         @Query("industry") industry: Int? = null,
         @Query("text") text: String? = null,
@@ -20,11 +22,18 @@ interface HhApi {
     ): VacanciesResponse
 
     @GET("areas")
-    suspend fun getAreas(): List<FilterAreasResponse>
+    suspend fun getAreas(
+        @Header("Authorization") token: String
+    ): List<FilterAreasResponse>
 
     @GET("industries")
-    suspend fun getIndustries(): List<FilterIndustryResponse>
+    suspend fun getIndustries(
+        @Header("Authorization") token: String
+    ): List<FilterIndustryResponse>
 
     @GET("vacancies/{id}")
-    suspend fun getVacancyById(@Path("id") id: String): VacancyDetailResponse
+    suspend fun getVacancyById(
+        @Header("Authorization") token: String,
+        @Path("id") id: String
+    ): VacancyDetailResponse
 }

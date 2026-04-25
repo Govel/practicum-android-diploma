@@ -1,4 +1,4 @@
-package ru.practicum.android.diploma.ui.screens
+package ru.practicum.android.diploma.ui.navigation
 
 object Routes {
     const val SEARCH = "search"

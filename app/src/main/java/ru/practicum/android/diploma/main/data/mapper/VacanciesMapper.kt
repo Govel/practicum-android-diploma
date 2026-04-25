@@ -22,12 +22,12 @@ object VacanciesMapper {
         return dtoList.map { vacancy -> mapDtoToDomain(vacancy) }
     }
 
-    private fun salaryDtoToSalaryModelConverter(salary: VacancyCardSalary?): String {
+    private fun salaryDtoToSalaryModelConverter(salary: VacancyCardSalary?): String? {
         var result: String
         val from = formatSalary(salary?.from)
         val to = formatSalary(salary?.to)
         val currency = formatCurrency(salary?.currency)
-        if (from == "" && to == "") return ""
+        if (from == "" && to == "") return null
         if (from != "") {
             result = "От $from"
             if (to != "") {

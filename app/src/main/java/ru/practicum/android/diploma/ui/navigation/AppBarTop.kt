@@ -154,7 +154,7 @@ private fun FilterIcon(
         contentDescription = stringResource(R.string.filter_settings),
         tint = Color.Unspecified,
         modifier = Modifier
-            .padding(end = 20.dp)
+            .padding(end = 12.dp)
             .clickable { filter.onClick?.invoke() },
     )
 }

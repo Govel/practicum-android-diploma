@@ -57,7 +57,6 @@ kotlin {
 }
 
 dependencies {
-
     implementation(libs.activity.ktx)
     implementation(libs.appcompat)
     implementation(libs.core)
@@ -86,6 +85,11 @@ dependencies {
     // Coil (Image)
     implementation(libs.coil.compose)
     implementation(libs.coil.network.okhttp)
+
+    // Coil с поддержкой SVG
+    implementation(libs.coil.kt.coil.svg)
+
+    implementation(libs.okhttp)
 
     // Lifecycle
     implementation(libs.androidx.lifecycle.livedata.ktx)

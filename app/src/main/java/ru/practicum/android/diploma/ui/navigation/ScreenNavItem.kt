@@ -1,7 +1,6 @@
 package ru.practicum.android.diploma.ui.navigation
 
 import ru.practicum.android.diploma.R
-import ru.practicum.android.diploma.ui.screens.Routes
 
 sealed class ScreenNavItem(
     val route: String,

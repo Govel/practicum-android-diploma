@@ -9,7 +9,7 @@ val repositoryModule = module {
 
     factory { FavoritesDbConverter() }
 
-    factory <FavoritesRepository>{
+    factory<FavoritesRepository> {
         FavoritesRepositoryImpl(get(), get())
     }
 }

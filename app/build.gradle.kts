@@ -66,6 +66,8 @@ dependencies {
     // UI layer libraries
     implementation(libs.constraintlayout)
     implementation(libs.material)
+    implementation(libs.androidx.lifecycle.runtime.compose)
+    implementation(libs.androidx.runtime)
 
     testImplementation(libs.junit4)
     androidTestImplementation(libs.junit.ext)
@@ -94,6 +96,8 @@ dependencies {
 
     // Koin
     implementation(libs.koin.android)
+    implementation(libs.koin.core)
+    implementation(libs.koin.androidx.compose)
 
     // Compose
     implementation(libs.activity.compose)

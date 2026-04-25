@@ -2,15 +2,14 @@ package ru.practicum.android.diploma.favorite.data
 
 import ru.practicum.android.diploma.database.data.dto.FavoriteVacancyEntity
 import ru.practicum.android.diploma.favorite.domain.models.VacancyCard
-import kotlin.String
 
-class FavoritesDbConverter() {
+class FavoritesDbConverter {
 
     fun map(vacancy: VacancyCard): FavoriteVacancyEntity {
         return FavoriteVacancyEntity(
             id = vacancy.id,
             name = vacancy.name,
-            salary = (vacancy.salary ?: "") as String?,
+            salary = vacancy.salary,
             address = null,
             experience = null,
             schedule = null,
@@ -20,7 +19,7 @@ class FavoritesDbConverter() {
             employer = "",
             area = "",
             skills = "",
-            url = vacancy.logo ?: "",
+            url = vacancy.logo.orEmpty(),
             industry = ""
         )
     }
@@ -31,8 +30,8 @@ class FavoritesDbConverter() {
             name = vacancy.name,
             company = "",
             city = "",
-            salary = null,
-            logo = vacancy.url ?: ""
+            salary = vacancy.salary, // as VacancyCardSalary?,
+            logo = vacancy.url
         )
     }
 }

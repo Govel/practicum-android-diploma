@@ -1,4 +1,4 @@
-package ru.practicum.android.diploma.ui.screens
+package ru.practicum.android.diploma.ui.screens.favorites
 
 import android.util.Log
 import androidx.annotation.DrawableRes
@@ -22,9 +22,12 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
@@ -37,17 +40,23 @@ import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import coil3.request.ImageRequest
 import coil3.request.crossfade
+import org.koin.androidx.compose.koinViewModel
 import ru.practicum.android.diploma.R
 import ru.practicum.android.diploma.favorite.FavoritesState
 import ru.practicum.android.diploma.favorite.FavoritesViewModel
 import ru.practicum.android.diploma.favorite.domain.models.VacancyCard
-import ru.practicum.android.diploma.main.data.dto.VacancyCardSalary
 import ru.practicum.android.diploma.ui.navigation.AppBarTop
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun FavoritesScreen() {
-    //val viewModel: FavoritesViewModel = koinViewModel()
-    val state: FavoritesState = FavoritesState.Content(vacancyCard = getListFavorites())
+fun FavoritesScreen(
+    viewModel: FavoritesViewModel = koinViewModel()
+) {
+    val state = viewModel.state.collectAsState().value
+
+    LaunchedEffect(Unit) {
+        viewModel.loadFavorites()
+    }
 
     Column(
         modifier = Modifier
@@ -187,7 +196,7 @@ private fun ItemVacancyDetails(
             )
 
             Text(
-                text = "Зарплата не указана", //vacancy.salary ?: "Зарплата не указана",
+                text = "Зарплата не указана", // vacancy.salary ?: "Зарплата не указана",
                 style = MaterialTheme.typography.bodyLarge,
                 maxLines = 1
             )
@@ -227,7 +236,7 @@ fun ItemVacancyDetailsPreview() {
         name = "Android-developer",
         company = "Едадил",
         city = "Moscow",
-        salary = VacancyCardSalary(from = 100000, currency = "RUB"),
+        salary = "от 100 000 руб", // VacancyCardSalary(from = 100000, currency = "RUB"),
         logo = "",
     )
 
@@ -236,27 +245,3 @@ fun ItemVacancyDetailsPreview() {
         onClick = {},
     )
 }
-
-
-private fun getListFavorites(): List<VacancyCard> {
-    val vacancyOne = VacancyCard(
-        id = "1",
-        name = "Android-разработчик",
-        company = "Еда",
-        city = "Москва",
-        salary = VacancyCardSalary(from = 100000, currency = "RUB"),
-        logo = "",
-    )
-    val vacancyTwo = VacancyCard(
-        id = "2",
-        name = "Разработчик на С++ в комаанду внутренних сервисов",
-        company = "Авто.ру",
-        city = "Москва",
-        salary = VacancyCardSalary(from = 40000, to = 80000, currency = "RUB"),
-        logo = "",
-    )
-
-    return listOf(vacancyOne, vacancyTwo)
-}
-
-

@@ -1,6 +1,7 @@
 package ru.practicum.android.diploma.favorite.data.impl
 
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flow
 import ru.practicum.android.diploma.database.data.dao.FavoriteVacancyDao
 import ru.practicum.android.diploma.database.data.dto.FavoriteVacancyEntity
@@ -26,11 +27,11 @@ class FavoritesRepositoryImpl(
     }
 
     override fun getFavorites(): Flow<List<VacancyCard>> = flow {
-       val favoritesList = favoriteVacancyDao.getFavoriteVacancy()
-       emit(converterFromVacancy(favoritesList))
+        val favorites = favoriteVacancyDao.getFavoriteVacancy().first()
+        emit(convertFromVacancy(favorites))
     }
 
-    private fun converterFromVacancy(favorites: List<FavoriteVacancyEntity>):List<VacancyCard>{
-        return favorites.map { favorite -> dbConverter.map(favorite)}
+    private fun convertFromVacancy(favorites: List<FavoriteVacancyEntity>): List<VacancyCard> {
+        return favorites.map { favorite -> dbConverter.map(favorite) }
     }
 }

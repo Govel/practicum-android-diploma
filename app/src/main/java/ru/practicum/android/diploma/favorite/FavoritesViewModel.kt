@@ -2,12 +2,10 @@ package ru.practicum.android.diploma.favorite
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import androidx.lifecycle.viewmodel.compose.viewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.catch
-import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import ru.practicum.android.diploma.favorite.domain.api.FavoritesInteractor
 import ru.practicum.android.diploma.favorite.domain.models.VacancyCard
@@ -17,9 +15,9 @@ class FavoritesViewModel(
 ) : ViewModel() {
 
     private val _stateFavorite = MutableStateFlow<FavoritesState>(FavoritesState.Loading)
-    val state: StateFlow<FavoritesState> = _stateFavorite
+    val state: StateFlow<FavoritesState> = _stateFavorite.asStateFlow()
 
-    fun loadFavorites(){
+    fun loadFavorites() {
         renderState(FavoritesState.Loading)
         viewModelScope.launch {
             favoritesInteractor
@@ -34,20 +32,16 @@ class FavoritesViewModel(
         }
     }
 
-    private fun processResult(vacancy: List<VacancyCard>){
-        if (vacancy.isNotEmpty()){
+    private fun processResult(vacancy: List<VacancyCard>) {
+        if (vacancy.isNotEmpty()) {
             renderState(FavoritesState.Content(vacancy))
-
         } else {
             renderState(FavoritesState.Empty)
         }
     }
 
-    private fun renderState(state: FavoritesState){
+    private fun renderState(state: FavoritesState) {
         _stateFavorite.value = state
     }
 
-    fun refresh(){
-        loadFavorites()
-    }
 }

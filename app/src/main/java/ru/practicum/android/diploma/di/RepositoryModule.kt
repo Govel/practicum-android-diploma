@@ -8,7 +8,7 @@ import ru.practicum.android.diploma.main.domain.api.VacanciesRepository
 
 val repositoryModule = module {
     factory <FavoritesRepository>{
-        FavoritesRepositoryImpl(get(), get())
+        FavoritesRepositoryImpl(get())
     }
     factory<VacanciesRepository> {
         VacancyRepositoryImpl(get())

@@ -41,7 +41,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -50,8 +49,10 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import coil.ImageLoader
 import coil.compose.AsyncImage
 import org.koin.androidx.compose.koinViewModel
+import org.koin.compose.koinInject
 import ru.practicum.android.diploma.R
 import ru.practicum.android.diploma.main.domain.models.VacancyCard
 import ru.practicum.android.diploma.ui.navigation.ActionBack
@@ -113,7 +114,7 @@ fun SearchScreen(
                 },
 
                 trailingIcon = {
-                    if (!searchText.isNotEmpty()) {
+                    if (searchText.isEmpty()) {
                         Icon(
                             painter = painterResource(R.drawable.ic_search_24),
                             contentDescription = null,
@@ -146,7 +147,15 @@ fun SearchScreen(
                 )
             )
         }
-        if (state.isLoading && state.vacancies.isEmpty()) {
+        SearchContent(state, viewModel)
+    }
+}
+
+
+@Composable
+private fun SearchContent(state: SearchState, viewModel: SearchViewModel) {
+    when {
+        state.isLoading -> {
             Box(
                 modifier = Modifier
                     .fillMaxSize(),
@@ -157,7 +166,10 @@ fun SearchScreen(
                     modifier = Modifier.size(48.dp)
                 )
             }
-        } else if (state.isNetworkError) {
+
+        }
+
+        state.isNetworkError -> {
             Column(
                 modifier = Modifier
                     .fillMaxSize(),
@@ -180,7 +192,9 @@ fun SearchScreen(
                     style = MaterialTheme.typography.titleLarge,
                 )
             }
-        } else if ((state.isEmptyResult && state.searchText.isNotEmpty())) {
+        }
+
+        state.isEmptyResult && state.searchText.isNotEmpty() -> {
             Column(
                 modifier = Modifier
                     .fillMaxSize(),
@@ -223,8 +237,9 @@ fun SearchScreen(
 
                 Spacer(modifier = Modifier.weight(0.3f))
             }
+        }
 
-        } else if (state.vacancies.isNotEmpty()) {
+        state.vacancies.isNotEmpty() -> {
             Column(
                 modifier = Modifier.fillMaxSize(),
                 horizontalAlignment = Alignment.CenterHorizontally
@@ -250,7 +265,6 @@ fun SearchScreen(
                             vacancy = vacancy,
                             onClick = { viewModel.onVacancyClick(vacancy.id) }
                         )
-                        // Подгрузка следующей страницы при достижении конца списка
                         if (state.vacancies.lastOrNull() == vacancy && state.hasMorePages && !state.isLoading) {
                             LaunchedEffect(Unit) {
                                 viewModel.loadNextPage()
@@ -259,7 +273,9 @@ fun SearchScreen(
                     }
                 }
             }
-        } else if ((state.searchText.isEmpty())) {
+        }
+
+        state.searchText.isEmpty() -> {
             Box(
                 modifier = Modifier
                     .wrapContentSize()
@@ -280,7 +296,8 @@ fun SearchScreen(
 @Composable
 fun VacancyCard(
     vacancy: VacancyCard,
-    onClick: () -> Unit
+    onClick: () -> Unit,
+    imageLoader: ImageLoader = koinInject()
 ) {
     Row(
         modifier = Modifier
@@ -291,10 +308,10 @@ fun VacancyCard(
         AsyncImage(
             model = vacancy.logo,
             contentDescription = "Логотип компании",
+            imageLoader = imageLoader,
             modifier = Modifier
                 .size(48.dp)
                 .clip(RoundedCornerShape(12.dp)),
-            contentScale = ContentScale.Crop,
             placeholder = painterResource(R.drawable.ic_placeholder_32),
             error = painterResource(R.drawable.ic_placeholder_32)
         )
@@ -313,13 +330,13 @@ fun VacancyCard(
 
             Text(
                 text = vacancy.company ?: "",
-                style = MaterialTheme.typography.bodyMedium,
+                style = MaterialTheme.typography.bodyLarge,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
                 maxLines = 1
             )
             Text(
-                text = vacancy.salary ?:stringResource(R.string.salary_not_specified),
-                style = MaterialTheme.typography.bodyMedium,
+                text = vacancy.salary ?: stringResource(R.string.salary_not_specified),
+                style = MaterialTheme.typography.bodyLarge,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
                 maxLines = 1
             )

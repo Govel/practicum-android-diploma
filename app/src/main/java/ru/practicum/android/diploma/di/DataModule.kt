@@ -1,6 +1,9 @@
 package ru.practicum.android.diploma.di
 
 import androidx.room.Room
+import coil.ImageLoader
+import coil.decode.SvgDecoder
+import okhttp3.OkHttpClient
 import org.koin.android.ext.koin.androidContext
 import org.koin.dsl.module
 import retrofit2.Retrofit
@@ -13,7 +16,7 @@ import ru.practicum.android.diploma.main.data.network.NetworkClientImpl
 
 private const val HH_BASE_URL = "https://android-diploma.education-services.ru"
 private const val DB_NAME = "database.db"
-private  const val API_TOKEN  = "Bearer ${BuildConfig.API_ACCESS_TOKEN}"
+private const val API_TOKEN = "Bearer ${BuildConfig.API_ACCESS_TOKEN}"
 
 val dataModule = module {
     single {
@@ -30,5 +33,34 @@ val dataModule = module {
             .create(HhApi::class.java)
     }
 
-    single<NetworkClient> { NetworkClientImpl(get(), androidContext(),API_TOKEN ) }
+    single {
+        OkHttpClient.Builder()
+            .addInterceptor { chain ->
+                val request = chain.request().newBuilder()
+                    .header("User-Agent", "Mozilla/5.0")
+                    .build()
+                chain.proceed(request)
+            }
+            .build()
+    }
+
+    single<ImageLoader> {
+        ImageLoader.Builder(androidContext())
+            .components {
+                add(SvgDecoder.Factory())
+            }
+            .okHttpClient {
+                OkHttpClient.Builder()
+                    .addInterceptor { chain ->
+                        val request = chain.request().newBuilder()
+                            .header("User-Agent", "Mozilla/5.0")
+                            .build()
+                        chain.proceed(request)
+                    }
+                    .build()
+            }
+            .build()
+    }
+
+    single<NetworkClient> { NetworkClientImpl(get(), androidContext(), API_TOKEN) }
 }

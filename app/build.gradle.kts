@@ -87,6 +87,12 @@ dependencies {
     implementation(libs.coil.compose)
     implementation(libs.coil.network.okhttp)
 
+    // Coil с поддержкой SVG
+    implementation(libs.coil.kt.coil.svg)
+
+    implementation(libs.okhttp)
+
+
     // Lifecycle
     implementation(libs.androidx.lifecycle.livedata.ktx)
     implementation(libs.androidx.lifecycle.viewmodel.ktx)
@@ -113,5 +119,8 @@ dependencies {
 
     // Peko
     implementation(libs.peko)
+
+
+
 
 }

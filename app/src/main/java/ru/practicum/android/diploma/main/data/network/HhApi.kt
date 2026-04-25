@@ -33,5 +33,7 @@ interface HhApi {
 
     @GET("vacancies/{id}")
     suspend fun getVacancyById(
-        @Header("Authorization") token: String, @Path("id") id: String): VacancyDetailResponse
+        @Header("Authorization") token: String,
+        @Path("id") id: String
+    ): VacancyDetailResponse
 }

@@ -21,7 +21,7 @@ class VacancyRepositoryImpl(val networkClient: NetworkClient) : VacanciesReposit
             }
 
             NetworkResponse.OK_RESULT -> {
-                val vacanciesResponse = response as VacanciesResponse
+                val vacanciesResponse = response.data as VacanciesResponse
                 if (vacanciesResponse.items.isNotEmpty()) {
                     emit(Resource.Success(VacanciesMapper.mapDtoListToDomain(vacanciesResponse.items)))
                 } else {

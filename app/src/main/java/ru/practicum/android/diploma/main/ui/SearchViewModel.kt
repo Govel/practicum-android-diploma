@@ -11,8 +11,8 @@ import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import ru.practicum.android.diploma.main.domain.api.VacanciesInteractor
-import ru.practicum.android.diploma.main.domain.models.VacancyFilter
 import ru.practicum.android.diploma.main.domain.models.VacancyCard
+import ru.practicum.android.diploma.main.domain.models.VacancyFilter
 
 class SearchViewModel(
     private val interactor: VacanciesInteractor

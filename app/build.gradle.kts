@@ -57,7 +57,6 @@ kotlin {
 }
 
 dependencies {
-
     implementation(libs.activity.ktx)
     implementation(libs.appcompat)
     implementation(libs.core)
@@ -92,7 +91,6 @@ dependencies {
 
     implementation(libs.okhttp)
 
-
     // Lifecycle
     implementation(libs.androidx.lifecycle.livedata.ktx)
     implementation(libs.androidx.lifecycle.viewmodel.ktx)
@@ -119,8 +117,4 @@ dependencies {
 
     // Peko
     implementation(libs.peko)
-
-
-
-
 }

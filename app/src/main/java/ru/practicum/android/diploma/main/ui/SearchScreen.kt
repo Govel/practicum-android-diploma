@@ -99,6 +99,7 @@ fun SearchScreen(
                 .fillMaxWidth()
                 .padding(horizontal = 16.dp, vertical = 8.dp)
         ) {
+
             OutlinedTextField(
                 value = searchText,
                 onValueChange = { newText ->
@@ -147,6 +148,7 @@ fun SearchScreen(
                 )
             )
         }
+
         SearchContent(state, viewModel)
     }
 }
@@ -166,7 +168,6 @@ private fun SearchContent(state: SearchState, viewModel: SearchViewModel) {
                     modifier = Modifier.size(48.dp)
                 )
             }
-
         }
 
         state.isNetworkError -> {

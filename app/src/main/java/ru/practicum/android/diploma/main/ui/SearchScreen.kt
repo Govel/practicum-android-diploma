@@ -59,7 +59,6 @@ import ru.practicum.android.diploma.ui.navigation.ActionBack
 import ru.practicum.android.diploma.ui.navigation.ActionFilter
 import ru.practicum.android.diploma.ui.navigation.AppBarTop
 
-
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SearchScreen(
@@ -150,7 +149,6 @@ fun SearchScreen(
         SearchContent(state, viewModel)
     }
 }
-
 
 @Composable
 private fun SearchContent(state: SearchState, viewModel: SearchViewModel) {

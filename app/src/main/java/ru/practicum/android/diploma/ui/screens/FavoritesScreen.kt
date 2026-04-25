@@ -38,10 +38,15 @@ import coil.compose.AsyncImage
 import coil3.request.ImageRequest
 import coil3.request.crossfade
 import ru.practicum.android.diploma.R
+import ru.practicum.android.diploma.favorite.FavoritesState
+import ru.practicum.android.diploma.favorite.FavoritesViewModel
+import ru.practicum.android.diploma.favorite.domain.models.VacancyCard
+import ru.practicum.android.diploma.main.data.dto.VacancyCardSalary
 import ru.practicum.android.diploma.ui.navigation.AppBarTop
 
 @Composable
 fun FavoritesScreen() {
+    //val viewModel: FavoritesViewModel = koinViewModel()
     val state: FavoritesState = FavoritesState.Content(vacancyCard = getListFavorites())
 
     Column(
@@ -132,7 +137,7 @@ fun PlaceholderNothingAndError(
 
 @Composable
 private fun ItemVacancyDetails(
-    vacancy: TempVacancyCard,
+    vacancy: VacancyCard,
     onClick: () -> Unit
 ) {
     Row(
@@ -182,7 +187,7 @@ private fun ItemVacancyDetails(
             )
 
             Text(
-                text = vacancy.salary ?: "Зарплата не указана",
+                text = "Зарплата не указана", //vacancy.salary ?: "Зарплата не указана",
                 style = MaterialTheme.typography.bodyLarge,
                 maxLines = 1
             )
@@ -217,12 +222,12 @@ fun PlaceholderErrorPreview() {
 @Preview(showBackground = true, showSystemUi = true)
 @Composable
 fun ItemVacancyDetailsPreview() {
-    val vacancy = TempVacancyCard(
-        id = 1,
+    val vacancy = VacancyCard(
+        id = "1",
         name = "Android-developer",
         company = "Едадил",
         city = "Moscow",
-        salary = "от 100 000 руб",
+        salary = VacancyCardSalary(from = 100000, currency = "RUB"),
         logo = "",
     )
 
@@ -232,40 +237,26 @@ fun ItemVacancyDetailsPreview() {
     )
 }
 
-// для теста
-data class TempVacancyCard(
-    val id: Int,
-    val name: String,
-    val company: String?,
-    val city: String,
-    val salary: String?,
-    val logo: String?
-)
 
-private fun getListFavorites(): List<TempVacancyCard> {
-    val vacancyOne = TempVacancyCard(
-        id = 1,
+private fun getListFavorites(): List<VacancyCard> {
+    val vacancyOne = VacancyCard(
+        id = "1",
         name = "Android-разработчик",
         company = "Еда",
         city = "Москва",
-        salary = "от 100 000 руб",
+        salary = VacancyCardSalary(from = 100000, currency = "RUB"),
         logo = "",
     )
-    val vacancyTwo = TempVacancyCard(
-        id = 2,
+    val vacancyTwo = VacancyCard(
+        id = "2",
         name = "Разработчик на С++ в комаанду внутренних сервисов",
         company = "Авто.ру",
         city = "Москва",
-        salary = "от 40 000 до 80 000 руб",
+        salary = VacancyCardSalary(from = 40000, to = 80000, currency = "RUB"),
         logo = "",
     )
 
     return listOf(vacancyOne, vacancyTwo)
 }
 
-sealed interface FavoritesState {
-    data class Content(val vacancyCard: List<TempVacancyCard>) : FavoritesState
-    data object Error : FavoritesState
-    data object Empty : FavoritesState
-    data object Loading : FavoritesState
-}
+

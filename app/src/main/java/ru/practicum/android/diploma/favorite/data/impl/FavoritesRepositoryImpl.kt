@@ -6,7 +6,7 @@ import ru.practicum.android.diploma.database.data.dao.FavoriteVacancyDao
 import ru.practicum.android.diploma.database.data.dto.FavoriteVacancyEntity
 import ru.practicum.android.diploma.favorite.data.FavoritesDbConverter
 import ru.practicum.android.diploma.favorite.domain.api.FavoritesRepository
-import ru.practicum.android.diploma.favorite.domain.models.VacancyCard
+import ru.practicum.android.diploma.main.domain.models.VacancyCard
 import kotlin.collections.map
 
 class FavoritesRepositoryImpl(

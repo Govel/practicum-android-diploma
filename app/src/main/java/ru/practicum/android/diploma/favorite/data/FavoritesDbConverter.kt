@@ -30,7 +30,7 @@ class FavoritesDbConverter {
             name = vacancy.name,
             company = "",
             city = "",
-            salary = vacancy.salary, // as VacancyCardSalary?,
+            salary = vacancy.salary,
             logo = vacancy.url
         )
     }

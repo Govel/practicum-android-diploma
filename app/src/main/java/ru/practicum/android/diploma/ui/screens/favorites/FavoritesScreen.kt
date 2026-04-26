@@ -44,7 +44,7 @@ import org.koin.androidx.compose.koinViewModel
 import ru.practicum.android.diploma.R
 import ru.practicum.android.diploma.favorite.FavoritesState
 import ru.practicum.android.diploma.favorite.FavoritesViewModel
-import ru.practicum.android.diploma.favorite.domain.models.VacancyCard
+import ru.practicum.android.diploma.main.domain.models.VacancyCard
 import ru.practicum.android.diploma.ui.navigation.AppBarTop
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -184,7 +184,10 @@ private fun ItemVacancyDetails(
             modifier = Modifier.weight(1f)
         ) {
             Text(
-                text = "${vacancy.name}, ${vacancy.city}",
+                text = buildString {
+                    append(vacancy.name)
+                    vacancy.city?.let { append(", $it") }
+                },
                 style = MaterialTheme.typography.titleLarge,
                 maxLines = 3
             )
@@ -196,7 +199,7 @@ private fun ItemVacancyDetails(
             )
 
             Text(
-                text = "Зарплата не указана", // vacancy.salary ?: "Зарплата не указана",
+                text = vacancy.salary ?: "Зарплата не указана",
                 style = MaterialTheme.typography.bodyLarge,
                 maxLines = 1
             )
@@ -236,7 +239,7 @@ fun ItemVacancyDetailsPreview() {
         name = "Android-developer",
         company = "Едадил",
         city = "Moscow",
-        salary = "от 100 000 руб", // VacancyCardSalary(from = 100000, currency = "RUB"),
+        salary = "от 100 000 руб",
         logo = "",
     )
 

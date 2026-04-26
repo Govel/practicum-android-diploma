@@ -1,7 +1,7 @@
 package ru.practicum.android.diploma.favorite.data
 
 import ru.practicum.android.diploma.database.data.dto.FavoriteVacancyEntity
-import ru.practicum.android.diploma.favorite.domain.models.VacancyCard
+import ru.practicum.android.diploma.main.domain.models.VacancyCard
 
 class FavoritesDbConverter {
 

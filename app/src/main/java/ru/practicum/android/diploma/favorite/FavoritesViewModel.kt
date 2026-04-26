@@ -8,7 +8,7 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.launch
 import ru.practicum.android.diploma.favorite.domain.api.FavoritesInteractor
-import ru.practicum.android.diploma.favorite.domain.models.VacancyCard
+import ru.practicum.android.diploma.main.domain.models.VacancyCard
 
 class FavoritesViewModel(
     private val favoritesInteractor: FavoritesInteractor

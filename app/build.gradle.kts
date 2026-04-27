@@ -57,7 +57,6 @@ kotlin {
 }
 
 dependencies {
-
     implementation(libs.activity.ktx)
     implementation(libs.appcompat)
     implementation(libs.core)
@@ -66,6 +65,8 @@ dependencies {
     // UI layer libraries
     implementation(libs.constraintlayout)
     implementation(libs.material)
+    implementation(libs.androidx.lifecycle.runtime.compose)
+    implementation(libs.androidx.runtime)
 
     testImplementation(libs.junit4)
     androidTestImplementation(libs.junit.ext)
@@ -82,9 +83,14 @@ dependencies {
     ksp(libs.room.compiler)
 
     // Coil (Image)
-    implementation(libs.coil.compose)
+    implementation(libs.coil3.coil.compose)
     implementation(libs.coil.network.okhttp)
     implementation(libs.coil.svg)
+
+    // Coil с поддержкой SVG
+    implementation(libs.coil.kt.coil.svg)
+
+    implementation(libs.okhttp)
 
     // Lifecycle
     implementation(libs.androidx.lifecycle.livedata.ktx)
@@ -95,6 +101,8 @@ dependencies {
 
     // Koin
     implementation(libs.koin.android)
+    implementation(libs.koin.core)
+    implementation(libs.koin.androidx.compose)
 
     // Compose
     implementation(libs.activity.compose)

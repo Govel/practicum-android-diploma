@@ -3,6 +3,7 @@ package ru.practicum.android.diploma.main.data.network
 import android.content.Context
 import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
+import android.util.Log
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import retrofit2.HttpException
@@ -41,6 +42,7 @@ class NetworkClientImpl(
                     data = result
                 }
             } catch (ex: HttpException) {
+                Log.e("error", "Ошибка: ${ex.message}")
                 NetworkResponse().apply { resultCode = NetworkResponse.BAD_REQUEST }
             }
         }

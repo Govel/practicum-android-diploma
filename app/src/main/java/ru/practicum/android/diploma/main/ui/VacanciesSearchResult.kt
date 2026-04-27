@@ -14,7 +14,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.unit.dp
+import ru.practicum.android.diploma.R
 
 @Composable
 fun VacanciesSearchResult(
@@ -53,7 +55,10 @@ private fun CountChip(count: Int) {
             .padding(top = 4.dp, bottom = 8.dp),
     ) {
         Text(
-            text = "Найдено $count вакансий",
+            text = pluralStringResource(
+                id = R.plurals.vacancies_count,
+                count = count,
+                count),
             color = MaterialTheme.colorScheme.onPrimary,
             style = MaterialTheme.typography.bodyMedium,
             modifier = Modifier.padding(horizontal = 12.dp, vertical = 4.dp)

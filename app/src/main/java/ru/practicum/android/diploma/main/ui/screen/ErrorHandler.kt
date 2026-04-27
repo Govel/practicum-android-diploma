@@ -1,6 +1,5 @@
 package ru.practicum.android.diploma.main.ui.screen
 
-
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -25,14 +24,12 @@ object ErrorHandler {
             errorMessage.contains("network", ignoreCase = true) ||
             errorMessage.contains("connection", ignoreCase = true)
     }
-
 }
 
 @Composable
 fun ErrorScreen(
     isNetworkError: Boolean
 ) {
-
     val imageRes = if (isNetworkError) {
         R.drawable.no_internet
     } else {

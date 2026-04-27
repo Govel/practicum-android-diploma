@@ -1,3 +1,5 @@
+@file:Suppress("MagicNumber")
+
 package ru.practicum.android.diploma.main.ui.screen
 
 import androidx.compose.foundation.Image
@@ -23,7 +25,6 @@ import ru.practicum.android.diploma.R
 
 @Composable
 fun EmptyResultScreen() {
-
     Column(
         modifier = Modifier
             .fillMaxSize(),

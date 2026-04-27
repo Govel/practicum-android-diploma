@@ -112,7 +112,7 @@ class SearchViewModel(
     ) {
         val (vacancies, error) = result
 
-        if (error != null &&  error != VacanciesSearchState.Empty.state) {
+        if (error != null && error != VacanciesSearchState.Empty.state) {
             val isNetworkError = ErrorHandler.getErrorType(error)
 
             _state.update {

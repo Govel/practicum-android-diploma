@@ -3,18 +3,16 @@ package ru.practicum.android.diploma.favorite.data.impl
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import ru.practicum.android.diploma.database.data.dao.FavoriteVacancyDao
-import ru.practicum.android.diploma.database.data.dto.FavoriteVacancyEntity
-import ru.practicum.android.diploma.favorite.data.FavoritesDbConverter
 import ru.practicum.android.diploma.favorite.domain.api.FavoritesRepository
+import ru.practicum.android.diploma.main.data.mapper.VacanciesMapper
 import ru.practicum.android.diploma.main.domain.models.VacancyCard
-import kotlin.collections.map
+import ru.practicum.android.diploma.vacancy.data.dto.VacancyDetailResponse
 
 class FavoritesRepositoryImpl(
-    private val favoriteVacancyDao: FavoriteVacancyDao,
-    private val dbConverter: FavoritesDbConverter
+    private val favoriteVacancyDao: FavoriteVacancyDao
 ) : FavoritesRepository {
-    override suspend fun addFavoritesVacancy(vacancy: VacancyCard) {
-        favoriteVacancyDao.insertFavoriteVacancy(dbConverter.map(vacancy))
+    override suspend fun addFavoritesVacancy(vacancy: VacancyDetailResponse) {
+        favoriteVacancyDao.insertFavoriteVacancy(VacanciesMapper.mapResponseToEntity(vacancy))
     }
 
     override suspend fun deleteFavoritesVacancy(idVacancy: String) {
@@ -27,10 +25,6 @@ class FavoritesRepositoryImpl(
 
     override fun getFavorites(): Flow<List<VacancyCard>> = flow {
         val favorites = favoriteVacancyDao.getFavoriteVacancy()
-        emit(convertFromVacancy(favorites))
-    }
-
-    private fun convertFromVacancy(favorites: List<FavoriteVacancyEntity>): List<VacancyCard> {
-        return favorites.map { favorite -> dbConverter.map(favorite) }
+        emit(VacanciesMapper.mapEntityListToDomain(favorites))
     }
 }

@@ -79,7 +79,7 @@ object VacanciesMapper {
         }
     }
 
-    private fun mapEntityToDomain(entity: FavoriteVacancyEntity): VacancyCard {
+    fun mapEntityToDomain(entity: FavoriteVacancyEntity): VacancyCard {
         return VacancyCard(
             id = entity.id,
             name = entity.name,
@@ -94,7 +94,7 @@ object VacanciesMapper {
         return entityList.map { entity -> mapEntityToDomain(entity) }
     }
 
-    private fun mapResponseToEntity(vacancy: VacancyDetailResponse): FavoriteVacancyEntity {
+    fun mapResponseToEntity(vacancy: VacancyDetailResponse): FavoriteVacancyEntity {
         return FavoriteVacancyEntity(
             id = vacancy.id,
             name = vacancy.name,

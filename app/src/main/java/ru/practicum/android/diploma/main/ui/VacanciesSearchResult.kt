@@ -58,7 +58,8 @@ private fun CountChip(count: Int) {
             text = pluralStringResource(
                 id = R.plurals.vacancies_count,
                 count = count,
-                count),
+                count
+            ),
             color = MaterialTheme.colorScheme.onPrimary,
             style = MaterialTheme.typography.bodyMedium,
             modifier = Modifier.padding(horizontal = 12.dp, vertical = 4.dp)

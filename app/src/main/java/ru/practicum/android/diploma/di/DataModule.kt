@@ -4,7 +4,6 @@ import androidx.room.Room
 import coil3.ImageLoader
 import coil3.network.okhttp.OkHttpNetworkFetcherFactory
 import coil3.svg.SvgDecoder
-import com.google.gson.Gson
 import okhttp3.OkHttpClient
 import org.koin.android.ext.koin.androidContext
 import org.koin.dsl.module
@@ -57,6 +56,4 @@ val dataModule = module {
     }
 
     single<NetworkClient> { NetworkClientImpl(get(), androidContext(), API_TOKEN) }
-
-    single { Gson() }
 }

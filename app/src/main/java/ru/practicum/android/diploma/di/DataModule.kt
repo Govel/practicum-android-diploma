@@ -1,8 +1,9 @@
 package ru.practicum.android.diploma.di
 
 import androidx.room.Room
-import coil.ImageLoader
-import coil.decode.SvgDecoder
+import coil3.ImageLoader
+import coil3.network.okhttp.OkHttpNetworkFetcherFactory
+import coil3.svg.SvgDecoder
 import com.google.gson.Gson
 import okhttp3.OkHttpClient
 import org.koin.android.ext.koin.androidContext
@@ -27,40 +28,32 @@ val dataModule = module {
     single { AppDatabase.getInstance(androidContext()) }
 
     single<HhApi> {
-        Retrofit.Builder()
-            .baseUrl(HH_BASE_URL)
-            .addConverterFactory(GsonConverterFactory.create())
-            .build()
+        Retrofit.Builder().baseUrl(HH_BASE_URL).addConverterFactory(GsonConverterFactory.create()).build()
             .create(HhApi::class.java)
     }
 
     single {
-        OkHttpClient.Builder()
-            .addInterceptor { chain ->
-                val request = chain.request().newBuilder()
-                    .header("User-Agent", "Mozilla/5.0")
-                    .build()
-                chain.proceed(request)
-            }
-            .build()
+        OkHttpClient.Builder().addInterceptor { chain ->
+            val request = chain.request().newBuilder().header("User-Agent", "Mozilla/5.0").build()
+            chain.proceed(request)
+        }.build()
     }
 
     single<ImageLoader> {
-        ImageLoader.Builder(androidContext())
-            .components {
-                add(SvgDecoder.Factory())
-            }
-            .okHttpClient {
-                OkHttpClient.Builder()
-                    .addInterceptor { chain ->
-                        val request = chain.request().newBuilder()
-                            .header("User-Agent", "Mozilla/5.0")
-                            .build()
-                        chain.proceed(request)
+        ImageLoader.Builder(androidContext()).components {
+            add(SvgDecoder.Factory())
+            add(
+                OkHttpNetworkFetcherFactory(
+                    callFactory = {
+                        OkHttpClient.Builder().addInterceptor { chain ->
+                            val request =
+                                chain.request().newBuilder().header("User-Agent", "Mozilla/5.0").build()
+                            chain.proceed(request)
+                        }.build()
                     }
-                    .build()
-            }
-            .build()
+                )
+            )
+        }.build()
     }
 
     single<NetworkClient> { NetworkClientImpl(get(), androidContext(), API_TOKEN) }

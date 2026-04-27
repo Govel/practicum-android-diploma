@@ -65,5 +65,5 @@ val dataModule = module {
 
     single<NetworkClient> { NetworkClientImpl(get(), androidContext(), API_TOKEN) }
 
-    factory { Gson() }
+    single { Gson() }
 }

@@ -23,6 +23,7 @@ import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -39,6 +40,7 @@ import coil3.ImageLoader
 import coil3.compose.AsyncImage
 import coil3.request.ImageRequest
 import coil3.request.crossfade
+import org.koin.androidx.compose.koinViewModel
 import org.koin.compose.koinInject
 import ru.practicum.android.diploma.R
 import ru.practicum.android.diploma.ui.navigation.ActionBack
@@ -54,13 +56,17 @@ import ru.practicum.android.diploma.vacancy.domain.models.Employer
 import ru.practicum.android.diploma.vacancy.domain.models.Phone
 import ru.practicum.android.diploma.vacancy.domain.models.VacancyDetail
 import ru.practicum.android.diploma.vacancy.ui.VacancyState
+import ru.practicum.android.diploma.vacancy.ui.VacancyViewModel
 
 @Composable
 fun VacancyDetailScreen(
     vacancy: VacancyDetail,
-    onBack: () -> Unit = {},
+    onBack: () -> Unit = {}
 ) {
+    val viewModel: VacancyViewModel = koinViewModel()
     val state = VacancyState.Loading
+    val favoriteState = viewModel.stateFavorite.collectAsState().value
+
     Column {
         AppBarTop(
             title = "Вакансия",
@@ -74,8 +80,8 @@ fun VacancyDetailScreen(
             ),
             favorites = ActionFavorites(
                 isView = true,
-                onClick = {},
-                isActive = vacancy().isFavorite
+                onClick = { viewModel.onFavoriteClicked(vacancy()) },
+                isActive = favoriteState
             )
         )
         when (state) {

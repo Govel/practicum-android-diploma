@@ -102,7 +102,10 @@ fun FavoritesScreen(
                         .padding(horizontal = 16.dp, vertical = 8.dp)
                 ) {
                     items(state.vacancyCard) { vacancy ->
-                        ItemVacancyDetails(vacancy, onClick = {})
+                        ItemVacancyDetails(
+                            vacancy,
+                            onClick = { "vacancy/${vacancy.id}" }
+                        )
                     }
                 }
             }
@@ -210,7 +213,9 @@ private fun ItemVacancyDetails(
 @Preview(showSystemUi = true, showBackground = true)
 @Composable
 private fun FavoritesScreenPreview() {
-    FavoritesScreen()
+    FavoritesScreen(
+        viewModel = koinViewModel()
+    )
 }
 
 @Preview(showSystemUi = true, showBackground = true)

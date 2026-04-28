@@ -6,16 +6,10 @@ import ru.practicum.android.diploma.database.data.dto.FavoriteVacancyEntity
 import ru.practicum.android.diploma.main.data.dto.VacancyCardDto
 import ru.practicum.android.diploma.main.data.dto.VacancyCardSalary
 import ru.practicum.android.diploma.main.domain.models.VacancyCard
-import ru.practicum.android.diploma.vacancy.data.dto.Address
-import ru.practicum.android.diploma.vacancy.data.dto.Contacts
-import ru.practicum.android.diploma.vacancy.data.dto.Employer
-import ru.practicum.android.diploma.vacancy.data.dto.Employment
-import ru.practicum.android.diploma.vacancy.data.dto.Experience
-import ru.practicum.android.diploma.vacancy.data.dto.FilterArea
-import ru.practicum.android.diploma.vacancy.data.dto.FilterIndustry
-import ru.practicum.android.diploma.vacancy.data.dto.Salary
-import ru.practicum.android.diploma.vacancy.data.dto.Schedule
-import ru.practicum.android.diploma.vacancy.data.dto.VacancyDetailResponse
+import ru.practicum.android.diploma.vacancy.domain.models.AddressEmployer
+import ru.practicum.android.diploma.vacancy.domain.models.ContactsEmployer
+import ru.practicum.android.diploma.vacancy.domain.models.Employer
+import ru.practicum.android.diploma.vacancy.domain.models.VacancyDetail
 import kotlin.Int
 import kotlin.String
 
@@ -94,50 +88,51 @@ object VacanciesMapper {
         return entityList.map { entity -> mapEntityToDomain(entity) }
     }
 
-    fun mapResponseToEntity(vacancy: VacancyDetailResponse): FavoriteVacancyEntity {
+    fun mapDetailToEntity(vacancy: VacancyDetail): FavoriteVacancyEntity {
         return FavoriteVacancyEntity(
             id = vacancy.id,
             name = vacancy.name,
-            salary = gson.toJson(vacancy.salary),
+            salary = vacancy.salary,
             address = gson.toJson(vacancy.address),
-            experience = gson.toJson(vacancy.experience),
-            schedule = gson.toJson(vacancy.schedule),
-            employment = gson.toJson(vacancy.employment),
+            experience = vacancy.experience,
+            schedule = vacancy.schedule,
+            employment = vacancy.employment,
             contacts = gson.toJson(vacancy.contacts),
             description = vacancy.description,
             employer = gson.toJson(vacancy.employer),
-            area = gson.toJson(vacancy.area),
+            area = vacancy.area,
             skills = gson.toJson(vacancy.skills),
             url = vacancy.url,
-            industry = gson.toJson(vacancy.industry)
+            industry = vacancy.industry
         )
     }
 
-    fun mapResponseListToDomain(responseList: List<VacancyDetailResponse>): List<FavoriteVacancyEntity> {
-        return responseList.map { vacancy -> mapResponseToEntity(vacancy) }
+    fun mapDetailListToDomain(responseList: List<VacancyDetail>): List<FavoriteVacancyEntity> {
+        return responseList.map { vacancy -> mapDetailToEntity(vacancy) }
     }
 
-    private fun mapEntityToResponse(vacancy: FavoriteVacancyEntity): VacancyDetailResponse {
-        return VacancyDetailResponse(
+    fun mapEntityToDetail(vacancy: FavoriteVacancyEntity): VacancyDetail {
+        return VacancyDetail(
             id = vacancy.id,
             name = vacancy.name,
-            salary = gson.fromJson(vacancy.salary, Salary::class.java),
-            address = gson.fromJson(vacancy.address, Address::class.java),
-            experience = gson.fromJson(vacancy.experience, Experience::class.java),
-            schedule = gson.fromJson(vacancy.schedule, Schedule::class.java),
-            employment = gson.fromJson(vacancy.employment, Employment::class.java),
-            contacts = gson.fromJson(vacancy.contacts, Contacts::class.java),
+            salary = vacancy.salary ?: "",
+            address = gson.fromJson(vacancy.address, AddressEmployer::class.java),
+            experience = vacancy.experience,
+            schedule = vacancy.schedule,
+            employment = vacancy.employment,
+            contacts = gson.fromJson(vacancy.contacts, ContactsEmployer::class.java),
             description = vacancy.description,
             employer = gson.fromJson(vacancy.employer, Employer::class.java),
-            area = gson.fromJson(vacancy.area, FilterArea::class.java),
+            area = vacancy.area,
             skills = gson.fromJson(vacancy.skills, object : TypeToken<MutableList<String>>() {}.type),
             url = vacancy.url,
-            industry = gson.fromJson(vacancy.industry, FilterIndustry::class.java)
+            industry = vacancy.industry,
+            isFavorite = true
         )
     }
 
-    fun mapEntityListToResponse(entityList: List<FavoriteVacancyEntity>): List<VacancyDetailResponse> {
-        return entityList.map { entity -> mapEntityToResponse(entity) }
+    fun mapEntityListToDetail(entityList: List<FavoriteVacancyEntity>): List<VacancyDetail> {
+        return entityList.map { entity -> mapEntityToDetail(entity) }
     }
 
     private fun salaryFromString(salaryString: String?): VacancyCardSalary? {
@@ -153,7 +148,7 @@ object VacanciesMapper {
     }
 
     private fun getValueCity(city: String?): String? {
-        val value = gson.fromJson(city, Address::class.java)
+        val value = gson.fromJson(city, AddressEmployer::class.java)
         return value.city ?: null
     }
 }

@@ -43,5 +43,4 @@ class FavoritesViewModel(
     private fun renderState(state: FavoritesState) {
         _stateFavorite.value = state
     }
-
 }

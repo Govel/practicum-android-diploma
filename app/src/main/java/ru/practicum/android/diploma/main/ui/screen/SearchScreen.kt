@@ -1,15 +1,16 @@
 @file:Suppress("MagicNumber")
 
-package ru.practicum.android.diploma.main.ui
+package ru.practicum.android.diploma.main.ui.screen
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -36,12 +37,14 @@ import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import org.koin.androidx.compose.koinViewModel
 import ru.practicum.android.diploma.R
+import ru.practicum.android.diploma.main.domain.models.VacancyCard
+import ru.practicum.android.diploma.main.ui.SearchState
+import ru.practicum.android.diploma.main.ui.SearchViewModel
 import ru.practicum.android.diploma.ui.navigation.ActionBack
 import ru.practicum.android.diploma.ui.navigation.ActionFilter
 import ru.practicum.android.diploma.ui.navigation.AppBarTop
@@ -145,73 +148,15 @@ private fun SearchContent(state: SearchState, viewModel: SearchViewModel) {
         }
 
         state.isNetworkError -> {
-            Column(
-                modifier = Modifier
-                    .fillMaxSize(),
-                verticalArrangement = Arrangement.Center,
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
-                Image(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(232.dp)
-                        .padding(horizontal = 16.dp)
-                        .padding(bottom = 16.dp),
-                    painter = painterResource(R.drawable.no_internet),
-                    contentDescription = null
-                )
-                Text(
-                    modifier = Modifier.padding(horizontal = 48.dp),
-                    text = stringResource(R.string.no_internet),
-                    color = MaterialTheme.colorScheme.onBackground,
-                    style = MaterialTheme.typography.titleLarge,
-                )
-            }
+            ErrorScreen(true)
+        }
+
+        state.isServerError -> {
+            ErrorScreen(false)
         }
 
         state.isEmptyResult && state.searchText.isNotEmpty() -> {
-            Column(
-                modifier = Modifier
-                    .fillMaxSize(),
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
-                Surface(
-                    color = MaterialTheme.colorScheme.primary,
-                    shape = RoundedCornerShape(12.dp),
-                    modifier = Modifier
-                        .wrapContentSize()
-                        .padding(top = 4.dp, bottom = 8.dp),
-                ) {
-                    Text(
-                        text = stringResource(R.string.no_such_vacancies),
-                        color = MaterialTheme.colorScheme.onPrimary,
-                        style = MaterialTheme.typography.bodyMedium,
-                        modifier = Modifier.padding(horizontal = 12.dp, vertical = 4.dp)
-                    )
-                }
-
-                Spacer(modifier = Modifier.weight(0.3f))
-
-                Image(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(232.dp)
-                        .padding(horizontal = 16.dp),
-                    painter = painterResource(R.drawable.empty_cat),
-                    contentDescription = null
-                )
-                Spacer(modifier = Modifier.height(16.dp))
-
-                Text(
-                    modifier = Modifier.padding(horizontal = 48.dp),
-                    text = stringResource(R.string.failed_to_get_vacancies),
-                    color = MaterialTheme.colorScheme.onBackground,
-                    style = MaterialTheme.typography.titleLarge,
-                    textAlign = TextAlign.Center
-                )
-
-                Spacer(modifier = Modifier.weight(0.3f))
-            }
+            EmptyResultScreen()
         }
 
         state.vacancies.isNotEmpty() -> {

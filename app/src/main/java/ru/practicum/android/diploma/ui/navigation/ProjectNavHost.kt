@@ -10,7 +10,7 @@ import ru.practicum.android.diploma.ui.screens.FavoritesScreen
 import ru.practicum.android.diploma.ui.screens.TeamScreen
 import ru.practicum.android.diploma.ui.screens.VacancyDetailScreen
 import ru.practicum.android.diploma.ui.screens.filter.FilterScreen
-import ru.practicum.android.diploma.ui.screens.vacancy1
+import ru.practicum.android.diploma.ui.screens.vacancy
 
 @Composable
 fun ProjectNavHost(
@@ -42,7 +42,10 @@ fun ProjectNavHost(
         }
 
         composable(Routes.VACANCY) {
-            VacancyDetailScreen(vacancy1())
+            VacancyDetailScreen(
+                onBack = { navController.popBackStack() },
+                vacancy = vacancy()
+            )
         }
 
     }

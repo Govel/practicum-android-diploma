@@ -85,7 +85,6 @@ dependencies {
     // Coil (Image)
     implementation(libs.coil3.coil.compose)
     implementation(libs.coil.network.okhttp)
-    implementation(libs.coil.svg)
 
     // Coil с поддержкой SVG
     implementation(libs.coil.kt.coil.svg)

@@ -130,36 +130,61 @@ class SearchViewModel(
         val hasMore = vacancyList.size == PAGE_SIZE
 
         if (isNewSearch) {
-            _state.update {
-                it.copy(
-                    isLoading = false,
-                    vacancies = vacancyList,
-                    totalCount = vacancyList.size,
-                    isEmptyResult = vacancyList.isEmpty() || error == VacanciesSearchState.Empty.state,
-                    isNetworkError = false,
-                    isServerError = false,
-                    currentPage = page,
-                    hasMorePages = hasMore
-                )
-            }
+            copyVacancies(
+                vacancyList = vacancyList,
+                page = page,
+                hasMore = hasMore,
+                error = error
+            )
         } else {
-            val currentList = _state.value.vacancies.toMutableList()
-            currentList.addAll(vacancyList)
-            _state.update {
-                it.copy(
-                    isLoading = false,
-                    vacancies = currentList,
-                    totalCount = currentList.size,
-                    currentPage = page,
-                    hasMorePages = hasMore
-                )
-            }
+            addAllVacancies(
+                vacancyList = vacancyList,
+                page = page,
+                hasMore = hasMore
+            )
         }
     }
 
     fun onVacancyClick(vacancyId: String) {
         _state.update { it.copy() }
+    }
 
+    private fun copyVacancies(
+        vacancyList: List<VacancyCard>,
+        page: Int,
+        hasMore: Boolean,
+        error: String?
+    ) {
+        _state.update {
+            it.copy(
+                isLoading = false,
+                vacancies = vacancyList,
+                totalCount = vacancyList.size,
+                isEmptyResult = vacancyList.isEmpty() || error == VacanciesSearchState.Empty.state,
+                isNetworkError = false,
+                isServerError = false,
+                currentPage = page,
+                hasMorePages = hasMore
+            )
+        }
+    }
+
+    private fun addAllVacancies(
+        vacancyList: List<VacancyCard>,
+        page: Int,
+        hasMore: Boolean
+    ) {
+        val currentList = _state.value.vacancies.toMutableList()
+        currentList.addAll(vacancyList)
+        _state.update {
+            it.copy(
+                isLoading = false,
+                vacancies = currentList,
+                totalCount = currentList.size,
+                currentPage = page,
+                hasMorePages = hasMore
+            )
+        }
     }
 
     companion object {

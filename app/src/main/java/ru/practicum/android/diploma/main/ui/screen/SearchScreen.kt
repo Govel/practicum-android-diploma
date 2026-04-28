@@ -2,17 +2,11 @@
 
 package ru.practicum.android.diploma.main.ui.screen
 
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
@@ -30,7 +24,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalFocusManager
@@ -42,9 +35,11 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import org.koin.androidx.compose.koinViewModel
 import ru.practicum.android.diploma.R
-import ru.practicum.android.diploma.main.domain.models.VacancyCard
+import ru.practicum.android.diploma.main.ui.EmptySearchPlaceholder
+import ru.practicum.android.diploma.main.ui.LoadingIndicator
 import ru.practicum.android.diploma.main.ui.SearchState
 import ru.practicum.android.diploma.main.ui.SearchViewModel
+import ru.practicum.android.diploma.main.ui.VacanciesSearchResult
 import ru.practicum.android.diploma.ui.navigation.ActionBack
 import ru.practicum.android.diploma.ui.navigation.ActionFilter
 import ru.practicum.android.diploma.ui.navigation.AppBarTop

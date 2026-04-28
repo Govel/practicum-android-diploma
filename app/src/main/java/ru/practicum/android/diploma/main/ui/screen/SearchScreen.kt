@@ -35,12 +35,12 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import org.koin.androidx.compose.koinViewModel
 import ru.practicum.android.diploma.R
-import ru.practicum.android.diploma.main.ui.states.EmptySearchPlaceholder
-import ru.practicum.android.diploma.main.ui.states.LoadingIndicator
-import ru.practicum.android.diploma.main.ui.states.SearchState
 import ru.practicum.android.diploma.main.ui.SearchViewModel
 import ru.practicum.android.diploma.main.ui.states.EmptyResultScreen
+import ru.practicum.android.diploma.main.ui.states.EmptySearchPlaceholder
 import ru.practicum.android.diploma.main.ui.states.ErrorScreen
+import ru.practicum.android.diploma.main.ui.states.LoadingIndicator
+import ru.practicum.android.diploma.main.ui.states.SearchState
 import ru.practicum.android.diploma.main.ui.states.VacanciesSearchResult
 import ru.practicum.android.diploma.ui.navigation.ActionBack
 import ru.practicum.android.diploma.ui.navigation.ActionFilter

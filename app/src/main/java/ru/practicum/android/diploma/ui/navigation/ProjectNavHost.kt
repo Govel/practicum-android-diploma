@@ -5,7 +5,7 @@ import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
-import ru.practicum.android.diploma.main.ui.SearchScreen
+import ru.practicum.android.diploma.main.ui.screen.SearchScreen
 import ru.practicum.android.diploma.ui.screens.FavoritesScreen
 import ru.practicum.android.diploma.ui.screens.TeamScreen
 import ru.practicum.android.diploma.ui.screens.VacancyDetailScreen

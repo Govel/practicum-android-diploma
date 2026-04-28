@@ -44,4 +44,11 @@
     <string name="required_experience">Требуемый опыт</string>
     <string name="key_skills">Ключевые навыки</string>
     <string name="contacts">Контакты</string>
+
+    <plurals name="vacancies_count">
+        <item quantity="one">%d вакансия</item>
+        <item quantity="few">%d вакансии</item>
+        <item quantity="many">%d вакансий</item>
+        <item quantity="other">%d вакансий</item>
+    </plurals>
 </resources>

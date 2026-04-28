@@ -7,10 +7,12 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import ru.practicum.android.diploma.favorite.domain.api.FavoritesInteractor
+import ru.practicum.android.diploma.vacancy.domain.api.ShareInteractor
 import ru.practicum.android.diploma.vacancy.domain.models.VacancyDetail
 
 class VacancyViewModel(
-    private val favoritesInteractor: FavoritesInteractor
+    private val favoritesInteractor: FavoritesInteractor,
+    private val shareInteractor: ShareInteractor
 ) : ViewModel() {
 
     private val _stateFavorite = MutableStateFlow(false)
@@ -26,5 +28,9 @@ class VacancyViewModel(
             }
             _stateFavorite.value = !thisFavorites
         }
+    }
+
+    fun shareLink(url: String) {
+        if (url.isNotEmpty()) shareInteractor.shareLink(url)
     }
 }

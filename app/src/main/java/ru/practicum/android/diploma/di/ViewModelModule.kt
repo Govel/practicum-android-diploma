@@ -16,6 +16,6 @@ val viewModelModule = module {
     }
 
     factory {
-        VacancyViewModel(get())
+        VacancyViewModel(get(), get())
     }
 }

@@ -76,7 +76,7 @@ fun VacancyDetailScreen(
             ),
             share = ActionShare(
                 isView = true,
-                onClick = {}
+                onClick = { viewModel.shareLink(vacancy().url) }
             ),
             favorites = ActionFavorites(
                 isView = true,

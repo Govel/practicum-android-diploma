@@ -3,14 +3,15 @@ package ru.practicum.android.diploma.ui.navigation
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import androidx.navigation.navArgument
 import ru.practicum.android.diploma.main.ui.screen.SearchScreen
 import ru.practicum.android.diploma.ui.screens.FavoritesScreen
 import ru.practicum.android.diploma.ui.screens.TeamScreen
-import ru.practicum.android.diploma.ui.screens.VacancyDetailScreen
 import ru.practicum.android.diploma.ui.screens.filter.FilterScreen
-import ru.practicum.android.diploma.ui.screens.vacancy
+import ru.practicum.android.diploma.vacancy.ui.VacancyDetailScreen
 
 @Composable
 fun ProjectNavHost(
@@ -25,7 +26,10 @@ fun ProjectNavHost(
         composable(Routes.SEARCH) {
             SearchScreen(
                 onFilter = { navController.navigate(Routes.FILTER) },
-                isFilterActive = false
+                isFilterActive = false,
+                onVacancyClick = { vacancyId ->
+                    navController.navigate("${Routes.VACANCY}/$vacancyId")
+                }
             )
         }
 
@@ -41,12 +45,15 @@ fun ProjectNavHost(
             FilterScreen()
         }
 
-        composable(Routes.VACANCY) {
+        composable(
+            route = "${Routes.VACANCY}/{vacancyId}",
+            arguments = listOf(navArgument("vacancyId") { type = NavType.StringType })
+        ) { backStackEntry ->
+            val vacancyId = backStackEntry.arguments?.getString("vacancyId") ?: ""
             VacancyDetailScreen(
                 onBack = { navController.popBackStack() },
-                vacancy = vacancy()
+                vacancyId = vacancyId
             )
         }
-
     }
 }

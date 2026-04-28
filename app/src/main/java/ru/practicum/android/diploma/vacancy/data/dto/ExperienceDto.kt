@@ -1,6 +1,6 @@
 package ru.practicum.android.diploma.vacancy.data.dto
 
-data class FilterIndustry(
-    val id: Int,
+data class ExperienceDto(
+    val id: String,
     val name: String
 )

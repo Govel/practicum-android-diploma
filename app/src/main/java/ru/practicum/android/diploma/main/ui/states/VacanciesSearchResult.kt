@@ -23,7 +23,8 @@ import ru.practicum.android.diploma.main.ui.VacancyCard
 @Composable
 fun VacanciesSearchResult(
     state: SearchState,
-    viewModel: SearchViewModel
+    viewModel: SearchViewModel,
+    onVacancyClick: (String) -> Unit
 ) {
     Column(
         modifier = Modifier.fillMaxSize(),
@@ -35,7 +36,7 @@ fun VacanciesSearchResult(
             items(state.vacancies, key = { it.id }) { vacancy ->
                 VacancyCard(
                     vacancy = vacancy,
-                    onClick = { viewModel.onVacancyClick(vacancy.id) }
+                    onVacancyClick = onVacancyClick
                 )
                 if (state.vacancies.lastOrNull() == vacancy && state.hasMorePages && !state.isLoading) {
                     LaunchedEffect(Unit) {

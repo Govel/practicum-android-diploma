@@ -1,6 +1,6 @@
 package ru.practicum.android.diploma.vacancy.data.dto
 
-data class Address(
+data class AddressDto(
     val id: String,
     val city: String,
     val street: String,

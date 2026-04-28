@@ -1,29 +1,28 @@
-package ru.practicum.android.diploma.main.data.impl
+package ru.practicum.android.diploma.vacancy.data.impl
 
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import ru.practicum.android.diploma.main.data.dto.NetworkResponse
-import ru.practicum.android.diploma.main.data.dto.VacanciesResponse
 import ru.practicum.android.diploma.main.data.mapper.VacanciesMapper
 import ru.practicum.android.diploma.main.data.model.VacanciesSearchState
 import ru.practicum.android.diploma.main.data.network.NetworkClient
-import ru.practicum.android.diploma.main.domain.api.VacanciesRepository
 import ru.practicum.android.diploma.main.domain.models.Resource
-import ru.practicum.android.diploma.main.domain.models.VacancyCard
-import ru.practicum.android.diploma.main.domain.models.VacancyFilter
+import ru.practicum.android.diploma.vacancy.data.dto.VacancyDetailResponse
+import ru.practicum.android.diploma.vacancy.domain.api.VacancyDetailRepository
+import ru.practicum.android.diploma.vacancy.domain.models.VacancyDetail
 
-class VacancyRepositoryImpl(val networkClient: NetworkClient) : VacanciesRepository {
-    override fun searchVacancies(expression: VacancyFilter): Flow<Resource<List<VacancyCard>?>> = flow {
-        val response = networkClient.doRequestVacancies(expression)
+class VacancyDetailRepositoryImpl(val networkClient: NetworkClient) : VacancyDetailRepository {
+    override fun getVacancyById(vacancyId: String): Flow<Resource<VacancyDetail>?> = flow {
+        val response = networkClient.doRequestVacancyById(vacancyId)
         when (response.resultCode) {
             NetworkResponse.NO_CONNECTION -> {
                 emit(Resource.Error(VacanciesSearchState.NoConnection.state))
             }
 
             NetworkResponse.OK_RESULT -> {
-                val vacanciesResponse = response.data as VacanciesResponse
-                if (vacanciesResponse.items.isNotEmpty()) {
-                    emit(Resource.Success(VacanciesMapper.mapDtoListToDomain(vacanciesResponse.items)))
+                val vacanciesResponse = response.data as VacancyDetailResponse
+                if (vacanciesResponse.id.isNotEmpty()) {
+                    emit(Resource.Success(VacanciesMapper.mapVacancyDetailDtoToDomain(vacanciesResponse)))
                 } else {
                     emit(Resource.Error(VacanciesSearchState.Empty.state))
                 }

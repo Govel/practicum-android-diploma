@@ -1,8 +1,7 @@
 package ru.practicum.android.diploma.vacancy.data.dto
 
-data class Contacts(
+data class EmployerDto(
     val id: String,
     val name: String,
-    val email: String,
-    val phones: List<Phone>
+    val logo: String
 )

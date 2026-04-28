@@ -31,7 +31,6 @@ class NetworkClientImpl(
     private suspend fun apiCall(
         doRequest: suspend () -> Any?
     ): NetworkResponse {
-        Log.d("NetworkClient", "token = $token")
         if (!isConnected()) {
             return NetworkResponse().apply { resultCode = NetworkResponse.NO_CONNECTION }
         }
@@ -43,7 +42,7 @@ class NetworkClientImpl(
                     data = result
                 }
             } catch (ex: HttpException) {
-                Log.e("error", "Error: ${ex.message}")
+                Log.e("error", "Ошибка: ${ex.message}")
                 NetworkResponse().apply { resultCode = NetworkResponse.BAD_REQUEST }
             }
         }

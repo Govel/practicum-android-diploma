@@ -1,4 +1,4 @@
-package ru.practicum.android.diploma.main.ui
+package ru.practicum.android.diploma.main.ui.states
 
 import ru.practicum.android.diploma.main.domain.models.VacancyCard
 

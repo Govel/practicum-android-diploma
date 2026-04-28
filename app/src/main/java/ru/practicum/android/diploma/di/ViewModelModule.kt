@@ -6,7 +6,7 @@ import ru.practicum.android.diploma.favorite.FavoritesViewModel
 import ru.practicum.android.diploma.main.ui.SearchViewModel
 
 val viewModelModule = module {
-    factory { SearchViewModel(get(),androidContext()) }
+    factory { SearchViewModel(get(), androidContext()) }
 
     factory {
         FavoritesViewModel(get())

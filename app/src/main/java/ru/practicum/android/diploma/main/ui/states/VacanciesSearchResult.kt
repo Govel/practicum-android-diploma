@@ -40,7 +40,10 @@ fun VacanciesSearchResult(
                     vacancy = vacancy,
                     onClick = { viewModel.onVacancyClick(vacancy.id) }
                 )
-                if (state.vacancies.lastOrNull() == vacancy && state.hasMorePages && !state.isLoading && !state.isLoadingMore) {
+                val isLastItem = state.vacancies.lastOrNull() == vacancy
+                val shouldLoadMore = isLastItem && state.hasMorePages && !state.isLoading && !state.isLoadingMore
+
+                if (shouldLoadMore) {
                     LaunchedEffect(Unit) {
                         viewModel.loadNextPage()
                     }

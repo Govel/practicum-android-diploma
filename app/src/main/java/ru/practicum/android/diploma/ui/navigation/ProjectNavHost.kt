@@ -8,15 +8,10 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
 import ru.practicum.android.diploma.main.ui.screen.SearchScreen
-import ru.practicum.android.diploma.ui.screens.FavoritesScreen
-import ru.practicum.android.diploma.ui.screens.TeamScreen
-import ru.practicum.android.diploma.ui.screens.filter.FilterScreen
-import ru.practicum.android.diploma.vacancy.ui.VacancyDetailScreen
-import ru.practicum.android.diploma.ui.screens.VacancyDetailScreen
 import ru.practicum.android.diploma.ui.screens.favorites.FavoritesScreen
 import ru.practicum.android.diploma.ui.screens.filter.FilterScreen
 import ru.practicum.android.diploma.ui.screens.team.TeamScreen
-import ru.practicum.android.diploma.ui.screens.vacancy
+import ru.practicum.android.diploma.vacancy.ui.VacancyDetailScreen
 
 @Composable
 fun ProjectNavHost(

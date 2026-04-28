@@ -12,8 +12,10 @@ val interactorModule = module {
     factory<VacanciesInteractor> {
         VacanciesInteractorImpl(get())
     }
+
     factory<VacancyDetailInteractor> {
         VacancyDetailInteractorImpl(get())
+    }
 
     factory<FavoritesInteractor> {
         FavoritesInteractorImpl(get())

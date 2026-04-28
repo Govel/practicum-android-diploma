@@ -40,6 +40,10 @@
     <string name="ivan_novozhilov">Иван Новожилов</string>
     <string name="anastasia_yakovleva">Анастасия Яковлева</string>
     <string name="sergey_gorlov">Сергей Горлов</string>
+    
+    <string name="required_experience">Требуемый опыт</string>
+    <string name="key_skills">Ключевые навыки</string>
+    <string name="contacts">Контакты</string>
 
     <plurals name="vacancies_count">
         <item quantity="one">%d вакансия</item>

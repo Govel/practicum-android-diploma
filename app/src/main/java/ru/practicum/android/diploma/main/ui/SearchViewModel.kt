@@ -14,7 +14,8 @@ import ru.practicum.android.diploma.main.data.model.VacanciesSearchState
 import ru.practicum.android.diploma.main.domain.api.VacanciesInteractor
 import ru.practicum.android.diploma.main.domain.models.VacancyCard
 import ru.practicum.android.diploma.main.domain.models.VacancyFilter
-import ru.practicum.android.diploma.main.ui.screen.ErrorHandler
+import ru.practicum.android.diploma.main.ui.states.ErrorHandler
+import ru.practicum.android.diploma.main.ui.states.SearchState
 
 class SearchViewModel(
     private val interactor: VacanciesInteractor

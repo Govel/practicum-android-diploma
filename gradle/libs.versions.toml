@@ -99,7 +99,6 @@ kotlinx-coroutines-android = { module = "org.jetbrains.kotlinx:kotlinx-coroutine
 
 # Koin
 koin-android = { module = "io.insert-koin:koin-android", version.ref = "koinAndroid" }
-
 # Lifecycle
 androidx-lifecycle-livedata-ktx = { module = "androidx.lifecycle:lifecycle-livedata-ktx", version.ref = "lifecycleLivedataKtx" }
 androidx-lifecycle-viewmodel-ktx = { module = "androidx.lifecycle:lifecycle-viewmodel-ktx", version.ref = "lifecycleLivedataKtx" }
@@ -117,7 +116,6 @@ room-runtime = { group = "androidx.room", name = "room-runtime", version.ref = "
 androidx-junit-ktx = { group = "androidx.test.ext", name = "junit-ktx", version.ref = "junitKtx" }
 androidx-lifecycle-runtime-compose = { group = "androidx.lifecycle", name = "lifecycle-runtime-compose", version.ref = "lifecycleRuntimeCompose" }
 androidx-runtime = { group = "androidx.compose.runtime", name = "runtime", version.ref = "runtime" }
-
 [bundles]
 
 [plugins]

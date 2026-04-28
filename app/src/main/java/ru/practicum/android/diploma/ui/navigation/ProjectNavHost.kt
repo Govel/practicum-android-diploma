@@ -12,6 +12,11 @@ import ru.practicum.android.diploma.ui.screens.FavoritesScreen
 import ru.practicum.android.diploma.ui.screens.TeamScreen
 import ru.practicum.android.diploma.ui.screens.filter.FilterScreen
 import ru.practicum.android.diploma.vacancy.ui.VacancyDetailScreen
+import ru.practicum.android.diploma.ui.screens.VacancyDetailScreen
+import ru.practicum.android.diploma.ui.screens.favorites.FavoritesScreen
+import ru.practicum.android.diploma.ui.screens.filter.FilterScreen
+import ru.practicum.android.diploma.ui.screens.team.TeamScreen
+import ru.practicum.android.diploma.ui.screens.vacancy
 
 @Composable
 fun ProjectNavHost(

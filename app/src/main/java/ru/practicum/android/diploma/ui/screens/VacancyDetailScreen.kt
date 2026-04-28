@@ -48,14 +48,19 @@ import ru.practicum.android.diploma.ui.navigation.AppBarTop
 import ru.practicum.android.diploma.ui.theme.Blue
 import ru.practicum.android.diploma.ui.theme.LightGray
 import ru.practicum.android.diploma.ui.theme.WhiteUniversal
-
+import ru.practicum.android.diploma.vacancy.domain.models.AddressEmployer
+import ru.practicum.android.diploma.vacancy.domain.models.ContactsEmployer
+import ru.practicum.android.diploma.vacancy.domain.models.Employer
+import ru.practicum.android.diploma.vacancy.domain.models.Phone
+import ru.practicum.android.diploma.vacancy.domain.models.VacancyDetail
+import ru.practicum.android.diploma.vacancy.ui.VacancyState
 
 @Composable
 fun VacancyDetailScreen(
     vacancy: VacancyDetail,
     onBack: () -> Unit = {},
 ) {
-    val state = 1
+    val state = VacancyState.Loading
     Column {
         AppBarTop(
             title = "Вакансия",
@@ -73,15 +78,17 @@ fun VacancyDetailScreen(
                 isActive = vacancy().isFavorite
             )
         )
-        when(state) {
-            1 -> LoadingVacancy()
-            2 -> ContentVacancy(vacancy)
-            3 -> ErrorVacancy(
+        when (state) {
+            is VacancyState.Loading -> LoadingVacancy()
+            is VacancyState.Content -> ContentVacancy(vacancy)
+            is VacancyState.Empty -> ErrorVacancy(
                 painter = painterResource(R.drawable.server_error_cat),
-                text = stringResource(R.string.server_error))
-            4 -> ErrorVacancy(
+                text = stringResource(R.string.server_error)
+            )
+            is VacancyState.Error -> ErrorVacancy(
                 painter = painterResource(R.drawable.fiery_rock),
-                text = stringResource(R.string.vacancy_not_found))
+                text = stringResource(R.string.vacancy_not_found)
+            )
         }
     }
 }
@@ -122,7 +129,7 @@ private fun ContentVacancyHeader(vacancy: VacancyDetail) {
 @Composable
 private fun ContentVacancyCard(
     vacancy: VacancyDetail,
-        imageLoader: ImageLoader = koinInject()
+    imageLoader: ImageLoader = koinInject()
 ) {
     val context = LocalContext.current
     Box(
@@ -148,7 +155,7 @@ private fun ContentVacancyCard(
             ) {
                 AsyncImage(
                     model = ImageRequest.Builder(context)
-                        .data("https://upload.wikimedia.org/wikipedia/commons/6/69/Netflix_logo.svg")
+                        .data(vacancy.employer.logo)
                         .crossfade(true).build(),
                     contentDescription = null,
                     placeholder = painterResource(R.drawable.ic_placeholder_32),
@@ -239,31 +246,37 @@ private fun ContentVacancyContacts(vacancy: VacancyDetail) {
         style = MaterialTheme.typography.titleLarge
     )
     if (vacancy.contacts != null) {
+        val contact = vacancy.contacts
+        ContentVacancyContact(contact)
+    }
+}
+
+@Composable
+private fun ContentVacancyContact(contact: ContactsEmployer) {
+    Text(
+        text = contact.name,
+        style = MaterialTheme.typography.bodyMedium
+    )
+    if (contact.email != "") {
         Text(
-            text = vacancy.contacts.name,
-            style = MaterialTheme.typography.bodyMedium
+            text = "E-mail: ${contact.email}",
+            style = MaterialTheme.typography.bodyLarge,
+            color = Blue,
+            modifier = Modifier.clickable(onClick = {})
         )
-        if (vacancy.contacts.email != "") {
+    }
+    if (contact.phones?.isNotEmpty() ?: false) {
+        for (phone in contact.phones) {
+            var comment = ""
+            if (phone.comment?.isNotEmpty() ?: false) {
+                comment = "${phone.comment}: "
+            }
             Text(
-                text = "E-mail: ${vacancy.contacts.email}",
+                text = "$comment${phone.formatted}",
                 style = MaterialTheme.typography.bodyLarge,
                 color = Blue,
                 modifier = Modifier.clickable(onClick = {})
             )
-        }
-        if (vacancy.contacts.phones?.isNotEmpty() ?: false) {
-            for (phone in vacancy.contacts.phones) {
-                var comment = ""
-                if (phone.comment?.isNotEmpty() ?: false) {
-                    comment = "${phone.comment}: "
-                }
-                Text(
-                    text = "$comment${phone.formatted}",
-                    style = MaterialTheme.typography.bodyLarge,
-                    color = Blue,
-                    modifier = Modifier.clickable(onClick = {})
-                )
-            }
         }
     }
 }
@@ -287,7 +300,7 @@ private fun ErrorVacancy(
     painter: Painter,
     text: String
 ) {
-    Column (
+    Column(
         modifier = Modifier.fillMaxSize(),
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
@@ -306,51 +319,10 @@ private fun ErrorVacancy(
     }
 }
 
-data class VacancyDetail(
-    val id: String,
-    val name: String,
-    val description: String,
-    val salary: String,
-    val address: AddressEmployer?,
-    val experience: String?,
-    val schedule: String?,
-    val employment: String?,
-    val contacts: ContactsEmployer?,
-    val employer: Employer,
-    val area: String,
-    val skills: List<String>,
-    val url: String,
-    val industry: String,
-    val isFavorite: Boolean
-)
-
-data class AddressEmployer(
-    val city: String,
-    val street: String,
-    val building: String,
-    val raw: String
-)
-
-data class ContactsEmployer(
-    val name: String,
-    val email: String,
-    val phones: List<Phone>?
-)
-
-data class Phone(
-    val comment: String?,
-    val formatted: String
-)
-
-data class Employer(
-    val name: String,
-    val logo: String
-)
-
 fun vacancy(): VacancyDetail = VacancyDetail(
     id = "000aa9c3-18c4-357a-8aaa-6def258d5601",
     name = "Frontend-разработчик",
-    description = "<h3>Условия</h3><ul><li>Продуктовые задачи с понятным влиянием на результат.</li><li>Удаленная работа или гибридный формат.</li><li>Технические обсуждения без избыточного менеджмента.</li></ul></section>",
+    description = "<h3>Условия</h3><ul><li>Продуктовые задачи с понятным влиянием на результат.</li></ul></section>",
     salary = "От 18000000 UZS",
     address = AddressEmployer(
         city = "Ростов-на-Дону",
@@ -368,7 +340,8 @@ fun vacancy(): VacancyDetail = VacancyDetail(
             Phone(
                 comment = "work",
                 formatted = "+7 (999) 567-89-01"
-            ), Phone(
+            ),
+            Phone(
                 comment = null,
                 formatted = "+7 (999) 543-21-09"
             )
@@ -380,11 +353,10 @@ fun vacancy(): VacancyDetail = VacancyDetail(
     ),
     area = "Ростов-на-Дону",
     skills = listOf("TypeScript", "React", "HTML", "CSS", "REST API"),
-    url = "cek6h0n4ffe7ur.cluster-czz5s0kz4scl.eu-west-1.rds.amazonaws.com/vacancies/000aa9c3-18c4-357a-8aaa-6def258d5601",
+    url = "vacancies/000aa9c3-18c4-357a-8aaa-6def258d5601",
     industry = "Информационные технологии, системная интеграция, интернет",
     isFavorite = true
 )
-
 
 @Preview(showSystemUi = true, showBackground = true)
 @Composable

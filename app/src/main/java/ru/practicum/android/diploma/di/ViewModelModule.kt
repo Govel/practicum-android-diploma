@@ -10,4 +10,7 @@ val viewModelModule = module {
     }
     factory { SearchViewModel(get()) }
 
+    factory {
+        FavoritesViewModel(get())
+    }
 }

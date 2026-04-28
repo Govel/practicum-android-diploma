@@ -10,9 +10,12 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import ru.practicum.android.diploma.main.data.model.VacanciesSearchState
 import ru.practicum.android.diploma.main.domain.api.VacanciesInteractor
 import ru.practicum.android.diploma.main.domain.models.VacancyCard
 import ru.practicum.android.diploma.main.domain.models.VacancyFilter
+import ru.practicum.android.diploma.main.ui.states.ErrorHandler
+import ru.practicum.android.diploma.main.ui.states.SearchState
 
 class SearchViewModel(
     private val interactor: VacanciesInteractor
@@ -110,12 +113,15 @@ class SearchViewModel(
     ) {
         val (vacancies, error) = result
 
-        if (error != null) {
+        if (error != null && error != VacanciesSearchState.Empty.state) {
+            val isNetworkError = ErrorHandler.getErrorType(error)
+
             _state.update {
                 it.copy(
                     isLoading = false,
-                    isNetworkError = error.contains("интернет", ignoreCase = true),
-                    isServerError = !error.contains("интернет", ignoreCase = true)
+                    isNetworkError = isNetworkError,
+                    isServerError = !isNetworkError,
+                    isEmptyResult = false
                 )
             }
             return
@@ -125,34 +131,61 @@ class SearchViewModel(
         val hasMore = vacancyList.size == PAGE_SIZE
 
         if (isNewSearch) {
-            _state.update {
-                it.copy(
-                    isLoading = false,
-                    vacancies = vacancyList,
-                    totalCount = vacancyList.size,
-                    isEmptyResult = vacancyList.isEmpty(),
-                    currentPage = page,
-                    hasMorePages = hasMore
-                )
-            }
+            copyVacancies(
+                vacancyList = vacancyList,
+                page = page,
+                hasMore = hasMore,
+                error = error
+            )
         } else {
-            val currentList = _state.value.vacancies.toMutableList()
-            currentList.addAll(vacancyList)
-            _state.update {
-                it.copy(
-                    isLoading = false,
-                    vacancies = currentList,
-                    totalCount = currentList.size,
-                    currentPage = page,
-                    hasMorePages = hasMore
-                )
-            }
+            addAllVacancies(
+                vacancyList = vacancyList,
+                page = page,
+                hasMore = hasMore
+            )
         }
     }
 
     fun onVacancyClick(vacancyId: String) {
         _state.update { it.copy() }
+    }
 
+    private fun copyVacancies(
+        vacancyList: List<VacancyCard>,
+        page: Int,
+        hasMore: Boolean,
+        error: String?
+    ) {
+        _state.update {
+            it.copy(
+                isLoading = false,
+                vacancies = vacancyList,
+                totalCount = vacancyList.size,
+                isEmptyResult = vacancyList.isEmpty() || error == VacanciesSearchState.Empty.state,
+                isNetworkError = false,
+                isServerError = false,
+                currentPage = page,
+                hasMorePages = hasMore
+            )
+        }
+    }
+
+    private fun addAllVacancies(
+        vacancyList: List<VacancyCard>,
+        page: Int,
+        hasMore: Boolean
+    ) {
+        val currentList = _state.value.vacancies.toMutableList()
+        currentList.addAll(vacancyList)
+        _state.update {
+            it.copy(
+                isLoading = false,
+                vacancies = currentList,
+                totalCount = currentList.size,
+                currentPage = page,
+                hasMorePages = hasMore
+            )
+        }
     }
 
     companion object {

@@ -1,4 +1,4 @@
-package ru.practicum.android.diploma.main.ui
+package ru.practicum.android.diploma.main.ui.states
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -17,6 +17,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.unit.dp
 import ru.practicum.android.diploma.R
+import ru.practicum.android.diploma.main.ui.SearchViewModel
+import ru.practicum.android.diploma.main.ui.VacancyCard
 
 @Composable
 fun VacanciesSearchResult(

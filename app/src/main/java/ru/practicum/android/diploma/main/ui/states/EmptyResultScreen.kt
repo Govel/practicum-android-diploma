@@ -1,6 +1,6 @@
 @file:Suppress("MagicNumber")
 
-package ru.practicum.android.diploma.main.ui.screen
+package ru.practicum.android.diploma.main.ui.states
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Column

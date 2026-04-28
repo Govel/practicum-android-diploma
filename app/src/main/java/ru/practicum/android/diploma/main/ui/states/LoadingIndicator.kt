@@ -1,4 +1,4 @@
-package ru.practicum.android.diploma.main.ui
+package ru.practicum.android.diploma.main.ui.states
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize

@@ -1,4 +1,4 @@
-package ru.practicum.android.diploma.main.ui
+package ru.practicum.android.diploma.main.ui.states
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Box

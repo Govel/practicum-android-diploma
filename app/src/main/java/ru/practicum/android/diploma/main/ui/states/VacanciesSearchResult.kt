@@ -1,12 +1,15 @@
 package ru.practicum.android.diploma.main.ui.states
 
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -37,9 +40,25 @@ fun VacanciesSearchResult(
                     vacancy = vacancy,
                     onClick = { viewModel.onVacancyClick(vacancy.id) }
                 )
-                if (state.vacancies.lastOrNull() == vacancy && state.hasMorePages && !state.isLoading) {
+                if (state.vacancies.lastOrNull() == vacancy && state.hasMorePages && !state.isLoading && !state.isLoadingMore) {
                     LaunchedEffect(Unit) {
                         viewModel.loadNextPage()
+                    }
+                }
+            }
+
+            if (state.isLoadingMore) {
+                item {
+                    Box(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .padding(16.dp),
+                        contentAlignment = Alignment.BottomCenter
+                    ) {
+                        CircularProgressIndicator(
+                            color = MaterialTheme.colorScheme.primary,
+                            modifier = Modifier.size(48.dp)
+                        )
                     }
                 }
             }

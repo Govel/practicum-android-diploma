@@ -51,4 +51,6 @@
         <item quantity="many">%d вакансий</item>
         <item quantity="other">%d вакансий</item>
     </plurals>
+
+    <string name="check_internet">Проверьте подключение к интернету</string>
 </resources>

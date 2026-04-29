@@ -22,11 +22,9 @@ class VacanciesRepositoryImpl(val networkClient: NetworkClient) : VacanciesRepos
 
             NetworkResponse.OK_RESULT -> {
                 val vacanciesResponse = response.data as VacanciesResponse
-                if (vacanciesResponse.items.isNotEmpty()) {
-                    emit(Resource.Success(VacanciesMapper.mapDtoListToDomain(vacanciesResponse.items)))
-                } else {
-                    emit(Resource.Error(VacanciesSearchState.Empty.state))
-                }
+                val vacancies = VacanciesMapper.mapDtoListToDomain(vacanciesResponse.items)
+                emit(Resource.Success(vacancies, vacanciesResponse.found))
+
             }
 
             else -> {

@@ -1,5 +1,7 @@
 package ru.practicum.android.diploma.main.ui
 
+import android.content.Context
+import android.widget.Toast
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.Job
@@ -10,6 +12,7 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import ru.practicum.android.diploma.R
 import ru.practicum.android.diploma.main.data.model.VacanciesSearchState
 import ru.practicum.android.diploma.main.domain.api.VacanciesInteractor
 import ru.practicum.android.diploma.main.domain.models.VacancyCard
@@ -18,7 +21,8 @@ import ru.practicum.android.diploma.main.ui.states.ErrorHandler
 import ru.practicum.android.diploma.main.ui.states.SearchState
 
 class SearchViewModel(
-    private val interactor: VacanciesInteractor
+    private val interactor: VacanciesInteractor,
+    private val context: Context
 ) : ViewModel() {
 
     private val _state = MutableStateFlow(SearchState())
@@ -43,8 +47,8 @@ class SearchViewModel(
             it.copy(
                 vacancies = emptyList(),
                 isLoading = false,
+                isLoadingMore = false,
                 isEmptyResult = false,
-                totalCount = 0,
                 currentPage = 0,
                 hasMorePages = true
             )
@@ -63,10 +67,18 @@ class SearchViewModel(
 
     fun loadNextPage() {
         val currentState = _state.value
-        if (!currentState.hasMorePages || currentState.isLoading) return
+        if (!currentState.hasMorePages || currentState.isLoading || currentState.isLoadingMore) return
 
         val nextPage = currentState.currentPage + 1
         performSearch(currentQuery, isNewSearch = false, page = nextPage)
+    }
+
+    private fun showPaginationErrorToast() {
+        Toast.makeText(
+            context,
+            context.getString(R.string.check_internet),
+            Toast.LENGTH_SHORT
+        ).show()
     }
 
     private fun performSearch(query: String, isNewSearch: Boolean = true, page: Int = 0) {
@@ -75,6 +87,7 @@ class SearchViewModel(
             _state.update {
                 it.copy(
                     isLoading = true,
+                    isLoadingMore = false,
                     isEmptyResult = false,
                     vacancies = emptyList(),
                     currentPage = 0,
@@ -82,7 +95,7 @@ class SearchViewModel(
                 )
             }
         } else {
-            _state.update { it.copy(isLoading = true) }
+            _state.update { it.copy(isLoadingMore = true) }
         }
 
         val filter = VacancyFilter(
@@ -93,11 +106,17 @@ class SearchViewModel(
         viewModelScope.launch {
             interactor.searchVacancies(filter)
                 .catch { e ->
-                    _state.update {
-                        it.copy(
-                            isLoading = false,
-                            isNetworkError = true
-                        )
+                    if (isNewSearch) {
+                        _state.update {
+                            it.copy(
+                                isLoading = false,
+                                isLoadingMore = false,
+                                isNetworkError = true
+                            )
+                        }
+                    } else {
+                        _state.update { it.copy(isLoadingMore = false) }
+                        showPaginationErrorToast()
                     }
                 }
                 .collect { result ->
@@ -107,22 +126,30 @@ class SearchViewModel(
     }
 
     private fun handleSearchResult(
-        result: Pair<List<VacancyCard>?, String?>,
+        result: Pair<List<VacancyCard>?, Pair<Int?, String?>?>,
         isNewSearch: Boolean,
         page: Int
     ) {
-        val (vacancies, error) = result
+        val (vacancies, meta) = result
+        val totalFound = meta?.first
+        val error = meta?.second
 
         if (error != null && error != VacanciesSearchState.Empty.state) {
             val isNetworkError = ErrorHandler.getErrorType(error)
 
-            _state.update {
-                it.copy(
-                    isLoading = false,
-                    isNetworkError = isNetworkError,
-                    isServerError = !isNetworkError,
-                    isEmptyResult = false
-                )
+            if (isNewSearch) {
+                _state.update {
+                    it.copy(
+                        isLoading = false,
+                        isLoadingMore = false,
+                        isNetworkError = isNetworkError,
+                        isServerError = !isNetworkError,
+                        isEmptyResult = false
+                    )
+                }
+            } else {
+                _state.update { it.copy(isLoadingMore = false) }
+                showPaginationErrorToast()
             }
             return
         }
@@ -135,7 +162,8 @@ class SearchViewModel(
                 vacancyList = vacancyList,
                 page = page,
                 hasMore = hasMore,
-                error = error
+                error = error,
+                totalFound = totalFound ?: vacancyList.size
             )
         } else {
             addAllVacancies(
@@ -154,13 +182,15 @@ class SearchViewModel(
         vacancyList: List<VacancyCard>,
         page: Int,
         hasMore: Boolean,
-        error: String?
+        error: String?,
+        totalFound: Int
     ) {
         _state.update {
             it.copy(
                 isLoading = false,
+                isLoadingMore = false,
                 vacancies = vacancyList,
-                totalCount = vacancyList.size,
+                totalFound = totalFound,
                 isEmptyResult = vacancyList.isEmpty() || error == VacanciesSearchState.Empty.state,
                 isNetworkError = false,
                 isServerError = false,
@@ -180,8 +210,8 @@ class SearchViewModel(
         _state.update {
             it.copy(
                 isLoading = false,
+                isLoadingMore = false,
                 vacancies = currentList,
-                totalCount = currentList.size,
                 currentPage = page,
                 hasMorePages = hasMore
             )

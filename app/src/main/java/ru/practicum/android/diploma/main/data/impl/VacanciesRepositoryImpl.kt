@@ -13,7 +13,7 @@ import ru.practicum.android.diploma.main.domain.models.VacancyCard
 import ru.practicum.android.diploma.main.domain.models.VacancyFilter
 
 class VacanciesRepositoryImpl(val networkClient: NetworkClient) : VacanciesRepository {
-    override fun searchVacancies(expression: VacancyFilter): Flow<Resource<List<VacancyCard>?>> = flow {
+    override fun searchVacancies(expression: VacancyFilter): Flow<Resource<Pair<List<VacancyCard>?, Int>?>> = flow {
         val response = networkClient.doRequestVacancies(expression)
         when (response.resultCode) {
             NetworkResponse.NO_CONNECTION -> {
@@ -22,9 +22,12 @@ class VacanciesRepositoryImpl(val networkClient: NetworkClient) : VacanciesRepos
 
             NetworkResponse.OK_RESULT -> {
                 val vacanciesResponse = response.data as VacanciesResponse
-                val vacancies = VacanciesMapper.mapDtoListToDomain(vacanciesResponse.items)
-                emit(Resource.Success(vacancies, vacanciesResponse.found))
-
+                if (vacanciesResponse.items.isNotEmpty()) {
+                    val vacancies = VacanciesMapper.mapDtoListToDomain(vacanciesResponse.items)
+                    emit(Resource.Success(Pair(vacancies, vacanciesResponse.found)))
+                } else {
+                    emit(Resource.Error(VacanciesSearchState.Empty.state))
+                }
             }
 
             else -> {

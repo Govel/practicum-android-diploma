@@ -88,7 +88,7 @@ fun VacancyDetailScreen(
         )
         when (state) {
             is VacancyState.Loading -> LoadingVacancy()
-            is VacancyState.Content -> ContentVacancy(vacancy!!)
+            is VacancyState.Content -> ContentVacancy(vacancy!!, viewModel)
             is VacancyState.Error -> ErrorVacancy(
                 painter = painterResource(R.drawable.server_error_cat),
                 text = stringResource(R.string.server_error)
@@ -102,7 +102,10 @@ fun VacancyDetailScreen(
 }
 
 @Composable
-fun ContentVacancy(vacancy: VacancyDetail) {
+fun ContentVacancy(
+    vacancy: VacancyDetail,
+    viewModel: VacancyDetailViewModel
+) {
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -116,7 +119,7 @@ fun ContentVacancy(vacancy: VacancyDetail) {
         ContentVacancySchedule(vacancy)
         ContentVacancyDescription(vacancy)
         ContentVacancySkills(vacancy)
-        ContentVacancyContacts(vacancy)
+        ContentVacancyContacts(vacancy, viewModel)
     }
 }
 
@@ -265,19 +268,25 @@ private fun ContentVacancySkills(vacancy: VacancyDetail) {
 }
 
 @Composable
-private fun ContentVacancyContacts(vacancy: VacancyDetail) {
+private fun ContentVacancyContacts(
+    vacancy: VacancyDetail,
+    viewModel: VacancyDetailViewModel
+) {
     if (vacancy.contacts != null) {
         Text(
             text = stringResource(R.string.contacts),
             style = MaterialTheme.typography.titleLarge
         )
         Spacer(modifier = Modifier.height(4.dp))
-        ContentVacancyContact(vacancy.contacts)
+        ContentVacancyContact(vacancy.contacts, viewModel)
     }
 }
 
 @Composable
-private fun ContentVacancyContact(contact: ContactsEmployer) {
+private fun ContentVacancyContact(
+    contact: ContactsEmployer,
+    viewModel: VacancyDetailViewModel
+) {
     Text(
         text = contact.name,
         style = MaterialTheme.typography.bodyMedium
@@ -287,7 +296,7 @@ private fun ContentVacancyContact(contact: ContactsEmployer) {
             text = "E-mail: ${contact.email}",
             style = MaterialTheme.typography.bodyLarge,
             color = Blue,
-            modifier = Modifier.clickable(onClick = {})
+            modifier = Modifier.clickable(onClick = { viewModel.shareEmail(email = contact.email) })
         )
         Spacer(modifier = Modifier.height(4.dp))
     }
@@ -300,7 +309,7 @@ private fun ContentVacancyContact(contact: ContactsEmployer) {
             text = "$comment${phone.formatted}",
             style = MaterialTheme.typography.bodyLarge,
             color = Blue,
-            modifier = Modifier.clickable(onClick = {})
+            modifier = Modifier.clickable(onClick = { viewModel.sharePhone(phone = phone.formatted) })
         )
         Spacer(modifier = Modifier.height(4.dp))
     }

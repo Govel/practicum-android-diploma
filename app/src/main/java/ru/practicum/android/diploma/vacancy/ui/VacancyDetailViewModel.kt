@@ -72,4 +72,12 @@ class VacancyDetailViewModel(
             _isFavorite.value = !isFav
         }
     }
+
+    fun sharePhone(phone: String) {
+        phone.let { shareInteractor.sharePhone(phone) }
+    }
+
+    fun shareEmail(email: String) {
+        email.let { shareInteractor.shareEmail(email) }
+    }
 }

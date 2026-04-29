@@ -1,6 +1,6 @@
 package ru.practicum.android.diploma.vacancy.data.dto
 
-data class Phone(
+data class PhoneDto(
     val comment: String?,
     val formatted: String
 )

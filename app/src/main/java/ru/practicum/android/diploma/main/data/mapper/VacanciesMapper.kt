@@ -4,18 +4,23 @@ import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import ru.practicum.android.diploma.database.data.dto.FavoriteVacancyEntity
 import ru.practicum.android.diploma.main.data.dto.VacancyCardDto
-import ru.practicum.android.diploma.main.data.dto.VacancyCardSalary
+import ru.practicum.android.diploma.main.data.dto.VacancySalary
 import ru.practicum.android.diploma.main.domain.models.VacancyCard
-import ru.practicum.android.diploma.vacancy.data.dto.Address
-import ru.practicum.android.diploma.vacancy.data.dto.Contacts
-import ru.practicum.android.diploma.vacancy.data.dto.Employer
-import ru.practicum.android.diploma.vacancy.data.dto.Employment
-import ru.practicum.android.diploma.vacancy.data.dto.Experience
-import ru.practicum.android.diploma.vacancy.data.dto.FilterArea
-import ru.practicum.android.diploma.vacancy.data.dto.FilterIndustry
-import ru.practicum.android.diploma.vacancy.data.dto.Salary
-import ru.practicum.android.diploma.vacancy.data.dto.Schedule
+import ru.practicum.android.diploma.vacancy.data.dto.AddressDto
+import ru.practicum.android.diploma.vacancy.data.dto.ContactsDto
+import ru.practicum.android.diploma.vacancy.data.dto.EmployerDto
+import ru.practicum.android.diploma.vacancy.data.dto.EmploymentDto
+import ru.practicum.android.diploma.vacancy.data.dto.ExperienceDto
+import ru.practicum.android.diploma.vacancy.data.dto.FilterAreaDto
+import ru.practicum.android.diploma.vacancy.data.dto.FilterIndustryDto
+import ru.practicum.android.diploma.vacancy.data.dto.PhoneDto
+import ru.practicum.android.diploma.vacancy.data.dto.ScheduleDto
 import ru.practicum.android.diploma.vacancy.data.dto.VacancyDetailResponse
+import ru.practicum.android.diploma.vacancy.domain.models.AddressEmployer
+import ru.practicum.android.diploma.vacancy.domain.models.ContactsEmployer
+import ru.practicum.android.diploma.vacancy.domain.models.Employer
+import ru.practicum.android.diploma.vacancy.domain.models.Phone
+import ru.practicum.android.diploma.vacancy.domain.models.VacancyDetail
 import kotlin.Int
 import kotlin.String
 
@@ -38,7 +43,7 @@ object VacanciesMapper {
         return dtoList.map { vacancy -> mapDtoToDomain(vacancy) }
     }
 
-    private fun salaryDtoToSalaryModelConverter(salary: VacancyCardSalary?): String? {
+    private fun salaryDtoToSalaryModelConverter(salary: VacancySalary?): String? {
         var result: String
         val from = formatSalary(salary?.from)
         val to = formatSalary(salary?.to)
@@ -79,6 +84,46 @@ object VacanciesMapper {
         }
     }
 
+    fun mapVacancyDetailDtoToDomain(vacancyDetail: VacancyDetailResponse): VacancyDetail {
+        return VacancyDetail(
+            id = vacancyDetail.id,
+            name = vacancyDetail.name,
+            description = vacancyDetail.description,
+            salary = salaryDtoToSalaryModelConverter(vacancyDetail.salary),
+            address = mapAddressDtoToDomain(vacancyDetail.addressDto),
+            experience = vacancyDetail.experience?.name,
+            schedule = vacancyDetail.scheduleDto?.name,
+            employment = vacancyDetail.employmentDto?.name,
+            contacts = mapContactDtoToDomain(vacancyDetail.contactsDto),
+            employer = mapEmployerDtoToDomain(vacancyDetail.employerDto),
+            area = vacancyDetail.area.name,
+            skills = vacancyDetail.skills,
+            url = vacancyDetail.url,
+            industry = vacancyDetail.industry.name
+        )
+    }
+
+    private fun mapAddressDtoToDomain(addressDto: AddressDto?): AddressEmployer = AddressEmployer(
+        city = addressDto?.city ?: "",
+        street = addressDto?.street ?: "",
+        building = addressDto?.building ?: "",
+        raw = addressDto?.raw ?: ""
+    )
+
+    private fun mapContactDtoToDomain(contact: ContactsDto?): ContactsEmployer = ContactsEmployer(
+        name = contact?.name ?: "",
+        email = contact?.email ?: "",
+        phones = mapPhonesDtoToDomain(contact?.phonesDto ?: emptyList())
+    )
+
+    private fun mapPhonesDtoToDomain(phonesDto: List<PhoneDto>): List<Phone> {
+        return phonesDto.map { phone -> Phone(comment = phone.comment, formatted = phone.formatted) }
+    }
+
+    private fun mapEmployerDtoToDomain(employer: EmployerDto): Employer = Employer(
+        name = employer.name,
+        logo = employer.logo
+    )
     fun mapEntityToDomain(entity: FavoriteVacancyEntity): VacancyCard {
         return VacancyCard(
             id = entity.id,
@@ -99,13 +144,13 @@ object VacanciesMapper {
             id = vacancy.id,
             name = vacancy.name,
             salary = gson.toJson(vacancy.salary),
-            address = gson.toJson(vacancy.address),
+            address = gson.toJson(vacancy.addressDto),
             experience = gson.toJson(vacancy.experience),
-            schedule = gson.toJson(vacancy.schedule),
-            employment = gson.toJson(vacancy.employment),
-            contacts = gson.toJson(vacancy.contacts),
+            schedule = gson.toJson(vacancy.scheduleDto),
+            employment = gson.toJson(vacancy.employmentDto),
+            contacts = gson.toJson(vacancy.contactsDto),
             description = vacancy.description,
-            employer = gson.toJson(vacancy.employer),
+            employer = gson.toJson(vacancy.employerDto),
             area = gson.toJson(vacancy.area),
             skills = gson.toJson(vacancy.skills),
             url = vacancy.url,
@@ -121,18 +166,18 @@ object VacanciesMapper {
         return VacancyDetailResponse(
             id = vacancy.id,
             name = vacancy.name,
-            salary = gson.fromJson(vacancy.salary, Salary::class.java),
-            address = gson.fromJson(vacancy.address, Address::class.java),
-            experience = gson.fromJson(vacancy.experience, Experience::class.java),
-            schedule = gson.fromJson(vacancy.schedule, Schedule::class.java),
-            employment = gson.fromJson(vacancy.employment, Employment::class.java),
-            contacts = gson.fromJson(vacancy.contacts, Contacts::class.java),
+            salary = gson.fromJson(vacancy.salary, VacancySalary::class.java),
+            addressDto = gson.fromJson(vacancy.address, AddressDto::class.java),
+            experience = gson.fromJson(vacancy.experience, ExperienceDto::class.java),
+            scheduleDto = gson.fromJson(vacancy.schedule, ScheduleDto::class.java),
+            employmentDto = gson.fromJson(vacancy.employment, EmploymentDto::class.java),
+            contactsDto = gson.fromJson(vacancy.contacts, ContactsDto::class.java),
             description = vacancy.description,
-            employer = gson.fromJson(vacancy.employer, Employer::class.java),
-            area = gson.fromJson(vacancy.area, FilterArea::class.java),
+            employerDto = gson.fromJson(vacancy.employer, EmployerDto::class.java),
+            area = gson.fromJson(vacancy.area, FilterAreaDto::class.java),
             skills = gson.fromJson(vacancy.skills, object : TypeToken<MutableList<String>>() {}.type),
             url = vacancy.url,
-            industry = gson.fromJson(vacancy.industry, FilterIndustry::class.java)
+            industry = gson.fromJson(vacancy.industry, FilterIndustryDto::class.java)
         )
     }
 
@@ -140,9 +185,9 @@ object VacanciesMapper {
         return entityList.map { entity -> mapEntityToResponse(entity) }
     }
 
-    private fun salaryFromString(salaryString: String?): VacancyCardSalary? {
+    private fun salaryFromString(salaryString: String?): VacancySalary? {
         return if (!salaryString.isNullOrEmpty()) {
-            gson.fromJson(salaryString, VacancyCardSalary::class.java)
+            gson.fromJson(salaryString, VacancySalary::class.java)
         } else {
             null
         }
@@ -153,7 +198,7 @@ object VacanciesMapper {
     }
 
     private fun getValueCity(city: String?): String? {
-        val value = gson.fromJson(city, Address::class.java)
+        val value = gson.fromJson(city, AddressDto::class.java)
         return value.city ?: null
     }
 }

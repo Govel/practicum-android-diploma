@@ -10,7 +10,7 @@ data class SearchState(
     val isNetworkError: Boolean = false,
     val isServerError: Boolean = false,
     val isEmptyResult: Boolean = false,
-    val totalCount: Int = 0,
+    val totalFound: Int = 0,
     val currentPage: Int = 0,
     val hasMorePages: Boolean = true
 )

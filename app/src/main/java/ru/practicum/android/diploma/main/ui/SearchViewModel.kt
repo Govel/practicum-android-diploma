@@ -49,7 +49,6 @@ class SearchViewModel(
                 isLoading = false,
                 isLoadingMore = false,
                 isEmptyResult = false,
-                totalCount = 0,
                 currentPage = 0,
                 hasMorePages = true
             )
@@ -127,11 +126,13 @@ class SearchViewModel(
     }
 
     private fun handleSearchResult(
-        result: Pair<List<VacancyCard>?, String?>,
+        result: Pair<List<VacancyCard>?, Pair<Int?, String?>?>,
         isNewSearch: Boolean,
         page: Int
     ) {
-        val (vacancies, error) = result
+        val (vacancies, meta) = result
+        val totalFound = meta?.first
+        val error = meta?.second
 
         if (error != null && error != VacanciesSearchState.Empty.state) {
             val isNetworkError = ErrorHandler.getErrorType(error)
@@ -161,7 +162,8 @@ class SearchViewModel(
                 vacancyList = vacancyList,
                 page = page,
                 hasMore = hasMore,
-                error = error
+                error = error,
+                totalFound = totalFound ?: vacancyList.size
             )
         } else {
             addAllVacancies(
@@ -180,14 +182,15 @@ class SearchViewModel(
         vacancyList: List<VacancyCard>,
         page: Int,
         hasMore: Boolean,
-        error: String?
+        error: String?,
+        totalFound: Int
     ) {
         _state.update {
             it.copy(
                 isLoading = false,
                 isLoadingMore = false,
                 vacancies = vacancyList,
-                totalCount = vacancyList.size,
+                totalFound = totalFound,
                 isEmptyResult = vacancyList.isEmpty() || error == VacanciesSearchState.Empty.state,
                 isNetworkError = false,
                 isServerError = false,
@@ -209,7 +212,6 @@ class SearchViewModel(
                 isLoading = false,
                 isLoadingMore = false,
                 vacancies = currentList,
-                totalCount = currentList.size,
                 currentPage = page,
                 hasMorePages = hasMore
             )

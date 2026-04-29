@@ -3,6 +3,7 @@ package ru.practicum.android.diploma.main.ui.states
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentSize
@@ -32,7 +33,7 @@ fun VacanciesSearchResult(
         modifier = Modifier.fillMaxSize(),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        CountChip(count = state.totalCount)
+        CountChip(count = state.totalFound)
 
         LazyColumn {
             items(state.vacancies, key = { it.id }) { vacancy ->
@@ -54,7 +55,7 @@ fun VacanciesSearchResult(
                 item {
                     Box(
                         modifier = Modifier
-                            .fillMaxSize()
+                            .fillMaxWidth()
                             .padding(16.dp),
                         contentAlignment = Alignment.BottomCenter
                     ) {

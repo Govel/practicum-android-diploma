@@ -1,4 +1,4 @@
-package ru.practicum.android.diploma.ui.screens
+package ru.practicum.android.diploma.vacancy.ui
 
 import android.util.Log
 import androidx.compose.foundation.Image
@@ -24,6 +24,8 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -36,6 +38,7 @@ import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.fromHtml
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil3.ImageLoader
 import coil3.compose.AsyncImage
 import coil3.request.ImageRequest
@@ -60,13 +63,19 @@ import ru.practicum.android.diploma.vacancy.ui.VacancyViewModel
 
 @Composable
 fun VacancyDetailScreen(
-    vacancy: VacancyDetail,
-    onBack: () -> Unit = {}
+    vacancyId: String,
+    onBack: () -> Unit = {},
+    viewModel: VacancyDetailViewModel = koinViewModel()
 ) {
-    val viewModel: VacancyViewModel = koinViewModel()
-    val state = VacancyState.Loading
-    val favoriteState = viewModel.stateFavorite.collectAsState().value
+    val state by viewModel.state.collectAsStateWithLifecycle()
+    val isFavorite by viewModel.isFavorite.collectAsStateWithLifecycle()
 
+    viewModel.currentVacancyId = vacancyId
+    val vacancy = viewModel.currentVacancy
+
+    LaunchedEffect(Unit) {
+        viewModel.loadVacancyDetail()
+    }
     Column {
         AppBarTop(
             title = "Вакансия",
@@ -81,17 +90,17 @@ fun VacancyDetailScreen(
             favorites = ActionFavorites(
                 isView = true,
                 onClick = { viewModel.onFavoriteClicked(vacancy()) },
-                isActive = favoriteState
+                isActive = isFavorite
             )
         )
         when (state) {
             is VacancyState.Loading -> LoadingVacancy()
-            is VacancyState.Content -> ContentVacancy(vacancy)
-            is VacancyState.Empty -> ErrorVacancy(
+            is VacancyState.Content -> ContentVacancy(vacancy!!)
+            is VacancyState.Error -> ErrorVacancy(
                 painter = painterResource(R.drawable.server_error_cat),
                 text = stringResource(R.string.server_error)
             )
-            is VacancyState.Error -> ErrorVacancy(
+            is VacancyState.Empty -> ErrorVacancy(
                 painter = painterResource(R.drawable.fiery_rock),
                 text = stringResource(R.string.vacancy_not_found)
             )
@@ -126,7 +135,7 @@ private fun ContentVacancyHeader(vacancy: VacancyDetail) {
         modifier = Modifier.padding(top = 24.dp)
     )
     Text(
-        text = vacancy.salary,
+        text = vacancy.salary ?: stringResource(R.string.salary_not_specified),
         style = MaterialTheme.typography.titleLarge
     )
     Spacer(modifier = Modifier.height(24.dp))
@@ -166,7 +175,7 @@ private fun ContentVacancyCard(
                     contentDescription = null,
                     placeholder = painterResource(R.drawable.ic_placeholder_32),
                     error = painterResource(R.drawable.ic_placeholder_32),
-                    contentScale = ContentScale.Crop,
+                    contentScale = ContentScale.FillWidth,
                     modifier = Modifier.size(48.dp),
                     imageLoader = imageLoader,
                     onError = {
@@ -181,11 +190,19 @@ private fun ContentVacancyCard(
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                     style = MaterialTheme.typography.titleLarge
                 )
-                Text(
-                    text = vacancy.area,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
-                    style = MaterialTheme.typography.bodyLarge
-                )
+                if (vacancy.address?.raw?.isNotEmpty() ?: false) {
+                    Text(
+                        text = vacancy.address.raw,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        style = MaterialTheme.typography.bodyLarge
+                    )
+                } else {
+                    Text(
+                        text = vacancy.area,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        style = MaterialTheme.typography.bodyLarge
+                    )
+                }
             }
         }
     }
@@ -208,8 +225,15 @@ private fun ContentVacancyExperience(vacancy: VacancyDetail) {
 
 @Composable
 private fun ContentVacancySchedule(vacancy: VacancyDetail) {
+    val text = if ((vacancy.employment?.isNotEmpty() ?: false) and (vacancy.schedule?.isNotEmpty() ?: false)) {
+        "${vacancy.employment}, ${vacancy.schedule}"
+    } else if ((vacancy.employment?.isNotEmpty() ?: false) and (vacancy.schedule?.isEmpty() ?: true)) {
+        "${vacancy.employment}"
+    } else {
+        "${vacancy.schedule}"
+    }
     Text(
-        text = "${vacancy.employment}, ${vacancy.schedule}",
+        text = text,
         style = MaterialTheme.typography.bodyLarge
     )
     Spacer(modifier = Modifier.height(32.dp))
@@ -226,34 +250,36 @@ private fun ContentVacancyDescription(vacancy: VacancyDetail) {
 
 @Composable
 private fun ContentVacancySkills(vacancy: VacancyDetail) {
-    Text(
-        text = stringResource(R.string.key_skills),
-        style = MaterialTheme.typography.titleLarge
-    )
-    Column(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(start = 8.dp)
-    ) {
-        for (skill in vacancy.skills) {
-            Text(
-                text = "\u2022\t $skill",
-                style = MaterialTheme.typography.bodyLarge
-            )
+    if (vacancy.skills.isNotEmpty()) {
+        Text(
+            text = stringResource(R.string.key_skills),
+            style = MaterialTheme.typography.titleLarge
+        )
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(start = 8.dp)
+        ) {
+            for (skill in vacancy.skills) {
+                Text(
+                    text = "\u2022\t $skill",
+                    style = MaterialTheme.typography.bodyLarge
+                )
+            }
         }
+        Spacer(modifier = Modifier.height(8.dp))
     }
-    Spacer(modifier = Modifier.height(8.dp))
 }
 
 @Composable
 private fun ContentVacancyContacts(vacancy: VacancyDetail) {
-    Text(
-        text = stringResource(R.string.contacts),
-        style = MaterialTheme.typography.titleLarge
-    )
     if (vacancy.contacts != null) {
-        val contact = vacancy.contacts
-        ContentVacancyContact(contact)
+        Text(
+            text = stringResource(R.string.contacts),
+            style = MaterialTheme.typography.titleLarge
+        )
+        Spacer(modifier = Modifier.height(4.dp))
+        ContentVacancyContact(vacancy.contacts)
     }
 }
 
@@ -263,36 +289,38 @@ private fun ContentVacancyContact(contact: ContactsEmployer) {
         text = contact.name,
         style = MaterialTheme.typography.bodyMedium
     )
-    if (contact.email != "") {
+    if (contact.email.isNotEmpty()) {
         Text(
             text = "E-mail: ${contact.email}",
             style = MaterialTheme.typography.bodyLarge,
             color = Blue,
             modifier = Modifier.clickable(onClick = {})
         )
+        Spacer(modifier = Modifier.height(4.dp))
     }
-    if (contact.phones?.isNotEmpty() ?: false) {
-        for (phone in contact.phones) {
-            var comment = ""
-            if (phone.comment?.isNotEmpty() ?: false) {
-                comment = "${phone.comment}: "
-            }
-            Text(
-                text = "$comment${phone.formatted}",
-                style = MaterialTheme.typography.bodyLarge,
-                color = Blue,
-                modifier = Modifier.clickable(onClick = {})
-            )
+    contact.phones?.forEach { phone ->
+        var comment = ""
+        if (phone.comment?.isNotEmpty() ?: false) {
+            comment = "${phone.comment}: "
         }
+        Text(
+            text = "$comment${phone.formatted}",
+            style = MaterialTheme.typography.bodyLarge,
+            color = Blue,
+            modifier = Modifier.clickable(onClick = {})
+        )
+        Spacer(modifier = Modifier.height(4.dp))
     }
+    Spacer(modifier = Modifier.height(16.dp))
 }
 
 @Composable
 private fun LoadingVacancy() {
     Box(
         modifier = Modifier
-            .fillMaxSize(),
-        contentAlignment = Alignment.Center
+            .fillMaxSize()
+            .background(MaterialTheme.colorScheme.onPrimary),
+        contentAlignment = Alignment.Center,
     ) {
         CircularProgressIndicator(
             color = MaterialTheme.colorScheme.primary,
@@ -307,7 +335,9 @@ private fun ErrorVacancy(
     text: String
 ) {
     Column(
-        modifier = Modifier.fillMaxSize(),
+        modifier = Modifier
+            .fillMaxSize()
+            .background(MaterialTheme.colorScheme.onPrimary),
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
@@ -323,49 +353,4 @@ private fun ErrorVacancy(
             style = MaterialTheme.typography.titleLarge
         )
     }
-}
-
-fun vacancy(): VacancyDetail = VacancyDetail(
-    id = "000aa9c3-18c4-357a-8aaa-6def258d5601",
-    name = "Frontend-разработчик",
-    description = "<h3>Условия</h3><ul><li>Продуктовые задачи с понятным влиянием на результат.</li></ul></section>",
-    salary = "От 18000000 UZS",
-    address = AddressEmployer(
-        city = "Ростов-на-Дону",
-        street = "Садовая",
-        building = "10",
-        raw = "Ростов-на-Дону, Садовая, 10"
-    ),
-    experience = "От 1 года до 3 лет",
-    schedule = "Удаленная работа",
-    employment = "Полная занятость",
-    contacts = ContactsEmployer(
-        name = "Кузнецов Сергей Петрович",
-        email = "example@ya.ru",
-        phones = listOf(
-            Phone(
-                comment = "work",
-                formatted = "+7 (999) 567-89-01"
-            ),
-            Phone(
-                comment = null,
-                formatted = "+7 (999) 543-21-09"
-            )
-        )
-    ),
-    employer = Employer(
-        name = "Netflix",
-        logo = "https://upload.wikimedia.org/wikipedia/commons/6/69/Netflix_logo.svg"
-    ),
-    area = "Ростов-на-Дону",
-    skills = listOf("TypeScript", "React", "HTML", "CSS", "REST API"),
-    url = "vacancies/000aa9c3-18c4-357a-8aaa-6def258d5601",
-    industry = "Информационные технологии, системная интеграция, интернет",
-    isFavorite = true
-)
-
-@Preview(showSystemUi = true, showBackground = true)
-@Composable
-fun PreviewVacancyDetail() {
-    VacancyDetailScreen(vacancy())
 }

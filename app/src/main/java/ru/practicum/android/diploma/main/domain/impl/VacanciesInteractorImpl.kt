@@ -9,15 +9,15 @@ import ru.practicum.android.diploma.main.domain.models.VacancyCard
 import ru.practicum.android.diploma.main.domain.models.VacancyFilter
 
 class VacanciesInteractorImpl(private val vacanciesRepository: VacanciesRepository) : VacanciesInteractor {
-    override fun searchVacancies(expression: VacancyFilter): Flow<Pair<List<VacancyCard>?, String?>> {
+    override fun searchVacancies(expression: VacancyFilter): Flow<Pair<List<VacancyCard>?, Pair<Int?, String?>?>> {
         return vacanciesRepository.searchVacancies(expression).map { result ->
             when (result) {
                 is Resource.Success -> {
-                    Pair(result.data, null)
+                    Pair(result.data, Pair(result.totalFound, null))
                 }
 
                 is Resource.Error -> {
-                    Pair(null, result.message)
+                    Pair(null, Pair(null, result.message))
                 }
             }
         }

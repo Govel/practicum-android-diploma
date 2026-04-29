@@ -30,7 +30,6 @@ import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import org.koin.androidx.compose.koinViewModel
@@ -45,13 +44,15 @@ import ru.practicum.android.diploma.main.ui.states.VacanciesSearchResult
 import ru.practicum.android.diploma.ui.navigation.ActionBack
 import ru.practicum.android.diploma.ui.navigation.ActionFilter
 import ru.practicum.android.diploma.ui.navigation.AppBarTop
+import kotlin.Unit
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SearchScreen(
     onFilter: () -> Unit = {},
     isFilterActive: Boolean = false,
-    viewModel: SearchViewModel = koinViewModel()
+    viewModel: SearchViewModel = koinViewModel(),
+    onVacancyClick: (String) -> Unit
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
     var searchText by remember { mutableStateOf("") }
@@ -133,12 +134,12 @@ fun SearchScreen(
             )
         }
 
-        SearchContent(state, viewModel)
+        SearchContent(state, viewModel, onVacancyClick)
     }
 }
 
 @Composable
-private fun SearchContent(state: SearchState, viewModel: SearchViewModel) {
+private fun SearchContent(state: SearchState, viewModel: SearchViewModel, onVacancyClick: (String) -> Unit) {
     when {
         state.isLoading -> {
             LoadingIndicator()
@@ -157,17 +158,11 @@ private fun SearchContent(state: SearchState, viewModel: SearchViewModel) {
         }
 
         state.vacancies.isNotEmpty() -> {
-            VacanciesSearchResult(state, viewModel)
+            VacanciesSearchResult(state, viewModel, onVacancyClick)
         }
 
         state.searchText.isEmpty() -> {
             EmptySearchPlaceholder()
         }
     }
-}
-
-@Preview
-@Composable
-fun SearchScreenPreview() {
-    SearchScreen()
 }

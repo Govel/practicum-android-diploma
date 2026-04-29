@@ -39,7 +39,8 @@ import ru.practicum.android.diploma.ui.navigation.AppBarTop
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun FavoritesScreen(
-    viewModel: FavoritesViewModel = koinViewModel()
+    viewModel: FavoritesViewModel = koinViewModel(),
+    onVacancyClick: (String) -> Unit = {}
 ) {
     val state = viewModel.state.collectAsState().value
 
@@ -88,12 +89,11 @@ fun FavoritesScreen(
                 LazyColumn(
                     Modifier
                         .fillMaxWidth()
-                        .padding(horizontal = 16.dp, vertical = 8.dp)
                 ) {
                     items(state.vacancyCard, key = { it.id }) { vacancy ->
                         VacancyCard(
                             vacancy = vacancy,
-                            onClick = { "vacancy/${vacancy.id}" }
+                            onVacancyClick = onVacancyClick
                         )
                     }
                 }

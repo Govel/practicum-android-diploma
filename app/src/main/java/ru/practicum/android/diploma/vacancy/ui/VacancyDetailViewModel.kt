@@ -46,7 +46,7 @@ class VacancyDetailViewModel(
 
         if (error != null && error != VacanciesSearchState.Empty.state) {
             _state.update {
-                VacancyState.Empty
+                VacancyState.Error
             }
             return
         }

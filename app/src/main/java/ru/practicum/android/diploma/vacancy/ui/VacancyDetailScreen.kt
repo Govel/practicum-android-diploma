@@ -89,12 +89,11 @@ fun VacancyDetailScreen(
         when (state) {
             is VacancyState.Loading -> LoadingVacancy()
             is VacancyState.Content -> ContentVacancy(vacancy!!)
-            is VacancyState.Empty -> ErrorVacancy(
+            is VacancyState.Error -> ErrorVacancy(
                 painter = painterResource(R.drawable.server_error_cat),
                 text = stringResource(R.string.server_error)
             )
-
-            is VacancyState.Error -> ErrorVacancy(
+            is VacancyState.Empty -> ErrorVacancy(
                 painter = painterResource(R.drawable.fiery_rock),
                 text = stringResource(R.string.vacancy_not_found)
             )
@@ -312,8 +311,9 @@ private fun ContentVacancyContact(contact: ContactsEmployer) {
 private fun LoadingVacancy() {
     Box(
         modifier = Modifier
-            .fillMaxSize(),
-        contentAlignment = Alignment.Center
+            .fillMaxSize()
+            .background(MaterialTheme.colorScheme.onPrimary),
+        contentAlignment = Alignment.Center,
     ) {
         CircularProgressIndicator(
             color = MaterialTheme.colorScheme.primary,
@@ -328,7 +328,9 @@ private fun ErrorVacancy(
     text: String
 ) {
     Column(
-        modifier = Modifier.fillMaxSize(),
+        modifier = Modifier
+            .fillMaxSize()
+            .background(MaterialTheme.colorScheme.onPrimary),
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {

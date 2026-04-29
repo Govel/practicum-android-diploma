@@ -1,12 +1,16 @@
 package ru.practicum.android.diploma.main.ui.states
 
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -23,23 +27,43 @@ import ru.practicum.android.diploma.main.ui.VacancyCard
 @Composable
 fun VacanciesSearchResult(
     state: SearchState,
-    viewModel: SearchViewModel
+    viewModel: SearchViewModel,
+    onVacancyClick: (String) -> Unit
 ) {
     Column(
         modifier = Modifier.fillMaxSize(),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        CountChip(count = state.totalCount)
+        CountChip(count = state.totalFound)
 
         LazyColumn {
             items(state.vacancies, key = { it.id }) { vacancy ->
                 VacancyCard(
                     vacancy = vacancy,
-                    onClick = { viewModel.onVacancyClick(vacancy.id) }
+                    onVacancyClick = onVacancyClick
                 )
-                if (state.vacancies.lastOrNull() == vacancy && state.hasMorePages && !state.isLoading) {
+                val isLastItem = state.vacancies.lastOrNull() == vacancy
+                val shouldLoadMore = isLastItem && state.hasMorePages && !state.isLoading && !state.isLoadingMore
+
+                if (shouldLoadMore) {
                     LaunchedEffect(Unit) {
                         viewModel.loadNextPage()
+                    }
+                }
+            }
+
+            if (state.isLoadingMore) {
+                item {
+                    Box(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(16.dp),
+                        contentAlignment = Alignment.BottomCenter
+                    ) {
+                        CircularProgressIndicator(
+                            color = MaterialTheme.colorScheme.primary,
+                            modifier = Modifier.size(48.dp)
+                        )
                     }
                 }
             }

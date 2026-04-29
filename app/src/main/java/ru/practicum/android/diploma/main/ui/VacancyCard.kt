@@ -28,13 +28,14 @@ import ru.practicum.android.diploma.main.domain.models.VacancyCard
 @Composable
 fun VacancyCard(
     vacancy: VacancyCard,
-    onClick: () -> Unit,
+    onVacancyClick: (String) -> Unit,
     imageLoader: ImageLoader = koinInject()
 ) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .clickable { onClick() }
+            .clickable {
+                onVacancyClick(vacancy.id) }
             .padding(horizontal = 16.dp, vertical = 8.dp),
     ) {
         AsyncImage(

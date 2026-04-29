@@ -1,6 +1,7 @@
 package ru.practicum.android.diploma.main.data.mapper
 
 import com.google.gson.Gson
+import com.google.gson.JsonSyntaxException
 import com.google.gson.reflect.TypeToken
 import ru.practicum.android.diploma.database.data.dto.FavoriteVacancyEntity
 import ru.practicum.android.diploma.main.data.dto.VacancyCardDto
@@ -128,7 +129,8 @@ object VacanciesMapper {
             city = getValueCity(entity.address),
             salary = try {
                 salaryDtoToSalaryModelConverter(salaryFromString(entity.salary))
-            } catch (e: Exception) {
+            } catch (e: JsonSyntaxException) {
+                android.util.Log.e("VacanciesMapper", "Failed to parse salary: ${entity.salary}", e)
                 entity.salary ?: "зарплата не указана"
             },
             logo = entity.url

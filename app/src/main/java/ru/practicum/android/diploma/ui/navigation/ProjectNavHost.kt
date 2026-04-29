@@ -34,7 +34,11 @@ fun ProjectNavHost(
         }
 
         composable(Routes.FAVORITES) {
-            FavoritesScreen()
+            FavoritesScreen(
+                onVacancyClick = { vacancyId ->
+                    navController.navigate("${Routes.VACANCY}/$vacancyId")
+                }
+            )
         }
 
         composable(Routes.TEAM) {

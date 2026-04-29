@@ -9,4 +9,12 @@ class ShareInteractorImpl(val shareRepository: ShareRepository) : ShareInteracto
             shareRepository.shareLink(dataUrl)
         }
     }
+
+    override fun sharePhone(phone: String) {
+        return shareRepository.sharePhone(phone)
+    }
+
+    override fun shareEmail(email: String) {
+        return shareRepository.shareEmail(email)
+    }
 }

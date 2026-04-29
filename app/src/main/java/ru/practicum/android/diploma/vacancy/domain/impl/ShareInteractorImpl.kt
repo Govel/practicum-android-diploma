@@ -5,7 +5,7 @@ import ru.practicum.android.diploma.vacancy.domain.api.ShareRepository
 
 class ShareInteractorImpl(val shareRepository: ShareRepository) : ShareInteractor {
     override fun shareLink(dataUrl: String) {
-        if (!dataUrl.isNotBlank()) {
+        if (dataUrl.isNotBlank()) {
             shareRepository.shareLink(dataUrl)
         }
     }

@@ -1,6 +1,7 @@
 package ru.practicum.android.diploma.main.data.mapper
 
 import com.google.gson.Gson
+import com.google.gson.JsonSyntaxException
 import com.google.gson.reflect.TypeToken
 import ru.practicum.android.diploma.database.data.dto.FavoriteVacancyEntity
 import ru.practicum.android.diploma.main.data.dto.VacancyCardDto
@@ -119,13 +120,19 @@ object VacanciesMapper {
         name = employer.name,
         logo = employer.logo
     )
+
     fun mapEntityToDomain(entity: FavoriteVacancyEntity): VacancyCard {
         return VacancyCard(
             id = entity.id,
             name = entity.name,
             company = getValueCompany(entity.employer),
             city = getValueCity(entity.address),
-            salary = salaryDtoToSalaryModelConverter(salaryFromString(entity.salary)),
+            salary = try {
+                salaryDtoToSalaryModelConverter(salaryFromString(entity.salary))
+            } catch (e: JsonSyntaxException) {
+                android.util.Log.e("VacanciesMapper", "Failed to parse salary: ${entity.salary}", e)
+                entity.salary ?: "зарплата не указана"
+            },
             logo = entity.url
         )
     }
@@ -148,7 +155,7 @@ object VacanciesMapper {
             employer = gson.toJson(vacancy.employer),
             area = vacancy.area,
             skills = gson.toJson(vacancy.skills),
-            url = vacancy.url,
+            url = vacancy.employer.logo,
             industry = vacancy.industry
         )
     }
@@ -161,7 +168,9 @@ object VacanciesMapper {
         return VacancyDetail(
             id = vacancy.id,
             name = vacancy.name,
-            salary = vacancy.salary ?: "",
+            salary = salaryFromString(vacancy.salary)?.let {
+                salaryDtoToSalaryModelConverter(it)
+            } ?: "",
             address = gson.fromJson(vacancy.address, AddressEmployer::class.java),
             experience = vacancy.experience,
             schedule = vacancy.schedule,
@@ -188,6 +197,7 @@ object VacanciesMapper {
             null
         }
     }
+
     private fun getValueCompany(employer: String): String? {
         val value = gson.fromJson(employer, Employer::class.java)
         return value.name ?: null

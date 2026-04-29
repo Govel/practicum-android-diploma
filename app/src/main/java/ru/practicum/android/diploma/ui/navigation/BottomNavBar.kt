@@ -22,13 +22,14 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
 
+private val navItems = ScreenNavItem.items
+
 @Composable
 fun BottomNavigationBar(
     navController: NavHostController,
     currentRoute: String?
-) {
-    val items = ScreenNavItem.items
 
+) {
     val colorsNavigation = NavigationBarItemDefaults.colors(
         selectedIconColor = MaterialTheme.colorScheme.primary,
         selectedTextColor = MaterialTheme.colorScheme.primary,
@@ -48,7 +49,7 @@ fun BottomNavigationBar(
             containerColor = MaterialTheme.colorScheme.surface,
             tonalElevation = 0.dp
         ) {
-            items.forEach { item ->
+            navItems.forEach { item ->
                 val isSelected = currentRoute == item.route
                 NavigationBarItem(
                     selected = isSelected,

@@ -13,7 +13,8 @@ class VacanciesInteractorImpl(private val vacanciesRepository: VacanciesReposito
         return vacanciesRepository.searchVacancies(expression).map { result ->
             when (result) {
                 is Resource.Success -> {
-                    Pair(result.data, Pair(result.totalFound, null))
+                    val (vacancies, totalFound) = result.data ?: Pair(null, null)
+                    Pair(vacancies, Pair(totalFound, null))
                 }
 
                 is Resource.Error -> {

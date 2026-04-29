@@ -6,5 +6,5 @@ import ru.practicum.android.diploma.main.domain.models.VacancyCard
 import ru.practicum.android.diploma.main.domain.models.VacancyFilter
 
 interface VacanciesRepository {
-    fun searchVacancies(expression: VacancyFilter): Flow<Resource<List<VacancyCard>?>>
+    fun searchVacancies(expression: VacancyFilter): Flow<Resource<Pair<List<VacancyCard>?, Int>?>>
 }

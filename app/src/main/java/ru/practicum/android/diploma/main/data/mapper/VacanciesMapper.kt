@@ -9,12 +9,7 @@ import ru.practicum.android.diploma.main.domain.models.VacancyCard
 import ru.practicum.android.diploma.vacancy.data.dto.AddressDto
 import ru.practicum.android.diploma.vacancy.data.dto.ContactsDto
 import ru.practicum.android.diploma.vacancy.data.dto.EmployerDto
-import ru.practicum.android.diploma.vacancy.data.dto.EmploymentDto
-import ru.practicum.android.diploma.vacancy.data.dto.ExperienceDto
-import ru.practicum.android.diploma.vacancy.data.dto.FilterAreaDto
-import ru.practicum.android.diploma.vacancy.data.dto.FilterIndustryDto
 import ru.practicum.android.diploma.vacancy.data.dto.PhoneDto
-import ru.practicum.android.diploma.vacancy.data.dto.ScheduleDto
 import ru.practicum.android.diploma.vacancy.data.dto.VacancyDetailResponse
 import ru.practicum.android.diploma.vacancy.domain.models.AddressEmployer
 import ru.practicum.android.diploma.vacancy.domain.models.ContactsEmployer
@@ -186,9 +181,9 @@ object VacanciesMapper {
         return entityList.map { entity -> mapEntityToDetail(entity) }
     }
 
-    private fun salaryFromString(salaryString: String?): VacancyCardSalary? {
+    private fun salaryFromString(salaryString: String?): VacancySalary? {
         return if (!salaryString.isNullOrEmpty()) {
-            gson.fromJson(salaryString, VacancyCardSalary::class.java)
+            gson.fromJson(salaryString, VacancySalary::class.java)
         } else {
             null
         }

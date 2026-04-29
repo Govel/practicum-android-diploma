@@ -23,7 +23,6 @@ import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
@@ -36,7 +35,6 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.fromHtml
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil3.ImageLoader
@@ -53,13 +51,8 @@ import ru.practicum.android.diploma.ui.navigation.AppBarTop
 import ru.practicum.android.diploma.ui.theme.Blue
 import ru.practicum.android.diploma.ui.theme.LightGray
 import ru.practicum.android.diploma.ui.theme.WhiteUniversal
-import ru.practicum.android.diploma.vacancy.domain.models.AddressEmployer
 import ru.practicum.android.diploma.vacancy.domain.models.ContactsEmployer
-import ru.practicum.android.diploma.vacancy.domain.models.Employer
-import ru.practicum.android.diploma.vacancy.domain.models.Phone
 import ru.practicum.android.diploma.vacancy.domain.models.VacancyDetail
-import ru.practicum.android.diploma.vacancy.ui.VacancyState
-import ru.practicum.android.diploma.vacancy.ui.VacancyViewModel
 
 @Composable
 fun VacancyDetailScreen(

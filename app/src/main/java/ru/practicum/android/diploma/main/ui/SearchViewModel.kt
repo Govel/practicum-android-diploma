@@ -97,12 +97,10 @@ class SearchViewModel(
         } else {
             _state.update { it.copy(isLoadingMore = true) }
         }
-
         val filter = VacancyFilter(
             text = query,
             page = page
         )
-
         viewModelScope.launch {
             interactor.searchVacancies(filter)
                 .catch { e ->
@@ -133,10 +131,8 @@ class SearchViewModel(
         val (vacancies, meta) = result
         val totalFound = meta?.first
         val error = meta?.second
-
         if (error != null && error != VacanciesSearchState.Empty.state) {
             val isNetworkError = ErrorHandler.getErrorType(error)
-
             if (isNewSearch) {
                 _state.update {
                     it.copy(
@@ -156,7 +152,6 @@ class SearchViewModel(
 
         val vacancyList = vacancies ?: emptyList()
         val hasMore = vacancyList.size == PAGE_SIZE
-
         if (isNewSearch) {
             copyVacancies(
                 vacancyList = vacancyList,
@@ -172,10 +167,6 @@ class SearchViewModel(
                 hasMore = hasMore
             )
         }
-    }
-
-    fun onVacancyClick(vacancyId: String) {
-        _state.update { it.copy() }
     }
 
     private fun copyVacancies(

@@ -83,43 +83,50 @@ class SearchViewModel(
 
     private fun performSearch(query: String, isNewSearch: Boolean = true, page: Int = 0) {
         if (isNewSearch) {
-            currentQuery = query
+            startNewSearch(query)
+        } else {
+            startPagination()
+        }
+
+        val filter = VacancyFilter(text = query, page = page)
+
+        viewModelScope.launch {
+            interactor.searchVacancies(filter)
+                .catch { e -> handleSearchError(isNewSearch) }
+                .collect { result -> handleSearchResult(result, isNewSearch, page) }
+        }
+    }
+
+    private fun startNewSearch(query: String) {
+        currentQuery = query
+        _state.update {
+            it.copy(
+                isLoading = true,
+                isLoadingMore = false,
+                isEmptyResult = false,
+                vacancies = emptyList(),
+                currentPage = 0,
+                hasMorePages = true
+            )
+        }
+    }
+
+    private fun startPagination() {
+        _state.update { it.copy(isLoadingMore = true) }
+    }
+
+    private fun handleSearchError(isNewSearch: Boolean) {
+        if (isNewSearch) {
             _state.update {
                 it.copy(
-                    isLoading = true,
+                    isLoading = false,
                     isLoadingMore = false,
-                    isEmptyResult = false,
-                    vacancies = emptyList(),
-                    currentPage = 0,
-                    hasMorePages = true
+                    isNetworkError = true
                 )
             }
         } else {
-            _state.update { it.copy(isLoadingMore = true) }
-        }
-        val filter = VacancyFilter(
-            text = query,
-            page = page
-        )
-        viewModelScope.launch {
-            interactor.searchVacancies(filter)
-                .catch { e ->
-                    if (isNewSearch) {
-                        _state.update {
-                            it.copy(
-                                isLoading = false,
-                                isLoadingMore = false,
-                                isNetworkError = true
-                            )
-                        }
-                    } else {
-                        _state.update { it.copy(isLoadingMore = false) }
-                        showPaginationErrorToast()
-                    }
-                }
-                .collect { result ->
-                    handleSearchResult(result, isNewSearch, page)
-                }
+            _state.update { it.copy(isLoadingMore = false) }
+            showPaginationErrorToast()
         }
     }
 
@@ -131,33 +138,49 @@ class SearchViewModel(
         val (vacancies, meta) = result
         val totalFound = meta?.first
         val error = meta?.second
+
         if (error != null && error != VacanciesSearchState.Empty.state) {
-            val isNetworkError = ErrorHandler.getErrorType(error)
-            if (isNewSearch) {
-                _state.update {
-                    it.copy(
-                        isLoading = false,
-                        isLoadingMore = false,
-                        isNetworkError = isNetworkError,
-                        isServerError = !isNetworkError,
-                        isEmptyResult = false
-                    )
-                }
-            } else {
-                _state.update { it.copy(isLoadingMore = false) }
-                showPaginationErrorToast()
-            }
+            handleSearchErrorState(error, isNewSearch)
             return
         }
 
+        processSuccessResult(vacancies, totalFound, isNewSearch, page)
+    }
+
+    private fun handleSearchErrorState(error: String, isNewSearch: Boolean) {
+        val isNetworkError = ErrorHandler.getErrorType(error)
+
+        if (isNewSearch) {
+            _state.update {
+                it.copy(
+                    isLoading = false,
+                    isLoadingMore = false,
+                    isNetworkError = isNetworkError,
+                    isServerError = !isNetworkError,
+                    isEmptyResult = false
+                )
+            }
+        } else {
+            _state.update { it.copy(isLoadingMore = false) }
+            showPaginationErrorToast()
+        }
+    }
+
+    private fun processSuccessResult(
+        vacancies: List<VacancyCard>?,
+        totalFound: Int?,
+        isNewSearch: Boolean,
+        page: Int
+    ) {
         val vacancyList = vacancies ?: emptyList()
         val hasMore = vacancyList.size == PAGE_SIZE
+
         if (isNewSearch) {
             copyVacancies(
                 vacancyList = vacancyList,
                 page = page,
                 hasMore = hasMore,
-                error = error,
+                error = null,
                 totalFound = totalFound ?: vacancyList.size
             )
         } else {

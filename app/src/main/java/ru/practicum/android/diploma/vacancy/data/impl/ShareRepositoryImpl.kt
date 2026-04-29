@@ -10,7 +10,7 @@ import ru.practicum.android.diploma.vacancy.domain.api.ShareRepository
 class ShareRepositoryImpl(private val context: Context) : ShareRepository {
     override fun shareLink(dataUrl: String) {
         val shareIntent = Intent(Intent.ACTION_SEND)
-        shareIntent.setType("plain/text")
+        shareIntent.setType("text/plain")
         shareIntent.putExtra(Intent.EXTRA_TEXT, dataUrl)
         shareIntent.addFlags(FLAG_ACTIVITY_NEW_TASK)
         try {

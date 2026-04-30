@@ -49,8 +49,7 @@ fun FilterScreen(
     var industryText by remember { mutableStateOf("") }
     var isChecked by remember { mutableStateOf(false) }
 
-    val hasAnyFilter = salaryText.isNotEmpty() || isChecked ||
-        workPlaceText.isNotEmpty() || industryText.isNotEmpty()
+    val hasAnyFilter = salaryText.isNotEmpty() || isChecked || workPlaceText.isNotEmpty() || industryText.isNotEmpty()
 
     Column(
         modifier = Modifier
@@ -253,8 +252,11 @@ fun NoSalaryCheckbox(
         IconButton(onClick = onCheckedChange) {
             Icon(
                 painter = painterResource(
-                    id = if (checked) R.drawable.ic_check_box_on__24
-                    else R.drawable.ic_check_box_off__24
+                    id = if (checked) {
+                        R.drawable.ic_check_box_on__24
+                    } else {
+                        R.drawable.ic_check_box_off__24
+                    }
                 ),
                 contentDescription = null,
                 Modifier

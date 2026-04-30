@@ -66,7 +66,7 @@ fun AppBarTop(
             onClick = back.onClick
         )
 
-        AppTitle(title = title)
+        AppTitle(title = title, hasBackButton = back.isView)
 
         Column(
             modifier = Modifier
@@ -102,12 +102,15 @@ private fun AppButtonBack(
 }
 
 @Composable
-private fun AppTitle(title: String) {
+private fun AppTitle(
+    title: String,
+    hasBackButton: Boolean = false
+) {
     Text(
         text = title,
         modifier = Modifier
             .fillMaxHeight()
-            .padding(start = 16.dp)
+            .padding(start = if (hasBackButton) 4.dp else 16.dp)
             .padding(vertical = 20.dp),
         style = MaterialTheme.typography.titleLarge
     )

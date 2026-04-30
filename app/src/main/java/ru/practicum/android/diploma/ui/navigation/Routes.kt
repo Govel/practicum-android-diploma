@@ -6,4 +6,7 @@ object Routes {
     const val TEAM = "team"
     const val FILTER = "filter"
     const val VACANCY = "vacancy"
+    const val INDUSTRY = "industry"
+
+    const val WORKPLACE = "workplace"
 }

@@ -1,27 +1,321 @@
 package ru.practicum.android.diploma.ui.screens.filter
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.OutlinedTextFieldDefaults
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
 import ru.practicum.android.diploma.R
+import ru.practicum.android.diploma.ui.navigation.ActionBack
+import ru.practicum.android.diploma.ui.navigation.AppBarTop
 
 @Composable
-fun FilterScreen() {
-    Box(
+fun FilterScreen(
+    onIndustry: () -> Unit = {},
+    onWorkPlace: () -> Unit = {},
+    onCheckBox: () -> Unit = {},
+    onApply: () -> Unit = {},
+    onReset: () -> Unit = {}
+) {
+    var salaryText by remember { mutableStateOf("") }
+    var workPlaceText by remember { mutableStateOf("") }
+    var industryText by remember { mutableStateOf("") }
+    var isChecked by remember { mutableStateOf(false) }
+
+    val hasAnyFilter = salaryText.isNotEmpty() || isChecked ||
+        workPlaceText.isNotEmpty() || industryText.isNotEmpty()
+
+    Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(MaterialTheme.colorScheme.onPrimary),
-        contentAlignment = Alignment.Center
+            .background(MaterialTheme.colorScheme.onPrimary)
     ) {
-        Text(
-            text = stringResource(R.string.filter_settings),
-            style = MaterialTheme.typography.titleLarge,
+        AppBarTop(
+            title = stringResource(R.string.filter_settings),
+            back = ActionBack(isView = true)
+        )
+
+        Column(modifier = Modifier.padding(top = 16.dp)) {
+            SelectField(
+                label = stringResource(R.string.work_place),
+                value = workPlaceText,
+                onClear = { workPlaceText = "" },
+                onNavigate = onWorkPlace
+            )
+
+            SelectField(
+                label = stringResource(R.string.industry),
+                value = industryText,
+                onClear = { industryText = "" },
+                onNavigate = onIndustry
+            )
+        }
+
+        SalaryField(
+            value = salaryText,
+            onValueChange = { newText ->
+                if (newText.all { it.isDigit() }) {
+                    salaryText = newText
+                }
+            },
+            onClear = { salaryText = "" }
+        )
+
+        Column(modifier = Modifier.padding(top = 24.dp)) {
+            NoSalaryCheckbox(
+                checked = isChecked,
+                onCheckedChange = {
+                    isChecked = !isChecked
+                    onCheckBox()
+                }
+            )
+        }
+
+        if (hasAnyFilter) {
+            FilterButtons(
+                onApply = onApply,
+                onReset = onReset,
+                modifier = Modifier
+                    .fillMaxHeight()
+                    .padding(horizontal = 16.dp)
+                    .padding(bottom = 24.dp)
+            )
+        }
+    }
+}
+
+@Composable
+fun SelectField(
+    label: String,
+    value: String,
+    onClear: () -> Unit,
+    onNavigate: () -> Unit,
+    modifier: Modifier = Modifier
+) {
+    Surface(
+        modifier = modifier
+            .fillMaxWidth()
+            .height(60.dp),
+    ) {
+        OutlinedTextField(
+            value = value,
+            onValueChange = { },
+            singleLine = true,
+            enabled = false,
+            label = {
+                Text(
+                    label,
+                    color = MaterialTheme.colorScheme.secondary,
+                    style = MaterialTheme.typography.bodyLarge
+                )
+            },
+            placeholder = {
+                Text(
+                    label,
+                    color = MaterialTheme.colorScheme.secondary,
+                    style = MaterialTheme.typography.bodyLarge,
+                )
+            },
+            trailingIcon = {
+                if (value.isNotEmpty()) {
+                    IconButton(onClick = onClear) {
+                        Icon(
+                            painter = painterResource(R.drawable.ic_close_24),
+                            contentDescription = "Clear",
+                            tint = MaterialTheme.colorScheme.onSurfaceVariant
+                        )
+                    }
+                } else {
+                    IconButton(onClick = onNavigate) {
+                        Icon(
+                            painter = painterResource(id = R.drawable.ic_arrow_forward_24),
+                            contentDescription = null,
+                            tint = MaterialTheme.colorScheme.onBackground,
+                            modifier = Modifier
+                                .padding(8.dp)
+                                .size(32.dp)
+                        )
+                    }
+                }
+            },
+            colors = OutlinedTextFieldDefaults.colors(
+                focusedBorderColor = Color.Transparent,
+                unfocusedBorderColor = Color.Transparent,
+                focusedLabelColor = MaterialTheme.colorScheme.secondary,
+                unfocusedLabelColor = MaterialTheme.colorScheme.secondary,
+                disabledTextColor = MaterialTheme.colorScheme.onBackground,
+                disabledBorderColor = Color.Transparent,
+                disabledLabelColor = MaterialTheme.colorScheme.secondary
+            )
         )
     }
+}
+
+@Composable
+fun SalaryField(
+    value: String,
+    onValueChange: (String) -> Unit,
+    onClear: () -> Unit
+) {
+    Surface(
+        color = MaterialTheme.colorScheme.surfaceVariant,
+        shape = RoundedCornerShape(12.dp),
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 16.dp)
+            .padding(top = 24.dp)
+    ) {
+        OutlinedTextField(
+            value = value,
+            onValueChange = onValueChange,
+            singleLine = true,
+            label = {
+                Text(
+                    stringResource(R.string.expected_salary),
+                    style = MaterialTheme.typography.bodySmall,
+                )
+            },
+            placeholder = {
+                Text(
+                    stringResource(R.string.enter_amount),
+                    color = MaterialTheme.colorScheme.secondary,
+                    style = MaterialTheme.typography.bodyLarge,
+                )
+            },
+            trailingIcon = {
+                if (value.isNotEmpty()) {
+                    IconButton(onClick = onClear) {
+                        Icon(
+                            painter = painterResource(R.drawable.ic_close_24),
+                            contentDescription = "Clear",
+                            tint = MaterialTheme.colorScheme.onSurfaceVariant
+                        )
+                    }
+                }
+            },
+            colors = OutlinedTextFieldDefaults.colors(
+                focusedBorderColor = MaterialTheme.colorScheme.surfaceVariant,
+                unfocusedBorderColor = Color.Transparent,
+                focusedLabelColor = MaterialTheme.colorScheme.primary,
+                unfocusedLabelColor = MaterialTheme.colorScheme.secondary,
+                cursorColor = MaterialTheme.colorScheme.primary
+            )
+        )
+    }
+}
+
+@Composable
+fun NoSalaryCheckbox(
+    checked: Boolean,
+    onCheckedChange: () -> Unit
+) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .height(60.dp),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.SpaceBetween
+    ) {
+        Text(
+            modifier = Modifier.padding(start = 16.dp),
+            text = stringResource(R.string.do_not_show_without_salary),
+            color = MaterialTheme.colorScheme.onBackground,
+            style = MaterialTheme.typography.bodyLarge
+        )
+
+        IconButton(onClick = onCheckedChange) {
+            Icon(
+                painter = painterResource(
+                    id = if (checked) R.drawable.ic_check_box_on__24
+                    else R.drawable.ic_check_box_off__24
+                ),
+                contentDescription = null,
+                Modifier
+                    .padding(8.dp)
+                    .size(24.dp),
+                tint = MaterialTheme.colorScheme.primary
+            )
+        }
+    }
+}
+
+@Composable
+fun FilterButtons(
+    onApply: () -> Unit,
+    onReset: () -> Unit,
+    modifier: Modifier = Modifier
+) {
+    Column(
+        modifier = modifier,
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Bottom
+    ) {
+        Button(
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(59.dp),
+            onClick = onApply,
+            enabled = true,
+            shape = RoundedCornerShape(16.dp),
+            colors = ButtonDefaults.buttonColors(MaterialTheme.colorScheme.primary),
+            content = {
+                Text(
+                    text = stringResource(R.string.apply),
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = MaterialTheme.colorScheme.onPrimary
+                )
+            }
+        )
+
+        Button(
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(59.dp)
+                .padding(top = 8.dp),
+            onClick = onReset,
+            enabled = true,
+            shape = RoundedCornerShape(16.dp),
+            colors = ButtonDefaults.buttonColors(MaterialTheme.colorScheme.onPrimary),
+            content = {
+                Text(
+                    text = stringResource(R.string.reset),
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = MaterialTheme.colorScheme.error
+                )
+            }
+        )
+    }
+}
+
+@Preview(showSystemUi = false, name = "test")
+@Composable
+fun TestFilter() {
+    FilterScreen()
 }

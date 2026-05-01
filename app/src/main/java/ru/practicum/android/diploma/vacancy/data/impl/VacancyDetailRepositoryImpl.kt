@@ -4,7 +4,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import ru.practicum.android.diploma.main.data.dto.NetworkResponse
 import ru.practicum.android.diploma.main.data.mapper.VacanciesMapper
-import ru.practicum.android.diploma.main.data.model.VacanciesSearchState
+import ru.practicum.android.diploma.main.data.model.NetworkState
 import ru.practicum.android.diploma.main.data.network.NetworkClient
 import ru.practicum.android.diploma.main.domain.models.Resource
 import ru.practicum.android.diploma.vacancy.data.dto.VacancyDetailResponse
@@ -16,7 +16,7 @@ class VacancyDetailRepositoryImpl(val networkClient: NetworkClient) : VacancyDet
         val response = networkClient.doRequestVacancyById(vacancyId)
         when (response.resultCode) {
             NetworkResponse.NO_CONNECTION -> {
-                emit(Resource.Error(VacanciesSearchState.NoConnection.state))
+                emit(Resource.Error(NetworkState.NoConnection.state))
             }
 
             NetworkResponse.OK_RESULT -> {
@@ -24,12 +24,12 @@ class VacancyDetailRepositoryImpl(val networkClient: NetworkClient) : VacancyDet
                 if (vacanciesResponse.id.isNotEmpty()) {
                     emit(Resource.Success(VacanciesMapper.mapVacancyDetailDtoToDomain(vacanciesResponse)))
                 } else {
-                    emit(Resource.Error(VacanciesSearchState.Empty.state))
+                    emit(Resource.Error(NetworkState.Empty.state))
                 }
             }
 
             else -> {
-                emit(Resource.Error(VacanciesSearchState.Error.state))
+                emit(Resource.Error(NetworkState.Error.state))
             }
         }
     }

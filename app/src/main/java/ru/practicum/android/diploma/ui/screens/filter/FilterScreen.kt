@@ -2,6 +2,7 @@ package ru.practicum.android.diploma.ui.screens.filter
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
@@ -11,6 +12,8 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.BasicTextField
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
@@ -27,9 +30,12 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.onFocusEvent
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import ru.practicum.android.diploma.R
@@ -38,6 +44,7 @@ import ru.practicum.android.diploma.ui.navigation.AppBarTop
 
 @Composable
 fun FilterScreen(
+    onBack: () -> Unit = {},
     onIndustry: () -> Unit = {},
     onWorkPlace: () -> Unit = {},
     onCheckBox: () -> Unit = {},
@@ -58,7 +65,9 @@ fun FilterScreen(
     ) {
         AppBarTop(
             title = stringResource(R.string.filter_settings),
-            back = ActionBack(isView = true)
+            back = ActionBack(
+                isView = true,
+                onClick = onBack)
         )
 
         Column(modifier = Modifier.padding(top = 16.dp)) {
@@ -135,13 +144,6 @@ fun SelectField(
                     style = MaterialTheme.typography.bodyLarge
                 )
             },
-            placeholder = {
-                Text(
-                    label,
-                    color = MaterialTheme.colorScheme.secondary,
-                    style = MaterialTheme.typography.bodyLarge,
-                )
-            },
             trailingIcon = {
                 if (value.isNotEmpty()) {
                     IconButton(onClick = onClear) {
@@ -183,6 +185,8 @@ fun SalaryField(
     onValueChange: (String) -> Unit,
     onClear: () -> Unit
 ) {
+    var isFocused by remember { mutableStateOf(false) }
+
     Surface(
         color = MaterialTheme.colorScheme.surfaceVariant,
         shape = RoundedCornerShape(12.dp),
@@ -191,42 +195,79 @@ fun SalaryField(
             .padding(horizontal = 16.dp)
             .padding(top = 24.dp)
     ) {
-        OutlinedTextField(
-            value = value,
-            onValueChange = onValueChange,
-            singleLine = true,
-            label = {
-                Text(
-                    stringResource(R.string.expected_salary),
-                    style = MaterialTheme.typography.bodySmall,
-                )
-            },
-            placeholder = {
-                Text(
-                    stringResource(R.string.enter_amount),
-                    color = MaterialTheme.colorScheme.secondary,
-                    style = MaterialTheme.typography.bodyLarge,
-                )
-            },
-            trailingIcon = {
-                if (value.isNotEmpty()) {
-                    IconButton(onClick = onClear) {
-                        Icon(
-                            painter = painterResource(R.drawable.ic_close_24),
-                            contentDescription = "Clear",
-                            tint = MaterialTheme.colorScheme.onSurfaceVariant
-                        )
-                    }
-                }
-            },
-            colors = OutlinedTextFieldDefaults.colors(
-                focusedBorderColor = MaterialTheme.colorScheme.surfaceVariant,
-                unfocusedBorderColor = Color.Transparent,
-                focusedLabelColor = MaterialTheme.colorScheme.primary,
-                unfocusedLabelColor = MaterialTheme.colorScheme.secondary,
-                cursorColor = MaterialTheme.colorScheme.primary
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 16.dp, vertical = 8.dp)
+        ) {
+            Text(
+                text = stringResource(R.string.expected_salary),
+                style = MaterialTheme.typography.bodySmall,
+                color = if (isFocused || value.isNotEmpty()) {
+                    MaterialTheme.colorScheme.primary
+                } else {
+                    MaterialTheme.colorScheme.secondary
+                },
+                modifier = Modifier.padding(bottom = 2.dp)
             )
-        )
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(22.dp),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                BasicTextField(
+                    value = value,
+                    onValueChange = onValueChange,
+                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+                    singleLine = true,
+                    modifier = Modifier
+                        .weight(1f)
+                        .fillMaxHeight()
+                        .onFocusEvent { event ->
+                            isFocused = event.isFocused
+                        },
+                    textStyle = MaterialTheme.typography.bodyLarge.copy(
+                        color = MaterialTheme.colorScheme.onBackground
+                    ),
+                    cursorBrush = SolidColor(MaterialTheme.colorScheme.primary),
+                    decorationBox = { innerTextField ->
+                        Box(
+                            modifier = Modifier
+                                .fillMaxSize()
+                        ) {
+                            if (value.isEmpty() && !isFocused) {
+                                Text(
+                                    text = stringResource(R.string.enter_amount),
+                                    style = MaterialTheme.typography.bodyLarge,
+                                    color = MaterialTheme.colorScheme.secondary
+                                )
+                            }
+                            innerTextField()
+                        }
+                    }
+                )
+            }
+        }
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.End
+        ) {
+
+            if (value.isNotEmpty()) {
+                IconButton(
+                    onClick = onClear,
+                    modifier = Modifier.size(48.dp),
+                ) {
+                    Icon(
+                        painter = painterResource(R.drawable.ic_close_24),
+                        contentDescription = "Clear",
+                        tint = MaterialTheme.colorScheme.onSurfaceVariant,
+                        modifier = Modifier.size(24.dp)
+                    )
+                }
+            }
+        }
     }
 }
 

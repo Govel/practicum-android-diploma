@@ -5,6 +5,6 @@ data class VacancyCardDto(
     val name: String,
     val company: String?,
     val city: String?,
-    val salary: VacancyCardSalary?,
+    val salary: VacancySalary?,
     val logo: String?,
 )

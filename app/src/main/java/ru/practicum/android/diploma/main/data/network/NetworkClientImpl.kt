@@ -8,11 +8,12 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import retrofit2.HttpException
 import ru.practicum.android.diploma.main.data.dto.NetworkResponse
-import ru.practicum.android.diploma.main.data.model.VacancyFilter
+import ru.practicum.android.diploma.main.domain.models.VacancyFilter
 
 class NetworkClientImpl(
     private val hhApi: HhApi,
-    private val context: Context
+    private val context: Context,
+    private val token: String
 ) : NetworkClient {
     private fun isConnected(): Boolean {
         val connectivityManager = context.getSystemService(
@@ -41,7 +42,7 @@ class NetworkClientImpl(
                     data = result
                 }
             } catch (ex: HttpException) {
-                Log.e("error", "Error: ${ex.message}")
+                Log.e("error", "Ошибка: ${ex.message}")
                 NetworkResponse().apply { resultCode = NetworkResponse.BAD_REQUEST }
             }
         }
@@ -50,6 +51,7 @@ class NetworkClientImpl(
     override suspend fun doRequestVacancies(filter: VacancyFilter): NetworkResponse {
         return apiCall {
             hhApi.getVacancies(
+                token = token,
                 area = filter.area,
                 industry = filter.industry,
                 text = filter.text,
@@ -61,14 +63,14 @@ class NetworkClientImpl(
     }
 
     override suspend fun doRequestAreas(): NetworkResponse {
-        return apiCall { hhApi.getAreas() }
+        return apiCall { hhApi.getAreas(token = token) }
     }
 
     override suspend fun doRequestIndustries(): NetworkResponse {
-        return apiCall { hhApi.getIndustries() }
+        return apiCall { hhApi.getIndustries(token = token) }
     }
 
     override suspend fun doRequestVacancyById(id: String): NetworkResponse {
-        return apiCall { hhApi.getVacancyById(id = id) }
+        return apiCall { hhApi.getVacancyById(token = token, id = id) }
     }
 }

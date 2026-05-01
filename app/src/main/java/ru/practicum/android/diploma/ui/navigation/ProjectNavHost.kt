@@ -3,14 +3,15 @@ package ru.practicum.android.diploma.ui.navigation
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
-import ru.practicum.android.diploma.ui.screens.FavoritesScreen
-import ru.practicum.android.diploma.ui.screens.Routes
-import ru.practicum.android.diploma.ui.screens.SearchScreen
-import ru.practicum.android.diploma.ui.screens.TeamScreen
-import ru.practicum.android.diploma.ui.screens.VacancyDetailScreen
+import androidx.navigation.navArgument
+import ru.practicum.android.diploma.main.ui.screen.SearchScreen
+import ru.practicum.android.diploma.ui.screens.favorites.FavoritesScreen
 import ru.practicum.android.diploma.ui.screens.filter.FilterScreen
+import ru.practicum.android.diploma.ui.screens.team.TeamScreen
+import ru.practicum.android.diploma.vacancy.ui.VacancyDetailScreen
 
 @Composable
 fun ProjectNavHost(
@@ -25,12 +26,19 @@ fun ProjectNavHost(
         composable(Routes.SEARCH) {
             SearchScreen(
                 onFilter = { navController.navigate(Routes.FILTER) },
-                onVacancies = { navController.navigate(Routes.VACANCY) }
+                isFilterActive = false,
+                onVacancyClick = { vacancyId ->
+                    navController.navigate("${Routes.VACANCY}/$vacancyId")
+                }
             )
         }
 
         composable(Routes.FAVORITES) {
-            FavoritesScreen()
+            FavoritesScreen(
+                onVacancyClick = { vacancyId ->
+                    navController.navigate("${Routes.VACANCY}/$vacancyId")
+                }
+            )
         }
 
         composable(Routes.TEAM) {
@@ -41,9 +49,15 @@ fun ProjectNavHost(
             FilterScreen()
         }
 
-        composable(Routes.VACANCY) {
-            VacancyDetailScreen()
+        composable(
+            route = "${Routes.VACANCY}/{vacancyId}",
+            arguments = listOf(navArgument("vacancyId") { type = NavType.StringType })
+        ) { backStackEntry ->
+            val vacancyId = backStackEntry.arguments?.getString("vacancyId") ?: ""
+            VacancyDetailScreen(
+                onBack = { navController.popBackStack() },
+                vacancyId = vacancyId
+            )
         }
-
     }
 }

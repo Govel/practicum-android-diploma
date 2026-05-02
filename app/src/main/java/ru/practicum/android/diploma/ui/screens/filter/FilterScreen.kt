@@ -132,6 +132,7 @@ fun SelectField(
         modifier = modifier
             .fillMaxWidth()
             .height(60.dp),
+        onClick = onNavigate
     ) {
         OutlinedTextField(
             value = value,
@@ -155,16 +156,15 @@ fun SelectField(
                         )
                     }
                 } else {
-                    IconButton(onClick = onNavigate) {
-                        Icon(
-                            painter = painterResource(id = R.drawable.ic_arrow_forward_24),
-                            contentDescription = null,
-                            tint = MaterialTheme.colorScheme.onBackground,
-                            modifier = Modifier
-                                .padding(8.dp)
-                                .size(32.dp)
-                        )
-                    }
+                    Icon(
+                        painter = painterResource(id = R.drawable.ic_arrow_forward_24),
+                        contentDescription = null,
+                        tint = MaterialTheme.colorScheme.onBackground,
+                        modifier = Modifier
+                            .padding(8.dp)
+                            .size(32.dp)
+                    )
+
                 }
             },
             colors = OutlinedTextFieldDefaults.colors(

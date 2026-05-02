@@ -187,6 +187,7 @@ fun SalaryField(
     onClear: () -> Unit
 ) {
     var isFocused by remember { mutableStateOf(false) }
+
     Surface(
         color = MaterialTheme.colorScheme.surfaceVariant,
         shape = RoundedCornerShape(12.dp),
@@ -200,71 +201,108 @@ fun SalaryField(
                 .fillMaxWidth()
                 .padding(horizontal = 16.dp, vertical = 8.dp)
         ) {
-            Text(
-                text = stringResource(R.string.expected_salary),
-                style = MaterialTheme.typography.bodySmall,
-                color = if (isFocused || value.isNotEmpty()) {
-                    MaterialTheme.colorScheme.primary
-                } else {
-                    MaterialTheme.colorScheme.secondary
-                },
-                modifier = Modifier.padding(bottom = 2.dp)
+            SalaryLabel(isFocused = isFocused, value = value)
+            SalaryInputRow(
+                value = value,
+                isFocused = isFocused,
+                onValueChange = onValueChange,
+                onFocusChange = { isFocused = it }
             )
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(22.dp),
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                BasicTextField(
+        }
+        SalaryClearButton(value = value, onClear = onClear)
+    }
+}
+
+@Composable
+private fun SalaryLabel(isFocused: Boolean, value: String) {
+    Text(
+        text = stringResource(R.string.expected_salary),
+        style = MaterialTheme.typography.bodySmall,
+        color = if (isFocused || value.isNotEmpty()) {
+            MaterialTheme.colorScheme.primary
+        } else {
+            MaterialTheme.colorScheme.secondary
+        },
+        modifier = Modifier.padding(bottom = 2.dp)
+    )
+}
+
+@Composable
+private fun SalaryInputRow(
+    value: String,
+    isFocused: Boolean,
+    onValueChange: (String) -> Unit,
+    onFocusChange: (Boolean) -> Unit
+) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .height(22.dp),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        BasicTextField(
+            value = value,
+            onValueChange = onValueChange,
+            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+            singleLine = true,
+            modifier = Modifier
+                .weight(1f)
+                .fillMaxHeight()
+                .onFocusEvent { event ->
+                    onFocusChange(event.isFocused)
+                },
+            textStyle = MaterialTheme.typography.bodyLarge.copy(
+                color = MaterialTheme.colorScheme.onBackground
+            ),
+            cursorBrush = SolidColor(MaterialTheme.colorScheme.primary),
+            decorationBox = { innerTextField ->
+                SalaryDecorationBox(
                     value = value,
-                    onValueChange = onValueChange,
-                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
-                    singleLine = true,
-                    modifier = Modifier
-                        .weight(1f)
-                        .fillMaxHeight()
-                        .onFocusEvent { event ->
-                            isFocused = event.isFocused
-                        },
-                    textStyle = MaterialTheme.typography.bodyLarge.copy(
-                        color = MaterialTheme.colorScheme.onBackground
-                    ),
-                    cursorBrush = SolidColor(MaterialTheme.colorScheme.primary),
-                    decorationBox = { innerTextField ->
-                        Box(
-                            modifier = Modifier
-                                .fillMaxSize()
-                        ) {
-                            if (value.isEmpty() && !isFocused) {
-                                Text(
-                                    text = stringResource(R.string.enter_amount),
-                                    style = MaterialTheme.typography.bodyLarge,
-                                    color = MaterialTheme.colorScheme.secondary
-                                )
-                            }
-                            innerTextField()
-                        }
-                    }
+                    isFocused = isFocused,
+                    innerTextField = innerTextField
                 )
             }
+        )
+    }
+}
+
+@Composable
+private fun SalaryDecorationBox(
+    value: String,
+    isFocused: Boolean,
+    innerTextField: @Composable () -> Unit
+) {
+    Box(
+        modifier = Modifier.fillMaxSize()
+    ) {
+        if (value.isEmpty() && !isFocused) {
+            Text(
+                text = stringResource(R.string.enter_amount),
+                style = MaterialTheme.typography.bodyLarge,
+                color = MaterialTheme.colorScheme.secondary
+            )
         }
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.End
-        ) {
-            if (value.isNotEmpty()) {
-                IconButton(
-                    onClick = onClear,
-                    modifier = Modifier.size(48.dp),
-                ) {
-                    Icon(
-                        painter = painterResource(R.drawable.ic_close_24),
-                        contentDescription = "Clear",
-                        tint = MaterialTheme.colorScheme.onSurfaceVariant,
-                        modifier = Modifier.size(24.dp)
-                    )
-                }
+        innerTextField()
+    }
+}
+
+@Composable
+private fun SalaryClearButton(value: String, onClear: () -> Unit) {
+    Row(
+        modifier = Modifier.fillMaxWidth(),
+        horizontalArrangement = Arrangement.End
+    ) {
+        if (value.isNotEmpty()) {
+            IconButton(
+                onClick = onClear,
+                modifier = Modifier.size(48.dp),
+            ) {
+                Icon(
+                    painter = painterResource(R.drawable.ic_close_24),
+                    contentDescription = "Clear",
+                    tint = MaterialTheme.colorScheme.onSurfaceVariant,
+                    modifier = Modifier.size(24.dp)
+                )
             }
         }
     }

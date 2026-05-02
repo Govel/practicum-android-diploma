@@ -7,6 +7,5 @@ object Routes {
     const val FILTER = "filter"
     const val VACANCY = "vacancy"
     const val INDUSTRY = "industry"
-
     const val WORKPLACE = "workplace"
 }

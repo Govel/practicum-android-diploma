@@ -49,6 +49,7 @@ fun ProjectNavHost(
 
         composable(Routes.FILTER) {
             FilterScreen(
+                onBack = { navController.popBackStack() },
                 onIndustry = { navController.navigate(Routes.INDUSTRY) },
                 onWorkPlace = { navController.navigate(Routes.WORKPLACE) }
             )

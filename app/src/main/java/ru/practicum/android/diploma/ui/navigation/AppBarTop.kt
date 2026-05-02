@@ -66,7 +66,7 @@ fun AppBarTop(
             onClick = back.onClick
         )
 
-        AppTitle(title = title, hasBackButton = back.isView)
+        AppTitle(title = title)
 
         Column(
             modifier = Modifier
@@ -95,7 +95,7 @@ private fun AppButtonBack(
             painter = painterResource(id = R.drawable.ic_arrow_back_24),
             contentDescription = null,
             modifier = Modifier
-                .padding(horizontal = 16.dp)
+                .padding(start = 16.dp)
                 .clickable { onClick?.invoke() },
         )
     }
@@ -103,14 +103,13 @@ private fun AppButtonBack(
 
 @Composable
 private fun AppTitle(
-    title: String,
-    hasBackButton: Boolean = false
+    title: String
 ) {
     Text(
         text = title,
         modifier = Modifier
             .fillMaxHeight()
-            .padding(start = if (hasBackButton) 4.dp else 16.dp)
+            .padding(start = 16.dp)
             .padding(vertical = 20.dp),
         style = MaterialTheme.typography.titleLarge
     )

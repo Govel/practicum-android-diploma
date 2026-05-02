@@ -67,7 +67,8 @@ fun FilterScreen(
             title = stringResource(R.string.filter_settings),
             back = ActionBack(
                 isView = true,
-                onClick = onBack)
+                onClick = onBack
+            )
         )
 
         Column(modifier = Modifier.padding(top = 16.dp)) {
@@ -186,7 +187,6 @@ fun SalaryField(
     onClear: () -> Unit
 ) {
     var isFocused by remember { mutableStateOf(false) }
-
     Surface(
         color = MaterialTheme.colorScheme.surfaceVariant,
         shape = RoundedCornerShape(12.dp),
@@ -253,7 +253,6 @@ fun SalaryField(
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.End
         ) {
-
             if (value.isNotEmpty()) {
                 IconButton(
                     onClick = onClear,
@@ -336,7 +335,6 @@ fun FilterButtons(
                 )
             }
         )
-
         Button(
             modifier = Modifier
                 .fillMaxWidth()

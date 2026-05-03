@@ -13,7 +13,7 @@ import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import ru.practicum.android.diploma.R
-import ru.practicum.android.diploma.main.data.model.VacanciesSearchState
+import ru.practicum.android.diploma.main.data.model.NetworkState
 import ru.practicum.android.diploma.main.domain.api.VacanciesInteractor
 import ru.practicum.android.diploma.main.domain.models.VacancyCard
 import ru.practicum.android.diploma.main.domain.models.VacancyFilter
@@ -139,7 +139,7 @@ class SearchViewModel(
         val totalFound = meta?.first
         val error = meta?.second
 
-        if (error != null && error != VacanciesSearchState.Empty.state) {
+        if (error != null && error != NetworkState.Empty.state) {
             handleSearchErrorState(error, isNewSearch)
             return
         }
@@ -205,7 +205,7 @@ class SearchViewModel(
                 isLoadingMore = false,
                 vacancies = vacancyList,
                 totalFound = totalFound,
-                isEmptyResult = vacancyList.isEmpty() || error == VacanciesSearchState.Empty.state,
+                isEmptyResult = vacancyList.isEmpty() || error == NetworkState.Empty.state,
                 isNetworkError = false,
                 isServerError = false,
                 currentPage = page,

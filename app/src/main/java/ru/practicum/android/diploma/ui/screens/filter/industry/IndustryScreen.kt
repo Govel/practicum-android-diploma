@@ -6,13 +6,21 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import org.koin.androidx.compose.koinViewModel
 import ru.practicum.android.diploma.R
+import ru.practicum.android.diploma.filter.industry.ui.IndustryViewModel
 
 @Composable
-fun IndustryScreen() {
+fun IndustryScreen(
+    viewModel: IndustryViewModel = koinViewModel()
+) {
+    LaunchedEffect(Unit) {
+        viewModel.loadIndustries()
+    }
     Box(
         modifier = Modifier
             .fillMaxSize()

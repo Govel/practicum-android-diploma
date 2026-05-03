@@ -9,6 +9,7 @@ import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import ru.practicum.android.diploma.filter.industry.domain.api.IndustryInteractor
+import ru.practicum.android.diploma.filter.industry.domain.models.FilterIndustry
 import ru.practicum.android.diploma.filter.industry.domain.models.IndustriesState
 import ru.practicum.android.diploma.main.data.model.NetworkState
 
@@ -19,7 +20,7 @@ class IndustryViewModel(
     private val _state = MutableStateFlow<IndustriesState>(IndustriesState.Loading)
     val state: StateFlow<IndustriesState> = _state.asStateFlow()
 
-    var currentIndustries: List<String>? = emptyList()
+    var currentIndustries: List<FilterIndustry>? = emptyList()
 
     fun loadIndustries() {
         viewModelScope.launch {
@@ -36,7 +37,7 @@ class IndustryViewModel(
         }
     }
 
-    private fun handleIndustriesResult(result: Pair<List<String>?, String?>) {
+    private fun handleIndustriesResult(result: Pair<List<FilterIndustry>?, String?>) {
         val (industries, error) = result
         if (error != null && error != NetworkState.Empty.state) {
             _state.update { IndustriesState.Error }

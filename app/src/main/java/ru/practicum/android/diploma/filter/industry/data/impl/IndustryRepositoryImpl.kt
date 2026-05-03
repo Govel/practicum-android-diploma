@@ -5,13 +5,14 @@ import kotlinx.coroutines.flow.flow
 import ru.practicum.android.diploma.filter.data.mapper.FilterMapper
 import ru.practicum.android.diploma.filter.industry.data.dto.FilterIndustryResponse
 import ru.practicum.android.diploma.filter.industry.domain.api.IndustryRepository
+import ru.practicum.android.diploma.filter.industry.domain.models.FilterIndustry
 import ru.practicum.android.diploma.main.data.dto.NetworkResponse
 import ru.practicum.android.diploma.main.data.model.NetworkState
 import ru.practicum.android.diploma.main.data.network.NetworkClient
 import ru.practicum.android.diploma.main.domain.models.Resource
 
 class IndustryRepositoryImpl(val networkClient: NetworkClient) : IndustryRepository {
-    override fun getIndustries(): Flow<Resource<List<String>>> = flow {
+    override fun getIndustries(): Flow<Resource<List<FilterIndustry>>> = flow {
         val response = networkClient.doRequestIndustries()
         when (response.resultCode) {
             NetworkResponse.NO_CONNECTION -> {

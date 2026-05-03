@@ -1,5 +1,6 @@
 package ru.practicum.android.diploma.filter.industry.ui
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -20,6 +21,13 @@ class IndustryViewModel(
     private val _state = MutableStateFlow<IndustriesState>(IndustriesState.Loading)
     val state: StateFlow<IndustriesState> = _state.asStateFlow()
 
+    private val _selectedId = MutableStateFlow<Int>(0)
+    val selectedId: StateFlow<Int> = _selectedId.asStateFlow()
+
+    fun selectIndustry(id: Int) {
+        _selectedId.value = id
+        Log.d("MyTag", " _selectedId.value: ${_selectedId.value}")
+    }
     var currentIndustries: List<FilterIndustry>? = emptyList()
 
     fun loadIndustries() {
@@ -31,7 +39,6 @@ class IndustryViewModel(
                     }
                 }
                 .collect { result ->
-                    currentIndustries = result.first
                     handleIndustriesResult(result)
                 }
         }
@@ -43,6 +50,7 @@ class IndustryViewModel(
             _state.update { IndustriesState.Error }
             return
         }
-        _state.update { IndustriesState.Content(industries) }
+        currentIndustries = industries
+        _state.update { IndustriesState.Content(industries!!) }
     }
 }

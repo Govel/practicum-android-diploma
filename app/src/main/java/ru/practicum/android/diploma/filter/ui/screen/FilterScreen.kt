@@ -51,7 +51,6 @@ fun FilterScreen(
     onIndustry: () -> Unit = {},
     onWorkPlace: () -> Unit = {},
     onApply: () -> Unit = {},
-    onReset: () -> Unit = {},
     viewModel: FilterViewModel = koinViewModel()
 ) {
     var workPlaceText by remember { mutableStateOf("") }
@@ -107,7 +106,6 @@ fun FilterScreen(
                 },
                 onReset = {
                     viewModel.clearAllFilters()
-                    onReset()
                 },
                 modifier = Modifier
                     .fillMaxHeight()

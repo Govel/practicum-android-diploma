@@ -260,12 +260,12 @@ fun Render(state: IndustriesState, viewModel: IndustryViewModel) {
     when (state) {
         is IndustriesState.Loading -> LoadingIndustry()
         is IndustriesState.Error -> ErrorIndustry(
-            painter = painterResource(R.drawable.no_internet),
-            text = stringResource(R.string.no_internet)
+            painter = painterResource(R.drawable.magic_carpet),
+            text = stringResource(R.string.failed_to_get_list)
         )
         is IndustriesState.Empty -> ErrorIndustry(
             painter = painterResource(R.drawable.empty_cat),
-            text = stringResource(R.string.failed_to_get_list)
+            text = stringResource(R.string.industry_not_found)
         )
         is IndustriesState.Content -> IndustriesResult(industries = state.industries, viewModel = viewModel)
     }

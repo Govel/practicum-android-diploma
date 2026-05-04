@@ -57,4 +57,5 @@
 
     <string name="enter_industry">Введите отрасль</string>
     <string name="select_industry">Выбор отрасли</string>
+    <string name="industry_not_found">Такой отрасли не найдено</string>
 </resources>

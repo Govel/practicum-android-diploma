@@ -3,20 +3,22 @@ package ru.practicum.android.diploma.filter.industry.ui
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.navigationBars
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.selection.toggleable
+import androidx.compose.foundation.selection.selectableGroup
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
@@ -28,14 +30,15 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
+import androidx.compose.material3.RadioButton
+import androidx.compose.material3.RadioButtonDefaults
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -44,7 +47,6 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
@@ -60,59 +62,82 @@ import ru.practicum.android.diploma.ui.navigation.AppBarTop
 @Composable
 fun IndustryScreen(
     onBack: () -> Unit = {},
+    onSelect: (FilterIndustry?) -> Unit = {},
     viewModel: IndustryViewModel = koinViewModel()
 ) {
-    var isSelected: Boolean? by remember { mutableStateOf(false) }
+    val isSelected by viewModel.isSelected.collectAsStateWithLifecycle()
     val state by viewModel.state.collectAsStateWithLifecycle()
 
     LaunchedEffect(Unit) {
         viewModel.loadIndustries()
     }
 
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(MaterialTheme.colorScheme.onPrimary)
-    ) {
-        AppBarTop(
-            title = stringResource(R.string.select_industry),
-            back = ActionBack(
-                isView = true,
-                onClick = onBack
-            ),
-        )
-        Render(state = state, viewModel = viewModel)
-        if (isSelected ?: false) {
-            Button(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(60.dp)
-                    .padding(horizontal = 16.dp),
-                onClick = { },
-                enabled = true,
-                shape = RoundedCornerShape(12.dp),
-                colors = ButtonDefaults.buttonColors(MaterialTheme.colorScheme.primary),
-                content = {
-                    Text(
-                        text = stringResource(R.string.select),
-                        style = MaterialTheme.typography.bodyMedium,
-                        color = MaterialTheme.colorScheme.onPrimary
+    Scaffold(
+        topBar = {
+            AppBarTop(
+                title = stringResource(R.string.select_industry),
+                back = ActionBack(isView = true, onClick = onBack),
+            )
+        },
+        bottomBar = {
+            if (isSelected) {
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .background(
+                            color = MaterialTheme.colorScheme.onPrimary
+                        )
+                        .windowInsetsPadding(WindowInsets.navigationBars)
+                        .padding(bottom = 24.dp)
+                ) {
+                    Button(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(60.dp)
+                            .padding(horizontal = 16.dp),
+                        onClick = {
+                            val selectedObject = viewModel.selectedIndustry.value
+                            onSelect(selectedObject)
+                            viewModel.resetSelection()
+                        },
+                        shape = RoundedCornerShape(12.dp),
+                        colors = ButtonDefaults.buttonColors(MaterialTheme.colorScheme.primary),
+                        content = {
+                            Text(
+                                text = stringResource(R.string.select),
+                                style = MaterialTheme.typography.bodyMedium,
+                                color = MaterialTheme.colorScheme.onPrimary
+                            )
+                        }
                     )
                 }
-            )
-            Spacer(modifier = Modifier.height(24.dp))
+                Spacer(modifier = Modifier.height(24.dp))
+            }
+        },
+        content = { innerPadding ->
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(innerPadding)
+                    .background(MaterialTheme.colorScheme.onPrimary)
+            ) {
+                SearchTextField(viewModel = viewModel)
+
+                Box(modifier = Modifier.weight(1f)) {
+                    Render(state = state, viewModel = viewModel)
+                }
+            }
         }
-    }
+    )
 }
 
 @Composable
-fun IndustriesResult(
-    industries: List<FilterIndustry>,
+fun SearchTextField(
     viewModel: IndustryViewModel
 ) {
-    var searchText by remember { mutableStateOf("") }
+    val searchText by viewModel.query.collectAsStateWithLifecycle()
     val focusManager = LocalFocusManager.current
-    val selectedId by viewModel.selectedId.collectAsStateWithLifecycle()
+
     Surface(
         color = MaterialTheme.colorScheme.surfaceVariant,
         shape = RoundedCornerShape(12.dp),
@@ -123,8 +148,7 @@ fun IndustriesResult(
         OutlinedTextField(
             value = searchText,
             onValueChange = { newText ->
-                searchText = newText
-                // viewModel.onSearchTextChanged(newText)
+                viewModel.onSearchTextChanged(newText)
             },
             placeholder = {
                 Text(
@@ -142,7 +166,7 @@ fun IndustriesResult(
                     )
                 } else {
                     IconButton(onClick = {
-                        searchText = ""
+                        viewModel.onSearchTextChanged("")
                         focusManager.clearFocus()
                     }) {
                         Icon(
@@ -163,19 +187,31 @@ fun IndustriesResult(
             )
         )
     }
-    LazyColumn(
-        modifier = Modifier
-            .background(MaterialTheme.colorScheme.onPrimary),
-    ) {
-        items(
-            items = industries,
-            key = { it.id }
-        ) { industry ->
-            IndustryItem(
-                item = industry,
-                isSelected = selectedId == industry.id,
-                onSelect = { viewModel.selectIndustry(industry.id) }
-            )
+}
+
+@Composable
+fun IndustriesResult(
+    viewModel: IndustryViewModel
+) {
+    val state by viewModel.state.collectAsStateWithLifecycle()
+
+    if (state is IndustriesState.Content) {
+        val industries = (state as IndustriesState.Content).industries
+
+        LazyColumn(
+            modifier = Modifier
+                .background(MaterialTheme.colorScheme.onPrimary),
+        ) {
+            items(
+                items = industries,
+                key = { it.id }
+            ) { industry ->
+                IndustryItem(
+                    item = industry,
+                    isSelectedObject = viewModel.selectedIndustry.collectAsState().value,
+                    onSelect = viewModel::selectIndustry
+                )
+            }
         }
     }
 }
@@ -183,14 +219,16 @@ fun IndustriesResult(
 @Composable
 fun IndustryItem(
     item: FilterIndustry,
-    isSelected: Boolean,
-    onSelect: () -> Unit = {}
+    isSelectedObject: FilterIndustry?,
+    onSelect: (FilterIndustry) -> Unit = {}
 ) {
+    val isSelected = isSelectedObject?.id == item.id
     Row(
         modifier = Modifier
             .fillMaxWidth()
+            .selectableGroup()
             .height(60.dp)
-            .clickable(onClick = onSelect),
+            .clickable(onClick = { onSelect(item) }),
         verticalAlignment = Alignment.CenterVertically,
 
     ) {
@@ -203,56 +241,15 @@ fun IndustryItem(
             maxLines = 2,
             overflow = TextOverflow.Ellipsis
         )
-        CustomRadioButton(
+        RadioButton(
             selected = isSelected,
-            onSelectionChanged = onSelect,
-            enabled = true,
-            modifier = Modifier.padding(start = 28.dp, end = 16.dp)
+            onClick = { onSelect(item) },
+            colors = RadioButtonDefaults.colors(
+                selectedColor = MaterialTheme.colorScheme.primary,
+                unselectedColor = MaterialTheme.colorScheme.primary
+            )
         )
     }
-}
-
-@Composable
-fun CustomRadioButton(
-    modifier: Modifier = Modifier,
-    selected: Boolean,
-    onSelectionChanged: () -> Unit = {},
-    enabled: Boolean = true
-) {
-    val interactionSource = remember { MutableInteractionSource() }
-
-    Box(
-        modifier = modifier
-            .toggleable(
-                value = selected,
-                onValueChange = { onSelectionChanged() },
-                enabled = enabled,
-                role = Role.RadioButton,
-                interactionSource = interactionSource,
-                indication = null,
-            )
-            .size(24.dp),
-    ) {
-        if (selected) SelectedImage() else UnselectedImage()
-    }
-}
-
-@Composable
-fun SelectedImage() {
-    Image(
-        painter = painterResource(R.drawable.ic_radio_button_on__24),
-        contentDescription = null,
-        modifier = Modifier.size(24.dp)
-    )
-}
-
-@Composable
-fun UnselectedImage() {
-    Image(
-        painter = painterResource(R.drawable.ic_radio_button_off__24),
-        contentDescription = null,
-        modifier = Modifier.size(24.dp)
-    )
 }
 
 @Composable
@@ -263,11 +260,13 @@ fun Render(state: IndustriesState, viewModel: IndustryViewModel) {
             painter = painterResource(R.drawable.magic_carpet),
             text = stringResource(R.string.failed_to_get_list)
         )
+
         is IndustriesState.Empty -> ErrorIndustry(
             painter = painterResource(R.drawable.empty_cat),
             text = stringResource(R.string.industry_not_found)
         )
-        is IndustriesState.Content -> IndustriesResult(industries = state.industries, viewModel = viewModel)
+
+        is IndustriesState.Content -> IndustriesResult(viewModel = viewModel)
     }
 }
 

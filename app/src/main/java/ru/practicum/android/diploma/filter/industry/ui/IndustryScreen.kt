@@ -90,7 +90,7 @@ fun IndustryScreen(
                     .padding(horizontal = 16.dp),
                 onClick = { },
                 enabled = true,
-                shape = RoundedCornerShape(16.dp),
+                shape = RoundedCornerShape(12.dp),
                 colors = ButtonDefaults.buttonColors(MaterialTheme.colorScheme.primary),
                 content = {
                     Text(

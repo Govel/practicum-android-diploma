@@ -363,7 +363,7 @@ fun FilterButtons(
                 .height(59.dp),
             onClick = onApply,
             enabled = true,
-            shape = RoundedCornerShape(16.dp),
+            shape = RoundedCornerShape(12.dp),
             colors = ButtonDefaults.buttonColors(MaterialTheme.colorScheme.primary),
             content = {
                 Text(
@@ -380,7 +380,7 @@ fun FilterButtons(
                 .padding(top = 8.dp),
             onClick = onReset,
             enabled = true,
-            shape = RoundedCornerShape(16.dp),
+            shape = RoundedCornerShape(12.dp),
             colors = ButtonDefaults.buttonColors(MaterialTheme.colorScheme.onPrimary),
             content = {
                 Text(

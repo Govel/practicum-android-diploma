@@ -21,7 +21,7 @@ class IndustryViewModel(
     private val _state = MutableStateFlow<IndustriesState>(IndustriesState.Loading)
     val state: StateFlow<IndustriesState> = _state.asStateFlow()
 
-    private val _selectedId = MutableStateFlow<Int>(0)
+    private val _selectedId = MutableStateFlow<Int>(-1)
     val selectedId: StateFlow<Int> = _selectedId.asStateFlow()
 
     fun selectIndustry(id: Int) {

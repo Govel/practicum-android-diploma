@@ -62,8 +62,9 @@ fun SearchScreen(
     val filterIsActive by viewModel.filterIsActive.collectAsState()
 
     LaunchedEffect(Unit) {
+
         val savedStateHandle = navController.currentBackStackEntry?.savedStateHandle
-        
+
         savedStateHandle?.get<Boolean>("filtersChanged")?.let { filtersChanged ->
             if (filtersChanged) {
                 savedStateHandle.remove<Boolean>("filtersChanged")
@@ -88,7 +89,6 @@ fun SearchScreen(
             searchText = state.searchText
         }
     }
-
 
     Column(
         modifier = Modifier

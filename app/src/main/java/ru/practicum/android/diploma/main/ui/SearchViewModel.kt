@@ -1,3 +1,5 @@
+@file:Suppress("MagicNumber")
+
 package ru.practicum.android.diploma.main.ui
 
 import android.content.Context
@@ -78,7 +80,7 @@ class SearchViewModel(
 
     private suspend fun collectFilterState() {
         while (true) {
-            delay(1000) // или лучше сделать callback
+            delay(1000)
             _filterIsActive.update { filterSettingsInteractor.hasAnyFilter() }
         }
     }

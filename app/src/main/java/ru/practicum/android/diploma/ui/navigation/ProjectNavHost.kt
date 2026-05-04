@@ -55,7 +55,6 @@ fun ProjectNavHost(
                     navController.popBackStack()
                 },
                 onIndustry = { navController.navigate(Routes.INDUSTRY) },
-                onWorkPlace = { navController.navigate(Routes.WORKPLACE) }
             )
         }
 

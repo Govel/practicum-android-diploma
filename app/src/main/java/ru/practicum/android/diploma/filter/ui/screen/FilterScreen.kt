@@ -49,12 +49,9 @@ import ru.practicum.android.diploma.ui.navigation.AppBarTop
 fun FilterScreen(
     onBack: () -> Unit = {},
     onIndustry: () -> Unit = {},
-    onWorkPlace: () -> Unit = {},
     onApply: () -> Unit = {},
     viewModel: FilterViewModel = koinViewModel()
 ) {
-    var workPlaceText by remember { mutableStateOf("") }
-    var industryText by remember { mutableStateOf("") }
     val state by viewModel.state.collectAsStateWithLifecycle()
 
     Column(
@@ -72,16 +69,9 @@ fun FilterScreen(
 
         Column(modifier = Modifier.padding(top = 16.dp)) {
             SelectField(
-                label = stringResource(R.string.work_place),
-                value = workPlaceText,
-                onClear = { workPlaceText = "" },
-                onNavigate = onWorkPlace
-            )
-
-            SelectField(
                 label = stringResource(R.string.industry),
-                value = industryText,
-                onClear = { industryText = "" },
+                value = state.industry,
+                onClear = {  viewModel.updateIndustry("", -1) },
                 onNavigate = onIndustry
             )
         }

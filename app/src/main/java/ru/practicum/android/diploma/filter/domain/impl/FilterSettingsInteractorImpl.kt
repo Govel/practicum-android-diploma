@@ -13,4 +13,8 @@ class FilterSettingsInteractorImpl(
     override fun getOnlyWithSalary(): Boolean = repository.getOnlyWithSalary()
     override fun clearAllFilters() = repository.clearAllFilters()
     override fun hasAnyFilter(): Boolean = repository.hasAnyFilter()
+
+    override fun saveIndustry(industryId: Int, industryName: String) = repository.saveIndustry(industryId, industryName)
+    override fun getIndustryId(): Int = repository.getIndustryId()
+    override fun getIndustryName(): String = repository.getIndustryName()
 }

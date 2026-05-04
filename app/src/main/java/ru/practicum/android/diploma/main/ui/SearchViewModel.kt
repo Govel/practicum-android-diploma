@@ -1,3 +1,5 @@
+@file:Suppress("MagicNumber")
+
 package ru.practicum.android.diploma.main.ui
 
 import android.content.Context
@@ -13,6 +15,7 @@ import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import ru.practicum.android.diploma.R
+import ru.practicum.android.diploma.filter.domain.api.FilterSettingsInteractor
 import ru.practicum.android.diploma.main.data.model.NetworkState
 import ru.practicum.android.diploma.main.domain.api.VacanciesInteractor
 import ru.practicum.android.diploma.main.domain.models.VacancyCard
@@ -22,14 +25,24 @@ import ru.practicum.android.diploma.main.ui.states.SearchState
 
 class SearchViewModel(
     private val interactor: VacanciesInteractor,
+    private val filterSettingsInteractor: FilterSettingsInteractor,
     private val context: Context
 ) : ViewModel() {
 
     private val _state = MutableStateFlow(SearchState())
     val state: StateFlow<SearchState> = _state.asStateFlow()
 
+    private val _filterIsActive = MutableStateFlow(false)
+    val filterIsActive: StateFlow<Boolean> = _filterIsActive.asStateFlow()
+
     private var searchJob: Job? = null
     private var currentQuery: String = ""
+
+    init {
+        viewModelScope.launch {
+            collectFilterState()
+        }
+    }
 
     fun onSearchTextChanged(text: String) {
         _state.update { it.copy(searchText = text) }
@@ -65,6 +78,13 @@ class SearchViewModel(
         }
     }
 
+    private suspend fun collectFilterState() {
+        while (true) {
+            delay(1000)
+            _filterIsActive.update { filterSettingsInteractor.hasAnyFilter() }
+        }
+    }
+
     fun loadNextPage() {
         val currentState = _state.value
         if (!currentState.hasMorePages || currentState.isLoading || currentState.isLoadingMore) return
@@ -81,6 +101,14 @@ class SearchViewModel(
         ).show()
     }
 
+    fun refreshSearch() {
+        val currentSearchText = _state.value.searchText
+        if (currentSearchText.isNotEmpty()) {
+            searchJob?.cancel()
+            performSearch(currentSearchText, isNewSearch = true)
+        }
+    }
+
     private fun performSearch(query: String, isNewSearch: Boolean = true, page: Int = 0) {
         if (isNewSearch) {
             startNewSearch(query)
@@ -88,7 +116,15 @@ class SearchViewModel(
             startPagination()
         }
 
-        val filter = VacancyFilter(text = query, page = page)
+        val salary = filterSettingsInteractor.getSalary()
+        val onlyWithSalary = filterSettingsInteractor.getOnlyWithSalary()
+
+        val filter = VacancyFilter(
+            text = query,
+            page = page,
+            salary = salary.toIntOrNull(),
+            onlyWithSalary = if (onlyWithSalary) true else null
+        )
 
         viewModelScope.launch {
             interactor.searchVacancies(filter)

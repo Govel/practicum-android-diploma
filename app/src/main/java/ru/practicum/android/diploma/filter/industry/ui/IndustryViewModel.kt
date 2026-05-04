@@ -86,6 +86,13 @@ class IndustryViewModel(
     private fun filterIndustries(query: String = _query.value) {
         val searchText = query.lowercase()
         val filtered = currentIndustries?.filter { it.name.lowercase().contains(searchText) }
+
+        // Сброс выбранного значения при пустом результате поиска
+        val currentSelection = _selectedIndustry.value
+        if (currentSelection != null && (filtered == null || !filtered.contains(currentSelection))) {
+            _selectedIndustry.value = null
+        }
+
         _filteredIndustries.value = filtered ?: emptyList()
         updateStateBasedOnFiltered()
     }

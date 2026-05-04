@@ -255,26 +255,16 @@ fun IndustryItem(
 @Composable
 fun Render(state: IndustriesState, viewModel: IndustryViewModel) {
     when (state) {
-        is IndustriesState.Loading -> {
-            viewModel.resetSelection()
-            LoadingIndustry()
-        }
+        is IndustriesState.Loading -> LoadingIndustry()
+        is IndustriesState.Error -> ErrorIndustry(
+            painter = painterResource(R.drawable.magic_carpet),
+            text = stringResource(R.string.failed_to_get_list)
+        )
 
-        is IndustriesState.Error -> {
-            viewModel.resetSelection()
-            ErrorIndustry(
-                painter = painterResource(R.drawable.magic_carpet),
-                text = stringResource(R.string.failed_to_get_list)
-            )
-        }
-
-        is IndustriesState.Empty -> {
-            viewModel.resetSelection()
-            ErrorIndustry(
-                painter = painterResource(R.drawable.empty_cat),
-                text = stringResource(R.string.industry_not_found)
-            )
-        }
+        is IndustriesState.Empty -> ErrorIndustry(
+            painter = painterResource(R.drawable.empty_cat),
+            text = stringResource(R.string.industry_not_found)
+        )
 
         is IndustriesState.Content -> IndustriesResult(viewModel = viewModel)
     }

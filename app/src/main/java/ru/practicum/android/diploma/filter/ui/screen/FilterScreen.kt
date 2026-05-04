@@ -71,7 +71,7 @@ fun FilterScreen(
             SelectField(
                 label = stringResource(R.string.industry),
                 value = state.industry,
-                onClear = {  viewModel.updateIndustry("", -1) },
+                onClear = { viewModel.updateIndustry("", -1) },
                 onNavigate = onIndustry
             )
         }

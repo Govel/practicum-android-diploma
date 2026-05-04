@@ -20,6 +20,7 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -32,6 +33,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.navigation.NavHostController
 import org.koin.androidx.compose.koinViewModel
 import ru.practicum.android.diploma.R
 import ru.practicum.android.diploma.main.ui.SearchViewModel
@@ -50,19 +52,43 @@ import kotlin.Unit
 @Composable
 fun SearchScreen(
     onFilter: () -> Unit = {},
-    isFilterActive: Boolean = false,
     viewModel: SearchViewModel = koinViewModel(),
-    onVacancyClick: (String) -> Unit
+    onVacancyClick: (String) -> Unit,
+    navController: NavHostController
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
     var searchText by remember { mutableStateOf("") }
     val focusManager = LocalFocusManager.current
+    val filterIsActive by viewModel.filterIsActive.collectAsState()
+
+    LaunchedEffect(Unit) {
+        val savedStateHandle = navController.currentBackStackEntry?.savedStateHandle
+        
+        savedStateHandle?.get<Boolean>("filtersChanged")?.let { filtersChanged ->
+            if (filtersChanged) {
+                savedStateHandle.remove<Boolean>("filtersChanged")
+                if (state.searchText.isNotEmpty()) {
+                    viewModel.refreshSearch()
+                }
+            }
+        }
+
+        savedStateHandle?.get<Boolean>("filtersReset")?.let { filtersReset ->
+            if (filtersReset) {
+                savedStateHandle.remove<Boolean>("filtersReset")
+                if (state.searchText.isNotEmpty()) {
+                    viewModel.refreshSearch()
+                }
+            }
+        }
+    }
 
     LaunchedEffect(state.searchText) {
         if (searchText != state.searchText) {
             searchText = state.searchText
         }
     }
+
 
     Column(
         modifier = Modifier
@@ -75,7 +101,7 @@ fun SearchScreen(
             filter = ActionFilter(
                 isView = true,
                 onClick = onFilter,
-                isActive = isFilterActive
+                isActive = filterIsActive
             )
         )
 

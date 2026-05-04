@@ -1,5 +1,7 @@
 package ru.practicum.android.diploma.di
 
+import android.content.Context
+import android.content.SharedPreferences
 import androidx.room.Room
 import coil3.ImageLoader
 import coil3.network.okhttp.OkHttpNetworkFetcherFactory
@@ -11,6 +13,7 @@ import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import ru.practicum.android.diploma.BuildConfig
 import ru.practicum.android.diploma.database.AppDatabase
+import ru.practicum.android.diploma.filter.data.storage.FilterSettingsStorage
 import ru.practicum.android.diploma.main.data.network.HhApi
 import ru.practicum.android.diploma.main.data.network.NetworkClient
 import ru.practicum.android.diploma.main.data.network.NetworkClientImpl
@@ -56,4 +59,12 @@ val dataModule = module {
     }
 
     single<NetworkClient> { NetworkClientImpl(get(), androidContext(), API_TOKEN) }
+
+    single<SharedPreferences> {
+        androidContext().getSharedPreferences("filters", Context.MODE_PRIVATE)
+    }
+
+    single<FilterSettingsStorage> {
+        FilterSettingsStorage(get())
+    }
 }

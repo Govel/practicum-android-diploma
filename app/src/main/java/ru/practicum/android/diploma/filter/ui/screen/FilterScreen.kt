@@ -1,4 +1,4 @@
-package ru.practicum.android.diploma.ui.screens.filter
+package ru.practicum.android.diploma.filter.ui.screen
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -38,7 +38,10 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import org.koin.androidx.compose.koinViewModel
 import ru.practicum.android.diploma.R
+import ru.practicum.android.diploma.filter.ui.FilterViewModel
 import ru.practicum.android.diploma.ui.navigation.ActionBack
 import ru.practicum.android.diploma.ui.navigation.AppBarTop
 
@@ -47,16 +50,13 @@ fun FilterScreen(
     onBack: () -> Unit = {},
     onIndustry: () -> Unit = {},
     onWorkPlace: () -> Unit = {},
-    onCheckBox: () -> Unit = {},
     onApply: () -> Unit = {},
-    onReset: () -> Unit = {}
+    onReset: () -> Unit = {},
+    viewModel: FilterViewModel = koinViewModel()
 ) {
-    var salaryText by remember { mutableStateOf("") }
     var workPlaceText by remember { mutableStateOf("") }
     var industryText by remember { mutableStateOf("") }
-    var isChecked by remember { mutableStateOf(false) }
-
-    val hasAnyFilter = salaryText.isNotEmpty() || isChecked || workPlaceText.isNotEmpty() || industryText.isNotEmpty()
+    val state by viewModel.state.collectAsStateWithLifecycle()
 
     Column(
         modifier = Modifier
@@ -88,29 +88,27 @@ fun FilterScreen(
         }
 
         SalaryField(
-            value = salaryText,
-            onValueChange = { newText ->
-                if (newText.all { it.isDigit() }) {
-                    salaryText = newText
-                }
-            },
-            onClear = { salaryText = "" }
+            value = state.salary,
+            onValueChange = { viewModel.updateSalary(it) },
+            onClear = { viewModel.updateSalary("") }
         )
 
         Column(modifier = Modifier.padding(top = 24.dp)) {
             NoSalaryCheckbox(
-                checked = isChecked,
-                onCheckedChange = {
-                    isChecked = !isChecked
-                    onCheckBox()
-                }
+                checked = state.onlyWithSalary,
+                onCheckedChange = { viewModel.updateOnlyWithSalary(!state.onlyWithSalary) }
             )
         }
 
-        if (hasAnyFilter) {
+        if (state.hasAnyFilter) {
             FilterButtons(
-                onApply = onApply,
-                onReset = onReset,
+                onApply = {
+                    onApply()
+                },
+                onReset = {
+                    viewModel.clearAllFilters()
+                    onReset()
+                },
                 modifier = Modifier
                     .fillMaxHeight()
                     .padding(horizontal = 16.dp)
@@ -311,7 +309,7 @@ private fun SalaryClearButton(value: String, onClear: () -> Unit) {
 @Composable
 fun NoSalaryCheckbox(
     checked: Boolean,
-    onCheckedChange: () -> Unit
+    onCheckedChange: (Boolean) -> Unit
 ) {
     Row(
         modifier = Modifier
@@ -327,7 +325,7 @@ fun NoSalaryCheckbox(
             style = MaterialTheme.typography.bodyLarge
         )
 
-        IconButton(onClick = onCheckedChange) {
+        IconButton(onClick = { onCheckedChange(!checked) }) {
             Icon(
                 painter = painterResource(
                     id = if (checked) {

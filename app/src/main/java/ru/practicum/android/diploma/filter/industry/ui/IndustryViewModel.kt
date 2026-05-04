@@ -6,9 +6,12 @@ import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import ru.practicum.android.diploma.filter.industry.domain.api.IndustryInteractor
@@ -23,8 +26,8 @@ class IndustryViewModel(
     private val _state = MutableStateFlow<IndustriesState>(IndustriesState.Loading)
     val state: StateFlow<IndustriesState> = _state.asStateFlow()
 
-    private val _selectedId = MutableStateFlow<Int>(-1)
-    val selectedId: StateFlow<Int> = _selectedId.asStateFlow()
+    private val _selectedIndustry = MutableStateFlow<FilterIndustry?>(null)
+    val selectedIndustry: StateFlow<FilterIndustry?> = _selectedIndustry.asStateFlow()
 
     private val _query = MutableStateFlow("")
     val query: StateFlow<String> = _query.asStateFlow()
@@ -36,13 +39,15 @@ class IndustryViewModel(
     private val _filteredIndustries = MutableStateFlow<List<FilterIndustry>?>(emptyList())
     val filteredIndustries: StateFlow<List<FilterIndustry>?> = _filteredIndustries.asStateFlow()
 
-    private val _isSelected = MutableStateFlow(false)
-    val isSelected: StateFlow<Boolean> = _isSelected.asStateFlow()
+    val isSelected: StateFlow<Boolean> = selectedIndustry.map { it != null }.stateIn(
+        scope = viewModelScope,
+        started = SharingStarted.WhileSubscribed(STOP_TIMEOUT),
+        initialValue = false
+    )
 
-    fun selectIndustry(id: Int) {
-        _selectedId.value = id
-        _isSelected.value = id != -1
-        Log.d("MyTag", " _selectedId.value: ${_selectedId.value}")
+    fun selectIndustry(industry: FilterIndustry) {
+        _selectedIndustry.value = industry
+        Log.d("MyTag", " _selectedId.value: ${industry.name}")
     }
 
     fun loadIndustries() {
@@ -95,11 +100,11 @@ class IndustryViewModel(
     }
 
     fun resetSelection() {
-        _selectedId.value = -1
-        _isSelected.value = false
+        _selectedIndustry.value = null
     }
 
     companion object {
         private const val SEARCH_DEBOUNCE_DELAY = 2000L
+        private const val STOP_TIMEOUT = 5000L
     }
 }

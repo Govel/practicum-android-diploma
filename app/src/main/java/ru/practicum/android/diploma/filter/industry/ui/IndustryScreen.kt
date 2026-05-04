@@ -32,10 +32,12 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.RadioButton
 import androidx.compose.material3.RadioButtonDefaults
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -60,7 +62,7 @@ import ru.practicum.android.diploma.ui.navigation.AppBarTop
 @Composable
 fun IndustryScreen(
     onBack: () -> Unit = {},
-    onSelect: (Int) -> Unit = {},
+    onSelect: (FilterIndustry?) -> Unit = {},
     viewModel: IndustryViewModel = koinViewModel()
 ) {
     val isSelected by viewModel.isSelected.collectAsStateWithLifecycle()
@@ -70,59 +72,71 @@ fun IndustryScreen(
         viewModel.loadIndustries()
     }
 
-    Box(modifier = Modifier.fillMaxSize()) {
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .background(MaterialTheme.colorScheme.onPrimary)
-        ) {
+    Scaffold(
+        topBar = {
             AppBarTop(
                 title = stringResource(R.string.select_industry),
-                back = ActionBack(
-                    isView = true,
-                    onClick = onBack
-                ),
+                back = ActionBack(isView = true, onClick = onBack),
             )
-            Render(state = state, viewModel = viewModel)
-        }
-        if (isSelected && state is IndustriesState.Content) {
-            Button(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .align(Alignment.BottomCenter)
-                    .height(60.dp)
-                    .padding(horizontal = 16.dp)
-                    .windowInsetsPadding(WindowInsets.navigationBars),
-                onClick = {
-                    val selectedId = viewModel.selectedId.value
-                    if (selectedId != -1) {
-                        onSelect(selectedId)
-                        viewModel.resetSelection()
-                    }
-                },
-                shape = RoundedCornerShape(12.dp),
-                colors = ButtonDefaults.buttonColors(MaterialTheme.colorScheme.primary),
-                content = {
-                    Text(
-                        text = stringResource(R.string.select),
-                        style = MaterialTheme.typography.bodyMedium,
-                        color = MaterialTheme.colorScheme.onPrimary
+        },
+        bottomBar = {
+            if (isSelected) {
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .background(
+                            color = MaterialTheme.colorScheme.onPrimary
+                        )
+                        .windowInsetsPadding(WindowInsets.navigationBars)
+                        .padding(bottom = 24.dp)
+                ) {
+                    Button(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(60.dp)
+                            .padding(horizontal = 16.dp),
+                        onClick = {
+                            val selectedObject = viewModel.selectedIndustry.value
+                            onSelect(selectedObject)
+                            viewModel.resetSelection()
+                        },
+                        shape = RoundedCornerShape(12.dp),
+                        colors = ButtonDefaults.buttonColors(MaterialTheme.colorScheme.primary),
+                        content = {
+                            Text(
+                                text = stringResource(R.string.select),
+                                style = MaterialTheme.typography.bodyMedium,
+                                color = MaterialTheme.colorScheme.onPrimary
+                            )
+                        }
                     )
                 }
-            )
-            Spacer(modifier = Modifier.height(24.dp))
+                Spacer(modifier = Modifier.height(24.dp))
+            }
+        },
+        content = { innerPadding ->
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(innerPadding)
+                    .background(MaterialTheme.colorScheme.onPrimary)
+            ) {
+                SearchTextField(viewModel = viewModel)
+
+                Box(modifier = Modifier.weight(1f)) {
+                    Render(state = state, viewModel = viewModel)
+                }
+            }
         }
-    }
+    )
 }
 
 @Composable
-fun IndustriesResult(
+fun SearchTextField(
     viewModel: IndustryViewModel
 ) {
-    val state by viewModel.state.collectAsStateWithLifecycle()
     val searchText by viewModel.query.collectAsStateWithLifecycle()
     val focusManager = LocalFocusManager.current
-    val selectedId by viewModel.selectedId.collectAsStateWithLifecycle()
 
     Surface(
         color = MaterialTheme.colorScheme.surfaceVariant,
@@ -173,6 +187,13 @@ fun IndustriesResult(
             )
         )
     }
+}
+
+@Composable
+fun IndustriesResult(
+    viewModel: IndustryViewModel
+) {
+    val state by viewModel.state.collectAsStateWithLifecycle()
 
     if (state is IndustriesState.Content) {
         val industries = (state as IndustriesState.Content).industries
@@ -187,8 +208,8 @@ fun IndustriesResult(
             ) { industry ->
                 IndustryItem(
                     item = industry,
-                    isSelected = selectedId == industry.id,
-                    onSelect = { viewModel.selectIndustry(industry.id) }
+                    isSelectedObject = viewModel.selectedIndustry.collectAsState().value,
+                    onSelect = viewModel::selectIndustry
                 )
             }
         }
@@ -198,15 +219,16 @@ fun IndustriesResult(
 @Composable
 fun IndustryItem(
     item: FilterIndustry,
-    isSelected: Boolean,
-    onSelect: () -> Unit = {}
+    isSelectedObject: FilterIndustry?,
+    onSelect: (FilterIndustry) -> Unit = {}
 ) {
+    val isSelected = isSelectedObject?.id == item.id
     Row(
         modifier = Modifier
             .fillMaxWidth()
             .selectableGroup()
             .height(60.dp)
-            .clickable(onClick = onSelect),
+            .clickable(onClick = { onSelect(item) }),
         verticalAlignment = Alignment.CenterVertically,
 
     ) {
@@ -221,7 +243,7 @@ fun IndustryItem(
         )
         RadioButton(
             selected = isSelected,
-            onClick = { onSelect() },
+            onClick = { onSelect(item) },
             colors = RadioButtonDefaults.colors(
                 selectedColor = MaterialTheme.colorScheme.primary,
                 unselectedColor = MaterialTheme.colorScheme.primary
@@ -233,15 +255,27 @@ fun IndustryItem(
 @Composable
 fun Render(state: IndustriesState, viewModel: IndustryViewModel) {
     when (state) {
-        is IndustriesState.Loading -> LoadingIndustry()
-        is IndustriesState.Error -> ErrorIndustry(
-            painter = painterResource(R.drawable.magic_carpet),
-            text = stringResource(R.string.failed_to_get_list)
-        )
-        is IndustriesState.Empty -> ErrorIndustry(
-            painter = painterResource(R.drawable.empty_cat),
-            text = stringResource(R.string.industry_not_found)
-        )
+        is IndustriesState.Loading -> {
+            viewModel.resetSelection()
+            LoadingIndustry()
+        }
+
+        is IndustriesState.Error -> {
+            viewModel.resetSelection()
+            ErrorIndustry(
+                painter = painterResource(R.drawable.magic_carpet),
+                text = stringResource(R.string.failed_to_get_list)
+            )
+        }
+
+        is IndustriesState.Empty -> {
+            viewModel.resetSelection()
+            ErrorIndustry(
+                painter = painterResource(R.drawable.empty_cat),
+                text = stringResource(R.string.industry_not_found)
+            )
+        }
+
         is IndustriesState.Content -> IndustriesResult(viewModel = viewModel)
     }
 }

@@ -1,4 +1,4 @@
-@file:Suppress("MagicNumber")
+@file:Suppress("MagicNumber", "LargeClass")
 
 package ru.practicum.android.diploma.main.ui
 

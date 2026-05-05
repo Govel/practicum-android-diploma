@@ -2,8 +2,8 @@ package ru.practicum.android.diploma.filter.industry.data.impl
 
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
-import ru.practicum.android.diploma.filter.data.mapper.FilterMapper
 import ru.practicum.android.diploma.filter.industry.data.dto.FilterIndustryResponse
+import ru.practicum.android.diploma.filter.industry.data.mapper.FilterMapper
 import ru.practicum.android.diploma.filter.industry.domain.api.IndustryRepository
 import ru.practicum.android.diploma.filter.industry.domain.models.FilterIndustry
 import ru.practicum.android.diploma.main.data.dto.NetworkResponse

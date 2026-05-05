@@ -8,9 +8,9 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
 import ru.practicum.android.diploma.filter.industry.ui.IndustryScreen
+import ru.practicum.android.diploma.filter.ui.screen.FilterScreen
 import ru.practicum.android.diploma.main.ui.screen.SearchScreen
 import ru.practicum.android.diploma.ui.screens.favorites.FavoritesScreen
-import ru.practicum.android.diploma.filter.ui.screen.FilterScreen
 import ru.practicum.android.diploma.ui.screens.filter.workplace.WorkPlaceScreen
 import ru.practicum.android.diploma.ui.screens.team.TeamScreen
 import ru.practicum.android.diploma.vacancy.ui.VacancyDetailScreen

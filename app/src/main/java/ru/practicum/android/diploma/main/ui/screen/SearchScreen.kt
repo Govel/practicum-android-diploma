@@ -1,4 +1,4 @@
-@file:Suppress("MagicNumber")
+@file:Suppress("MagicNumber", "CognitiveComplexMethod")
 
 package ru.practicum.android.diploma.main.ui.screen
 
@@ -46,7 +46,6 @@ import ru.practicum.android.diploma.main.ui.states.VacanciesSearchResult
 import ru.practicum.android.diploma.ui.navigation.ActionBack
 import ru.practicum.android.diploma.ui.navigation.ActionFilter
 import ru.practicum.android.diploma.ui.navigation.AppBarTop
-import kotlin.Unit
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -61,26 +60,7 @@ fun SearchScreen(
     val focusManager = LocalFocusManager.current
     val filterIsActive by viewModel.filterIsActive.collectAsState()
 
-    LaunchedEffect(Unit) {
-        val savedStateHandle = navController.currentBackStackEntry?.savedStateHandle
-        savedStateHandle?.get<Boolean>("filtersChanged")?.let { filtersChanged ->
-            if (filtersChanged) {
-                savedStateHandle.remove<Boolean>("filtersChanged")
-                if (state.searchText.isNotEmpty()) {
-                    viewModel.refreshSearch()
-                }
-            }
-        }
-
-        savedStateHandle?.get<Boolean>("filtersReset")?.let { filtersReset ->
-            if (filtersReset) {
-                savedStateHandle.remove<Boolean>("filtersReset")
-                if (state.searchText.isNotEmpty()) {
-                    viewModel.refreshSearch()
-                }
-            }
-        }
-    }
+    HandleFilterResult(navController, state, viewModel)
 
     LaunchedEffect(state.searchText) {
         if (searchText != state.searchText) {
@@ -159,6 +139,33 @@ fun SearchScreen(
         }
 
         SearchContent(state, viewModel, onVacancyClick)
+    }
+}
+
+@Composable
+private fun HandleFilterResult(
+    navController: NavHostController,
+    state: SearchState,
+    viewModel: SearchViewModel
+) {
+    LaunchedEffect(Unit) {
+        val savedStateHandle = navController.currentBackStackEntry?.savedStateHandle
+        savedStateHandle?.get<Boolean>("filtersChanged")?.let { filtersChanged ->
+            if (filtersChanged) {
+                savedStateHandle.remove<Boolean>("filtersChanged")
+                if (state.searchText.isNotEmpty()) {
+                    viewModel.refreshSearch()
+                }
+            }
+        }
+        savedStateHandle?.get<Boolean>("filtersReset")?.let { filtersReset ->
+            if (filtersReset) {
+                savedStateHandle.remove<Boolean>("filtersReset")
+                if (state.searchText.isNotEmpty()) {
+                    viewModel.refreshSearch()
+                }
+            }
+        }
     }
 }
 

@@ -50,9 +50,11 @@ fun FilterScreen(
     onBack: () -> Unit = {},
     onIndustry: () -> Unit = {},
     onApply: () -> Unit = {},
+    onWorkPlace: () -> Unit = {},
     viewModel: FilterViewModel = koinViewModel()
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
+    var workPlaceText by remember { mutableStateOf("") }
 
     Column(
         modifier = Modifier
@@ -68,6 +70,13 @@ fun FilterScreen(
         )
 
         Column(modifier = Modifier.padding(top = 16.dp)) {
+            SelectField(
+                label = stringResource(R.string.work_place),
+                value = workPlaceText,
+                onClear = { workPlaceText = "" },
+                onNavigate = onWorkPlace
+            )
+
             SelectField(
                 label = stringResource(R.string.industry),
                 value = state.industry,

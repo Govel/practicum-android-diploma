@@ -7,9 +7,11 @@ import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
+import ru.practicum.android.diploma.filter.industry.ui.IndustryScreen
+import ru.practicum.android.diploma.filter.ui.screen.FilterScreen
 import ru.practicum.android.diploma.main.ui.screen.SearchScreen
 import ru.practicum.android.diploma.ui.screens.favorites.FavoritesScreen
-import ru.practicum.android.diploma.ui.screens.filter.FilterScreen
+import ru.practicum.android.diploma.ui.screens.filter.workplace.WorkPlaceScreen
 import ru.practicum.android.diploma.ui.screens.team.TeamScreen
 import ru.practicum.android.diploma.vacancy.ui.VacancyDetailScreen
 
@@ -26,10 +28,10 @@ fun ProjectNavHost(
         composable(Routes.SEARCH) {
             SearchScreen(
                 onFilter = { navController.navigate(Routes.FILTER) },
-                isFilterActive = false,
                 onVacancyClick = { vacancyId ->
                     navController.navigate("${Routes.VACANCY}/$vacancyId")
-                }
+                },
+                navController = navController
             )
         }
 
@@ -46,7 +48,25 @@ fun ProjectNavHost(
         }
 
         composable(Routes.FILTER) {
-            FilterScreen()
+            FilterScreen(
+                onBack = { navController.popBackStack() },
+                onApply = {
+                    navController.previousBackStackEntry?.savedStateHandle?.set("filtersChanged", true)
+                    navController.popBackStack()
+                },
+                onWorkPlace = { navController.navigate(Routes.WORKPLACE) },
+                onIndustry = { navController.navigate(Routes.INDUSTRY) },
+            )
+        }
+
+        composable(Routes.INDUSTRY) {
+            IndustryScreen(
+                onBack = { navController.popBackStack() },
+            )
+        }
+
+        composable(Routes.WORKPLACE) {
+            WorkPlaceScreen()
         }
 
         composable(

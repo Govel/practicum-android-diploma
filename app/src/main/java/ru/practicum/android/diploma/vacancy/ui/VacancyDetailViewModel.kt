@@ -9,7 +9,7 @@ import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import ru.practicum.android.diploma.favorite.domain.api.FavoritesInteractor
-import ru.practicum.android.diploma.main.data.model.VacanciesSearchState
+import ru.practicum.android.diploma.main.data.model.NetworkState
 import ru.practicum.android.diploma.vacancy.domain.api.ShareInteractor
 import ru.practicum.android.diploma.vacancy.domain.api.VacancyDetailInteractor
 import ru.practicum.android.diploma.vacancy.domain.models.VacancyDetail
@@ -50,7 +50,7 @@ class VacancyDetailViewModel(
 
     private fun handleVacancyDetailResult(result: Pair<VacancyDetail?, String?>) {
         val (vacancy, error) = result
-        if (error != null && error != VacanciesSearchState.Empty.state) {
+        if (error != null && error != NetworkState.Empty.state) {
             _state.update { VacancyState.Error }
             return
         }

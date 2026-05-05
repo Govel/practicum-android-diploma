@@ -95,14 +95,16 @@ private fun AppButtonBack(
             painter = painterResource(id = R.drawable.ic_arrow_back_24),
             contentDescription = null,
             modifier = Modifier
-                .padding(horizontal = 16.dp)
+                .padding(start = 16.dp)
                 .clickable { onClick?.invoke() },
         )
     }
 }
 
 @Composable
-private fun AppTitle(title: String) {
+private fun AppTitle(
+    title: String
+) {
     Text(
         text = title,
         modifier = Modifier

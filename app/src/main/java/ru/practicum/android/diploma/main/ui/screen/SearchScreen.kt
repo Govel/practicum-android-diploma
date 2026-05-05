@@ -1,4 +1,4 @@
-@file:Suppress("MagicNumber")
+@file:Suppress("MagicNumber", "CognitiveComplexMethod")
 
 package ru.practicum.android.diploma.main.ui.screen
 
@@ -20,6 +20,7 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -32,6 +33,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.navigation.NavHostController
 import org.koin.androidx.compose.koinViewModel
 import ru.practicum.android.diploma.R
 import ru.practicum.android.diploma.main.ui.SearchViewModel
@@ -44,19 +46,21 @@ import ru.practicum.android.diploma.main.ui.states.VacanciesSearchResult
 import ru.practicum.android.diploma.ui.navigation.ActionBack
 import ru.practicum.android.diploma.ui.navigation.ActionFilter
 import ru.practicum.android.diploma.ui.navigation.AppBarTop
-import kotlin.Unit
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SearchScreen(
     onFilter: () -> Unit = {},
-    isFilterActive: Boolean = false,
     viewModel: SearchViewModel = koinViewModel(),
-    onVacancyClick: (String) -> Unit
+    onVacancyClick: (String) -> Unit,
+    navController: NavHostController
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
     var searchText by remember { mutableStateOf("") }
     val focusManager = LocalFocusManager.current
+    val filterIsActive by viewModel.filterIsActive.collectAsState()
+
+    HandleFilterResult(navController, state, viewModel)
 
     LaunchedEffect(state.searchText) {
         if (searchText != state.searchText) {
@@ -75,7 +79,7 @@ fun SearchScreen(
             filter = ActionFilter(
                 isView = true,
                 onClick = onFilter,
-                isActive = isFilterActive
+                isActive = filterIsActive
             )
         )
 
@@ -135,6 +139,33 @@ fun SearchScreen(
         }
 
         SearchContent(state, viewModel, onVacancyClick)
+    }
+}
+
+@Composable
+private fun HandleFilterResult(
+    navController: NavHostController,
+    state: SearchState,
+    viewModel: SearchViewModel
+) {
+    LaunchedEffect(Unit) {
+        val savedStateHandle = navController.currentBackStackEntry?.savedStateHandle
+        savedStateHandle?.get<Boolean>("filtersChanged")?.let { filtersChanged ->
+            if (filtersChanged) {
+                savedStateHandle.remove<Boolean>("filtersChanged")
+                if (state.searchText.isNotEmpty()) {
+                    viewModel.refreshSearch()
+                }
+            }
+        }
+        savedStateHandle?.get<Boolean>("filtersReset")?.let { filtersReset ->
+            if (filtersReset) {
+                savedStateHandle.remove<Boolean>("filtersReset")
+                if (state.searchText.isNotEmpty()) {
+                    viewModel.refreshSearch()
+                }
+            }
+        }
     }
 }
 

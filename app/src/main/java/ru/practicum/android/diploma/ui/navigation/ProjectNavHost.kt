@@ -54,8 +54,8 @@ fun ProjectNavHost(
                     navController.previousBackStackEntry?.savedStateHandle?.set("filtersChanged", true)
                     navController.popBackStack()
                 },
+                onWorkPlace = { navController.navigate(Routes.WORKPLACE) },
                 onIndustry = { navController.navigate(Routes.INDUSTRY) },
-                onWorkPlace = { navController.navigate(Routes.WORKPLACE) }
             )
         }
 

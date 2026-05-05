@@ -7,4 +7,7 @@ interface FilterSettingsRepository {
     fun getOnlyWithSalary(): Boolean
     fun clearAllFilters()
     fun hasAnyFilter(): Boolean
+    fun saveIndustry(industryId: Int, industryName: String)
+    fun getIndustryId(): Int
+    fun getIndustryName(): String
 }

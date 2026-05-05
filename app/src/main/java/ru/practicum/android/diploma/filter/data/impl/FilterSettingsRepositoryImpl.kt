@@ -14,8 +14,12 @@ class FilterSettingsRepositoryImpl(
 
     override fun clearAllFilters() = storage.clearAllFilters()
 
+    override fun saveIndustry(industryId: Int, industryName: String) = storage.saveIndustry(industryId, industryName)
+    override fun getIndustryId(): Int = storage.getIndustryId()
+    override fun getIndustryName(): String = storage.getIndustryName()
+
     override fun hasAnyFilter(): Boolean {
         return getSalary().isNotEmpty() ||
-            getOnlyWithSalary()
+            getOnlyWithSalary() || getIndustryId() != -1
     }
 }

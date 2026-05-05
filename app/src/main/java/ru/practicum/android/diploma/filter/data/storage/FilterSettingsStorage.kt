@@ -29,12 +29,30 @@ class FilterSettingsStorage(private val sharedPreferences: SharedPreferences) {
         sharedPreferences.edit {
             remove(KEY_SALARY)
             remove(KEY_ONLY_WITH_SALARY)
+            remove(KEY_INDUSTRY_ID)
+            remove(KEY_INDUSTRY_NAME)
         }
+    }
+
+    fun saveIndustry(industryId: Int, industryName: String) {
+        sharedPreferences.edit {
+            putInt(KEY_INDUSTRY_ID, industryId)
+            putString(KEY_INDUSTRY_NAME, industryName)
+        }
+    }
+
+    fun getIndustryId(): Int {
+        return sharedPreferences.getInt(KEY_INDUSTRY_ID, -1)
+    }
+
+    fun getIndustryName(): String {
+        return sharedPreferences.getString(KEY_INDUSTRY_NAME, "") ?: ""
     }
 
     companion object {
         private const val KEY_SALARY = "filter_salary"
         private const val KEY_ONLY_WITH_SALARY = "filter_only_with_salary"
-
+        private const val KEY_INDUSTRY_ID = "filter_industry_id"
+        private const val KEY_INDUSTRY_NAME = "filter_industry_name"
     }
 }

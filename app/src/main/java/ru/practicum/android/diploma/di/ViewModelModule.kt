@@ -17,7 +17,7 @@ val viewModelModule = module {
         FavoritesViewModel(get())
     }
 
-    factory { IndustryViewModel(get()) }
+    factory { IndustryViewModel(get(), get()) }
 
     factory { FilterViewModel(get()) }
 }

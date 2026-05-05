@@ -98,7 +98,9 @@ fun IndustryScreen(
                         onClick = {
                             val selectedObject = viewModel.selectedIndustry.value
                             onSelect(selectedObject)
+                            viewModel.saveIndustry(selectedObject)
                             viewModel.resetSelection()
+                            onBack()
                         },
                         shape = RoundedCornerShape(12.dp),
                         colors = ButtonDefaults.buttonColors(MaterialTheme.colorScheme.primary),
@@ -230,7 +232,6 @@ fun IndustryItem(
             .height(60.dp)
             .clickable(onClick = { onSelect(item) }),
         verticalAlignment = Alignment.CenterVertically,
-
     ) {
         Text(
             text = item.name,

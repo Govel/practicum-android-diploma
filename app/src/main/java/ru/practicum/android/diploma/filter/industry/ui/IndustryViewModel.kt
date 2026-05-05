@@ -14,13 +14,15 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import ru.practicum.android.diploma.filter.domain.api.FilterSettingsInteractor
 import ru.practicum.android.diploma.filter.industry.domain.api.IndustryInteractor
 import ru.practicum.android.diploma.filter.industry.domain.models.FilterIndustry
 import ru.practicum.android.diploma.filter.industry.domain.models.IndustriesState
 import ru.practicum.android.diploma.main.data.model.NetworkState
 
 class IndustryViewModel(
-    private val interactor: IndustryInteractor
+    private val interactor: IndustryInteractor,
+    private val filterSettingsInteractor: FilterSettingsInteractor
 ) : ViewModel() {
 
     private val _state = MutableStateFlow<IndustriesState>(IndustriesState.Loading)
@@ -108,6 +110,12 @@ class IndustryViewModel(
 
     fun resetSelection() {
         _selectedIndustry.value = null
+    }
+
+    fun saveIndustry(industry: FilterIndustry?) {
+        industry?.let {
+            filterSettingsInteractor.saveIndustry(it.id, it.name)
+        }
     }
 
     companion object {

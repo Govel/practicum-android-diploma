@@ -28,7 +28,7 @@ class FilterViewModel(
         loadSavedFilters()
     }
 
-    private fun loadSavedFilters() {
+    fun loadSavedFilters() {
         viewModelScope.launch {
             val salary = filterSettingsInteractor.getSalary()
             val onlyWithSalary = filterSettingsInteractor.getOnlyWithSalary()

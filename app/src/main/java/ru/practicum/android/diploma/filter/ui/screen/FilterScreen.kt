@@ -24,6 +24,7 @@ import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -55,6 +56,10 @@ fun FilterScreen(
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
     var workPlaceText by remember { mutableStateOf("") }
+
+    LaunchedEffect(Unit) {
+        viewModel.loadSavedFilters()
+    }
 
     Column(
         modifier = Modifier

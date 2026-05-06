@@ -70,7 +70,7 @@ object VacanciesMapper {
         if (currency == "" || currency == null) return ""
         return when (currency) {
             "RUB", "RUR" -> "₽"
-            "BYR", "BLR", "BYN" -> "Br"
+            "BYR" -> "Br"
             "USD" -> "$"
             "EUR" -> "€"
             "KZT" -> "₸"

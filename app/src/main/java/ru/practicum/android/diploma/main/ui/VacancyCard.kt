@@ -35,7 +35,8 @@ fun VacancyCard(
         modifier = Modifier
             .fillMaxWidth()
             .clickable {
-                onVacancyClick(vacancy.id) }
+                onVacancyClick(vacancy.id)
+            }
             .padding(horizontal = 16.dp, vertical = 8.dp),
     ) {
         AsyncImage(
@@ -63,13 +64,17 @@ fun VacancyCard(
             Text(
                 text = vacancy.company ?: "",
                 style = MaterialTheme.typography.bodyLarge,
-                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                color = MaterialTheme.colorScheme.onSecondary,
                 maxLines = 1
             )
             Text(
-                text = vacancy.salary ?: stringResource(R.string.salary_not_specified),
+                text = if (!vacancy.salary.isNullOrEmpty()) {
+                    vacancy.salary
+                } else {
+                    stringResource(R.string.salary_not_specified)
+                },
                 style = MaterialTheme.typography.bodyLarge,
-                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                color = MaterialTheme.colorScheme.onSecondary,
                 maxLines = 1
             )
         }

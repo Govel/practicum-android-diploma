@@ -29,7 +29,7 @@ fun ProjectNavHost(
             SearchScreen(
                 onFilter = { navController.navigate(Routes.FILTER) },
                 onVacancyClick = { vacancyId ->
-                    navController.navigate("${Routes.VACANCY}/$vacancyId")
+                    navController.navigate("${Routes.VACANCY}/$vacancyId?fromFavorites=false")
                 },
                 navController = navController
             )
@@ -37,8 +37,8 @@ fun ProjectNavHost(
 
         composable(Routes.FAVORITES) {
             FavoritesScreen(
-                onVacancyClick = { vacancyId ->
-                    navController.navigate("${Routes.VACANCY}/$vacancyId")
+                onVacancyClick = { vacancyId, fromFavorites ->
+                    navController.navigate("${Routes.VACANCY}/$vacancyId?fromFavorites=$fromFavorites")
                 }
             )
         }
@@ -70,13 +70,21 @@ fun ProjectNavHost(
         }
 
         composable(
-            route = "${Routes.VACANCY}/{vacancyId}",
-            arguments = listOf(navArgument("vacancyId") { type = NavType.StringType })
+            route = "${Routes.VACANCY}/{vacancyId}?fromFavorites={fromFavorites}",
+            arguments = listOf(
+                navArgument("vacancyId") { type = NavType.StringType },
+                navArgument("fromFavorites") {
+                    type = NavType.BoolType
+                    defaultValue = false
+                }
+            )
         ) { backStackEntry ->
             val vacancyId = backStackEntry.arguments?.getString("vacancyId") ?: ""
+            val fromFavorites = backStackEntry.arguments?.getBoolean("fromFavorites") ?: false
             VacancyDetailScreen(
                 onBack = { navController.popBackStack() },
-                vacancyId = vacancyId
+                vacancyId = vacancyId,
+                fromFavorites = fromFavorites
             )
         }
     }

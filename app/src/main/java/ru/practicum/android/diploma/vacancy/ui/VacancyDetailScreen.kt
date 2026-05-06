@@ -57,6 +57,7 @@ import ru.practicum.android.diploma.vacancy.domain.models.VacancyDetail
 @Composable
 fun VacancyDetailScreen(
     vacancyId: String,
+    fromFavorites: Boolean,
     onBack: () -> Unit = {},
     viewModel: VacancyDetailViewModel = koinViewModel()
 ) {
@@ -67,7 +68,7 @@ fun VacancyDetailScreen(
     val vacancy = viewModel.currentVacancy
 
     LaunchedEffect(Unit) {
-        viewModel.loadVacancyDetail()
+        viewModel.prepareForLoading(vacancyId, fromFavorites)
     }
     Column {
         AppBarTop(

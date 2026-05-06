@@ -40,7 +40,7 @@ import ru.practicum.android.diploma.ui.navigation.AppBarTop
 @Composable
 fun FavoritesScreen(
     viewModel: FavoritesViewModel = koinViewModel(),
-    onVacancyClick: (String) -> Unit = {}
+    onVacancyClick: (String, Boolean) -> Unit = { _, _ -> {} }
 ) {
     val state = viewModel.state.collectAsState().value
 
@@ -93,7 +93,7 @@ fun FavoritesScreen(
                     items(state.vacancyCard, key = { it.id }) { vacancy ->
                         VacancyCard(
                             vacancy = vacancy,
-                            onVacancyClick = onVacancyClick
+                            onVacancyClick = { onVacancyClick(vacancy.id, true) }
                         )
                     }
                 }

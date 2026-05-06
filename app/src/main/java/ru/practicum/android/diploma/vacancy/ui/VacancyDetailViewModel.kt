@@ -28,6 +28,22 @@ class VacancyDetailViewModel(
 
     var currentVacancyId: String? = null
 
+    private var shouldLoadFromFavoritesOnInit = false
+
+    fun prepareForLoading(vacancyId: String, fromFavorites: Boolean) {
+        if (_state.value is VacancyState.Content) {
+            return
+        }
+        currentVacancyId = vacancyId
+        if (fromFavorites) {
+            shouldLoadFromFavoritesOnInit = true
+            loadFromFavorites()
+        } else {
+            shouldLoadFromFavoritesOnInit = false
+            loadVacancyDetail()
+        }
+    }
+
     fun loadVacancyDetail() {
         viewModelScope.launch {
             interactor.getVacancyById(currentVacancyId ?: "")
@@ -79,5 +95,18 @@ class VacancyDetailViewModel(
 
     fun shareEmail(email: String) {
         email.let { shareInteractor.shareEmail(email) }
+    }
+
+    fun loadFromFavorites() {
+        viewModelScope.launch {
+            val vacancy = favoritesInteractor.getFavoriteById(currentVacancyId ?: "")
+            if (vacancy != null) {
+                currentVacancy = vacancy
+                _state.update { VacancyState.Content(vacancy) }
+                _isFavorite.value = true
+            } else {
+                _state.update { VacancyState.Empty }
+            }
+        }
     }
 }

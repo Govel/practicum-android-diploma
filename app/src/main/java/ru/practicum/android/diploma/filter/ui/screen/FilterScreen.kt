@@ -151,7 +151,7 @@ fun SelectField(
                     IconButton(onClick = onClear) {
                         Icon(
                             painter = painterResource(R.drawable.ic_close_24),
-                            contentDescription = "Clear",
+                            contentDescription = stringResource(R.string.clear),
                             tint = MaterialTheme.colorScheme.onSurfaceVariant
                         )
                     }
@@ -299,7 +299,7 @@ private fun SalaryClearButton(value: String, onClear: () -> Unit) {
             ) {
                 Icon(
                     painter = painterResource(R.drawable.ic_close_24),
-                    contentDescription = "Clear",
+                    contentDescription = stringResource(R.string.clear),
                     tint = MaterialTheme.colorScheme.onSurfaceVariant,
                     modifier = Modifier.size(24.dp)
                 )

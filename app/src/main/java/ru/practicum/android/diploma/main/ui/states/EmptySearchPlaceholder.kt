@@ -9,6 +9,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import ru.practicum.android.diploma.R
 
@@ -24,7 +25,7 @@ fun EmptySearchPlaceholder() {
             modifier = Modifier.fillMaxSize(),
             alignment = Alignment.Center,
             painter = painterResource(R.drawable.job_search),
-            contentDescription = "Ищу работу"
+            contentDescription = stringResource(R.string.looking_for_a_job)
         )
     }
 }

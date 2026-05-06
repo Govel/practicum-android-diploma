@@ -39,6 +39,7 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil3.ImageLoader
 import coil3.compose.AsyncImage
+import coil3.request.CachePolicy
 import coil3.request.ImageRequest
 import coil3.request.crossfade
 import org.koin.androidx.compose.koinViewModel
@@ -168,6 +169,8 @@ private fun ContentVacancyCard(
                 AsyncImage(
                     model = ImageRequest.Builder(context)
                         .data(vacancy.employer.logo)
+                        .diskCachePolicy(CachePolicy.DISABLED)
+                        .memoryCachePolicy(CachePolicy.DISABLED)
                         .crossfade(true).build(),
                     contentDescription = null,
                     placeholder = painterResource(R.drawable.ic_placeholder_32),

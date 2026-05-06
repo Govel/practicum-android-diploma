@@ -16,11 +16,14 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import coil3.ImageLoader
 import coil3.compose.AsyncImage
+import coil3.request.CachePolicy
+import coil3.request.ImageRequest
 import org.koin.compose.koinInject
 import ru.practicum.android.diploma.R
 import ru.practicum.android.diploma.main.domain.models.VacancyCard
@@ -31,6 +34,7 @@ fun VacancyCard(
     onVacancyClick: (String) -> Unit,
     imageLoader: ImageLoader = koinInject()
 ) {
+    val context = LocalContext.current
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -40,7 +44,11 @@ fun VacancyCard(
             .padding(horizontal = 16.dp, vertical = 8.dp),
     ) {
         AsyncImage(
-            model = vacancy.logo,
+            model = ImageRequest.Builder(context)
+                .data(vacancy.logo)
+                .diskCachePolicy(CachePolicy.DISABLED)
+                .memoryCachePolicy(CachePolicy.DISABLED)
+                .build(),
             contentDescription = "Логотип компании",
             imageLoader = imageLoader,
             modifier = Modifier

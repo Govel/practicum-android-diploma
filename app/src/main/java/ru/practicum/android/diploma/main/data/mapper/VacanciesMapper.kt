@@ -16,6 +16,7 @@ import ru.practicum.android.diploma.vacancy.domain.models.ContactsEmployer
 import ru.practicum.android.diploma.vacancy.domain.models.Employer
 import ru.practicum.android.diploma.vacancy.domain.models.Phone
 import ru.practicum.android.diploma.vacancy.domain.models.VacancyDetail
+import java.util.Currency
 import kotlin.Int
 import kotlin.String
 
@@ -78,7 +79,14 @@ object VacanciesMapper {
             "UZS" -> "So’m"
             "GEL" -> "₾"
             "KGS", "KGT" -> "с"
-            else -> currency
+            else -> {
+                try {
+                    val currencyInstance = Currency.getInstance(currency)
+                    currencyInstance.symbol
+                } catch (_: IllegalArgumentException) {
+                    currency
+                }
+            }
         }
     }
 

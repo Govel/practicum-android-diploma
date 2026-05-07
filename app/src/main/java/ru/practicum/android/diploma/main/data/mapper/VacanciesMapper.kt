@@ -1,7 +1,6 @@
 package ru.practicum.android.diploma.main.data.mapper
 
 import com.google.gson.Gson
-import com.google.gson.JsonSyntaxException
 import com.google.gson.reflect.TypeToken
 import ru.practicum.android.diploma.database.data.dto.FavoriteVacancyEntity
 import ru.practicum.android.diploma.main.data.dto.VacancyCardDto
@@ -130,12 +129,7 @@ object VacanciesMapper {
             name = entity.name,
             company = getValueCompany(entity.employer),
             city = getValueCity(entity.address),
-            salary = try {
-                salaryDtoToSalaryModelConverter(salaryFromString(entity.salary))
-            } catch (e: JsonSyntaxException) {
-                android.util.Log.e("VacanciesMapper", "Failed to parse salary: ${entity.salary}", e)
-                entity.salary ?: "зарплата не указана"
-            },
+            salary = entity.salary ?: "",
             logo = entity.url
         )
     }
@@ -171,9 +165,7 @@ object VacanciesMapper {
         return VacancyDetail(
             id = vacancy.id,
             name = vacancy.name,
-            salary = salaryFromString(vacancy.salary)?.let {
-                salaryDtoToSalaryModelConverter(it)
-            } ?: "",
+            salary = vacancy.salary,
             address = gson.fromJson(vacancy.address, AddressEmployer::class.java),
             experience = vacancy.experience,
             schedule = vacancy.schedule,
@@ -191,14 +183,6 @@ object VacanciesMapper {
 
     fun mapEntityListToDetail(entityList: List<FavoriteVacancyEntity>): List<VacancyDetail> {
         return entityList.map { entity -> mapEntityToDetail(entity) }
-    }
-
-    private fun salaryFromString(salaryString: String?): VacancySalary? {
-        return if (!salaryString.isNullOrEmpty()) {
-            gson.fromJson(salaryString, VacancySalary::class.java)
-        } else {
-            null
-        }
     }
 
     private fun getValueCompany(employer: String): String? {

@@ -39,6 +39,7 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil3.ImageLoader
 import coil3.compose.AsyncImage
+import coil3.request.CachePolicy
 import coil3.request.ImageRequest
 import coil3.request.crossfade
 import org.koin.androidx.compose.koinViewModel
@@ -57,6 +58,7 @@ import ru.practicum.android.diploma.vacancy.domain.models.VacancyDetail
 @Composable
 fun VacancyDetailScreen(
     vacancyId: String,
+    fromFavorites: Boolean,
     onBack: () -> Unit = {},
     viewModel: VacancyDetailViewModel = koinViewModel()
 ) {
@@ -67,7 +69,7 @@ fun VacancyDetailScreen(
     val vacancy = viewModel.currentVacancy
 
     LaunchedEffect(Unit) {
-        viewModel.loadVacancyDetail()
+        viewModel.prepareForLoading(vacancyId, fromFavorites)
     }
     Column {
         AppBarTop(
@@ -167,6 +169,8 @@ private fun ContentVacancyCard(
                 AsyncImage(
                     model = ImageRequest.Builder(context)
                         .data(vacancy.employer.logo)
+                        .diskCachePolicy(CachePolicy.DISABLED)
+                        .memoryCachePolicy(CachePolicy.DISABLED)
                         .crossfade(true).build(),
                     contentDescription = null,
                     placeholder = painterResource(R.drawable.ic_placeholder_32),

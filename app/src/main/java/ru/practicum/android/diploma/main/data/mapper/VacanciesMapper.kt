@@ -69,13 +69,16 @@ object VacanciesMapper {
     private fun formatCurrency(currency: String?): String {
         if (currency == "" || currency == null) return ""
         return when (currency) {
-            "RUB" -> "₽"
-            "RUR" -> "₽"
-            "EUR" -> "€"
+            "RUB", "RUR" -> "₽"
+            "BYR" -> "Br"
             "USD" -> "$"
+            "EUR" -> "€"
             "KZT" -> "₸"
-            "KGT" -> "₸"
+            "UAH" -> "₴"
+            "AZN" -> "₼"
+            "UZS" -> "So’m"
             "GEL" -> "₾"
+            "KGS", "KGT" -> "с"
             else -> currency
         }
     }

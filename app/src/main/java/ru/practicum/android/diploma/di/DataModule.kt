@@ -36,7 +36,7 @@ val dataModule = module {
 
     single {
         OkHttpClient.Builder().addInterceptor { chain ->
-            val request = chain.request().newBuilder().header("User-Agent", "Mozilla/5.0").build()
+            val request = chain.request().newBuilder().header("User-Agent", "PracticumAndroidDiploma/0.0.1").build()
             chain.proceed(request)
         }.build()
     }
@@ -46,13 +46,7 @@ val dataModule = module {
             add(SvgDecoder.Factory())
             add(
                 OkHttpNetworkFetcherFactory(
-                    callFactory = {
-                        OkHttpClient.Builder().addInterceptor { chain ->
-                            val request =
-                                chain.request().newBuilder().header("User-Agent", "Mozilla/5.0").build()
-                            chain.proceed(request)
-                        }.build()
-                    }
+                    callFactory = { get() }
                 )
             )
         }.build()

@@ -3,7 +3,6 @@ package ru.practicum.android.diploma.vacancy.ui
 import androidx.compose.runtime.Immutable
 import ru.practicum.android.diploma.vacancy.domain.models.VacancyDetail
 
-
 @Immutable
 sealed interface VacancyState {
 

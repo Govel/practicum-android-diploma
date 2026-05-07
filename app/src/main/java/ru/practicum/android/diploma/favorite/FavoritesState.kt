@@ -3,7 +3,6 @@ package ru.practicum.android.diploma.favorite
 import androidx.compose.runtime.Immutable
 import ru.practicum.android.diploma.main.domain.models.VacancyCard
 
-
 @Immutable
 sealed interface FavoritesState {
     @Immutable

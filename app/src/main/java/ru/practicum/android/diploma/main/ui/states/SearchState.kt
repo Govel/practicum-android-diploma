@@ -3,7 +3,6 @@ package ru.practicum.android.diploma.main.ui.states
 import androidx.compose.runtime.Immutable
 import ru.practicum.android.diploma.main.domain.models.VacancyCard
 
-
 @Immutable
 data class SearchState(
     val searchText: String = "",

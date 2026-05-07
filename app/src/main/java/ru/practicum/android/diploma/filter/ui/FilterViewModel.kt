@@ -10,7 +10,6 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import ru.practicum.android.diploma.filter.domain.api.FilterSettingsInteractor
 
-
 @Immutable
 data class FilterUiState(
     val salary: String = "",

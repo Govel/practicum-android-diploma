@@ -27,7 +27,6 @@ class FilterSettingsRepositoryImpl(
         return prefs.getBoolean("only_with_salary", false)
     }
 
-
     override fun clearAllFilters() {
         prefs.edit { clear() }
     }
@@ -42,7 +41,6 @@ class FilterSettingsRepositoryImpl(
     override fun getIndustryId(): Int {
         return prefs.getInt("industry_id", -1)
     }
-
 
     override fun getIndustryName(): String {
         return prefs.getString("industry_name", "") ?: ""

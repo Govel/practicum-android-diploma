@@ -142,7 +142,6 @@ fun SelectField(
             label = {
                 Text(
                     label,
-                    color = MaterialTheme.colorScheme.secondary,
                     style = MaterialTheme.typography.bodyLarge
                 )
             },
@@ -170,11 +169,19 @@ fun SelectField(
             colors = OutlinedTextFieldDefaults.colors(
                 focusedBorderColor = Color.Transparent,
                 unfocusedBorderColor = Color.Transparent,
-                focusedLabelColor = MaterialTheme.colorScheme.secondary,
-                unfocusedLabelColor = MaterialTheme.colorScheme.secondary,
+                focusedLabelColor = MaterialTheme.colorScheme.onBackground,
+                unfocusedLabelColor = if (value.isNotEmpty()) {
+                    MaterialTheme.colorScheme.onBackground
+                } else {
+                    MaterialTheme.colorScheme.onSecondary
+                },
                 disabledTextColor = MaterialTheme.colorScheme.onBackground,
                 disabledBorderColor = Color.Transparent,
-                disabledLabelColor = MaterialTheme.colorScheme.secondary
+                disabledLabelColor = if (value.isNotEmpty()) {
+                    MaterialTheme.colorScheme.onBackground
+                } else {
+                    MaterialTheme.colorScheme.secondary
+                }
             )
         )
     }

@@ -34,7 +34,7 @@ val dataModule = module {
             .create(HhApi::class.java)
     }
 
-    single {
+    single<OkHttpClient> {
         OkHttpClient.Builder().addInterceptor { chain ->
             val request = chain.request().newBuilder().header("User-Agent", "PracticumAndroidDiploma/0.0.1").build()
             chain.proceed(request)
@@ -46,7 +46,7 @@ val dataModule = module {
             add(SvgDecoder.Factory())
             add(
                 OkHttpNetworkFetcherFactory(
-                    callFactory = { get() }
+                    callFactory = { get<OkHttpClient>() }
                 )
             )
         }.build()

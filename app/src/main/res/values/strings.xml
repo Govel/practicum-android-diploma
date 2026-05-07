@@ -58,4 +58,8 @@
     <string name="enter_industry">Введите отрасль</string>
     <string name="select_industry">Выбор отрасли</string>
     <string name="industry_not_found">Такой отрасли не найдено</string>
+
+    <string name="company_logo">Логотип компании</string>
+    <string name="clear">Очистить</string>
+    <string name="looking_for_a_job">Ищу работу</string>
 </resources>

@@ -40,7 +40,7 @@ fun VacancyCard(
     ) {
         AsyncImage(
             model = vacancy.logo,
-            contentDescription = "Логотип компании",
+            contentDescription = stringResource(R.string.company_logo),
             imageLoader = imageLoader,
             modifier = Modifier
                 .size(48.dp)

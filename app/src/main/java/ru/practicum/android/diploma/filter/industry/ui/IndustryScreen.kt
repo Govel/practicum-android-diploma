@@ -173,7 +173,7 @@ fun SearchTextField(
                     }) {
                         Icon(
                             painter = painterResource(R.drawable.ic_close_24),
-                            contentDescription = "Clear",
+                            contentDescription = stringResource(R.string.clear),
                             tint = MaterialTheme.colorScheme.onSurfaceVariant
                         )
                     }

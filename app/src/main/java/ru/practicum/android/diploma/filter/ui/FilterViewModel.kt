@@ -1,5 +1,6 @@
 package ru.practicum.android.diploma.filter.ui
 
+import androidx.compose.runtime.Immutable
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -9,6 +10,7 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import ru.practicum.android.diploma.filter.domain.api.FilterSettingsInteractor
 
+@Immutable
 data class FilterUiState(
     val salary: String = "",
     val onlyWithSalary: Boolean = false,

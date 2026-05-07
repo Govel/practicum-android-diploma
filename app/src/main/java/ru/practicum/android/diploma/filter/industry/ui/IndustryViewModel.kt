@@ -35,11 +35,8 @@ class IndustryViewModel(
     val query: StateFlow<String> = _query.asStateFlow()
 
     private var searchJob: Job? = null
-
-    var currentIndustries: List<FilterIndustry>? = emptyList()
-
+    private var currentIndustries: List<FilterIndustry>? = emptyList()
     private val _filteredIndustries = MutableStateFlow<List<FilterIndustry>?>(emptyList())
-    val filteredIndustries: StateFlow<List<FilterIndustry>?> = _filteredIndustries.asStateFlow()
 
     val isSelected: StateFlow<Boolean> = selectedIndustry.map { it != null }.stateIn(
         scope = viewModelScope,
@@ -89,7 +86,6 @@ class IndustryViewModel(
         val searchText = query.lowercase()
         val filtered = currentIndustries?.filter { it.name.lowercase().contains(searchText) }
 
-        // Сброс выбранного значения при пустом результате поиска
         val currentSelection = _selectedIndustry.value
         if (currentSelection != null && (filtered == null || !filtered.contains(currentSelection))) {
             _selectedIndustry.value = null

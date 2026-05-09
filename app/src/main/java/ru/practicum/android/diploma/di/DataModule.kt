@@ -60,8 +60,8 @@ val dataModule = module {
         androidContext().getSharedPreferences("filters", Context.MODE_PRIVATE)
     }
 
-    single<FilterSettingsStorage> {
-        FilterSettingsStorage(get())
+    single<FilterSettingsRepository> {
+        FilterSettingsRepositoryImpl(androidContext())
     }
 
     single<Resources> { androidContext().resources }

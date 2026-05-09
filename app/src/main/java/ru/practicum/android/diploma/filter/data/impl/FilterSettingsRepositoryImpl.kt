@@ -10,7 +10,6 @@ class FilterSettingsRepositoryImpl(
 
     private val prefs = context.getSharedPreferences("filter_settings", Context.MODE_PRIVATE)
 
-
     override fun saveSalary(salary: String) {
         prefs.edit { putString("salary", salary) }
     }

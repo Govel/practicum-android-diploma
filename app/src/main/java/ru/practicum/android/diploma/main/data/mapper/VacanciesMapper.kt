@@ -1,7 +1,9 @@
 package ru.practicum.android.diploma.main.data.mapper
 
+import android.content.res.Resources
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
+import ru.practicum.android.diploma.R
 import ru.practicum.android.diploma.database.data.dto.FavoriteVacancyEntity
 import ru.practicum.android.diploma.main.data.dto.VacancyCardDto
 import ru.practicum.android.diploma.main.data.dto.VacancySalary
@@ -24,6 +26,8 @@ object VacanciesMapper {
 
     private val gson = Gson()
     private const val SEPARATE_COUNT_NUMBER = 3
+    private val resources = Resources.getSystem()
+
     private fun mapDtoToDomain(vacancyCardDto: VacancyCardDto): VacancyCard {
         return VacancyCard(
             id = vacancyCardDto.id,
@@ -40,21 +44,23 @@ object VacanciesMapper {
     }
 
     private fun salaryDtoToSalaryModelConverter(salary: VacancySalary?): String? {
-        var result: String
         val from = formatSalary(salary?.from)
         val to = formatSalary(salary?.to)
         val currency = formatCurrency(salary?.currency)
-        if (from == "" && to == "") return null
-        if (from != "") {
-            result = "От $from"
-            if (to != "") {
-                result += " до $to"
+        if (from.isEmpty() && to.isEmpty()) return null
+        return when {
+            from.isNotEmpty() && to.isNotEmpty() -> {
+                resources.getString(R.string.salary_from_to, from, to, currency)
             }
-        } else {
-            result = to
+
+            from.isNotEmpty() -> {
+                resources.getString(R.string.salary_from, from, currency)
+            }
+
+            else -> {
+                resources.getString(R.string.salary_to, to, currency)
+            }
         }
-        result += " $currency"
-        return result
     }
 
     private fun formatSalary(salary: Int?): String {

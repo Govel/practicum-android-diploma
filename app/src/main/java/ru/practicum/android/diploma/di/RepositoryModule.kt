@@ -16,10 +16,10 @@ import ru.practicum.android.diploma.vacancy.domain.api.VacancyDetailRepository
 
 val repositoryModule = module {
     factory<VacanciesRepository> {
-        VacanciesRepositoryImpl(get())
+        VacanciesRepositoryImpl(get(), get())
     }
     factory<VacancyDetailRepository> {
-        VacancyDetailRepositoryImpl(get())
+        VacancyDetailRepositoryImpl(get(), get())
     }
 
     single {
@@ -27,7 +27,7 @@ val repositoryModule = module {
     }
 
     factory<FavoritesRepository> {
-        FavoritesRepositoryImpl(get())
+        FavoritesRepositoryImpl(get(), get())
     }
 
     factory<ShareRepository> {

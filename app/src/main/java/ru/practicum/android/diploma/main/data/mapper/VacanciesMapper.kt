@@ -22,11 +22,11 @@ import java.util.Currency
 import kotlin.Int
 import kotlin.String
 
-object VacanciesMapper {
+class VacanciesMapper(
+    private val resources: Resources
+) {
 
     private val gson = Gson()
-    private const val SEPARATE_COUNT_NUMBER = 3
-    private val resources = Resources.getSystem()
 
     private fun mapDtoToDomain(vacancyCardDto: VacancyCardDto): VacancyCard {
         return VacancyCard(
@@ -50,15 +50,15 @@ object VacanciesMapper {
         if (from.isEmpty() && to.isEmpty()) return null
         return when {
             from.isNotEmpty() && to.isNotEmpty() -> {
-                resources.getString(R.string.salary_from_to, from, to, currency)
+                this.resources.getString(R.string.salary_from_to, from, to, currency)
             }
 
             from.isNotEmpty() -> {
-                resources.getString(R.string.salary_from, from, currency)
+                this.resources.getString(R.string.salary_from, from, currency)
             }
 
             else -> {
-                resources.getString(R.string.salary_to, to, currency)
+                this.resources.getString(R.string.salary_to, to, currency)
             }
         }
     }
@@ -207,5 +207,9 @@ object VacanciesMapper {
     private fun getValueCity(city: String?): String? {
         val value = gson.fromJson(city, AddressEmployer::class.java)
         return value.city ?: null
+    }
+
+    companion object {
+        private const val SEPARATE_COUNT_NUMBER = 3
     }
 }

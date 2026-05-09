@@ -9,10 +9,11 @@ import ru.practicum.android.diploma.main.domain.models.VacancyCard
 import ru.practicum.android.diploma.vacancy.domain.models.VacancyDetail
 
 class FavoritesRepositoryImpl(
-    private val favoriteVacancyDao: FavoriteVacancyDao
+    private val favoriteVacancyDao: FavoriteVacancyDao,
+    private val vm: VacanciesMapper
 ) : FavoritesRepository {
     override suspend fun addFavoritesVacancy(vacancy: VacancyDetail) {
-        favoriteVacancyDao.insertFavoriteVacancy(VacanciesMapper.mapDetailToEntity(vacancy))
+        favoriteVacancyDao.insertFavoriteVacancy(vm.mapDetailToEntity(vacancy))
     }
 
     override suspend fun deleteFavoritesVacancy(idVacancy: String) {
@@ -25,11 +26,11 @@ class FavoritesRepositoryImpl(
 
     override fun getFavorites(): Flow<List<VacancyCard>> = flow {
         val favorites = favoriteVacancyDao.getFavoriteVacancy()
-        emit(VacanciesMapper.mapEntityListToDomain(favorites))
+        emit(vm.mapEntityListToDomain(favorites))
     }
 
     override suspend fun getFavoriteById(id: String): VacancyDetail? {
         val entity = favoriteVacancyDao.getFavoriteById(id)
-        return entity?.let { VacanciesMapper.mapEntityToDetail(it) }
+        return entity?.let { vm.mapEntityToDetail(it) }
     }
 }

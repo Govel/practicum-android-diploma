@@ -2,6 +2,7 @@ package ru.practicum.android.diploma.di
 
 import android.content.Context
 import android.content.SharedPreferences
+import android.content.res.Resources
 import androidx.room.Room
 import coil3.ImageLoader
 import coil3.network.okhttp.OkHttpNetworkFetcherFactory
@@ -14,6 +15,7 @@ import retrofit2.converter.gson.GsonConverterFactory
 import ru.practicum.android.diploma.BuildConfig
 import ru.practicum.android.diploma.database.AppDatabase
 import ru.practicum.android.diploma.filter.data.storage.FilterSettingsStorage
+import ru.practicum.android.diploma.main.data.mapper.VacanciesMapper
 import ru.practicum.android.diploma.main.data.network.HhApi
 import ru.practicum.android.diploma.main.data.network.NetworkClient
 import ru.practicum.android.diploma.main.data.network.NetworkClientImpl
@@ -61,4 +63,8 @@ val dataModule = module {
     single<FilterSettingsStorage> {
         FilterSettingsStorage(get())
     }
+
+    single<Resources> { androidContext().resources }
+
+    factory { VacanciesMapper(get()) }
 }

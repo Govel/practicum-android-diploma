@@ -73,7 +73,7 @@ fun VacancyDetailScreen(
     }
     Column {
         AppBarTop(
-            title = "Вакансия",
+            title = stringResource(R.string.vacancies),
             back = ActionBack(
                 isView = true,
                 onClick = onBack

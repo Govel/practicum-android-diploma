@@ -14,8 +14,6 @@ import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import ru.practicum.android.diploma.BuildConfig
 import ru.practicum.android.diploma.database.AppDatabase
-import ru.practicum.android.diploma.filter.data.impl.FilterSettingsRepositoryImpl
-import ru.practicum.android.diploma.filter.domain.api.FilterSettingsRepository
 import ru.practicum.android.diploma.main.data.mapper.VacanciesMapper
 import ru.practicum.android.diploma.main.data.network.HhApi
 import ru.practicum.android.diploma.main.data.network.NetworkClient
@@ -59,10 +57,6 @@ val dataModule = module {
 
     single<SharedPreferences> {
         androidContext().getSharedPreferences("filters", Context.MODE_PRIVATE)
-    }
-
-    single<FilterSettingsRepository> {
-        FilterSettingsRepositoryImpl(get())
     }
 
     single<Resources> { androidContext().resources }

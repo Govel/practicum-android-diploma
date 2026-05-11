@@ -9,7 +9,7 @@ data class SearchState(
     val vacancies: List<VacancyCard> = emptyList(),
     val isLoading: Boolean = false,
     val isLoadingMore: Boolean = false,
-    val isNetworkError: Boolean = false,
+    val errorType: ErrorType? = null,
     val isServerError: Boolean = false,
     val isEmptyResult: Boolean = false,
     val totalFound: Int = 0,

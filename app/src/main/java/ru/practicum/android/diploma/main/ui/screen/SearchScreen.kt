@@ -176,12 +176,8 @@ private fun SearchContent(state: SearchState, viewModel: SearchViewModel, onVaca
             LoadingIndicator()
         }
 
-        state.isNetworkError -> {
-            ErrorScreen(true)
-        }
-
-        state.isServerError -> {
-            ErrorScreen(false)
+        state.errorType != null -> {
+            ErrorScreen(errorType = state.errorType)
         }
 
         state.isEmptyResult && state.searchText.isNotEmpty() -> {

@@ -1,10 +1,12 @@
 package ru.practicum.android.diploma.filter.workplace.country.data.impl
 
+import coil3.network.HttpException
 import ru.practicum.android.diploma.filter.workplace.country.domain.api.CountryRepository
 import ru.practicum.android.diploma.filter.workplace.country.domain.models.Country
 import ru.practicum.android.diploma.filter.workplace.data.FilterAreasResponse
 import ru.practicum.android.diploma.main.data.dto.NetworkResponse
 import ru.practicum.android.diploma.main.data.network.NetworkClient
+import java.io.IOException
 
 class CountryRepositoryImpl(
     private val networkClient: NetworkClient
@@ -21,7 +23,9 @@ class CountryRepositoryImpl(
             } else {
                 emptyList()
             }
-        } catch (e: Exception) {
+        } catch (e: HttpException) {
+            emptyList()
+        } catch (e: IOException) {
             emptyList()
         }
     }

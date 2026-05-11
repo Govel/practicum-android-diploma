@@ -9,6 +9,8 @@ import ru.practicum.android.diploma.filter.data.impl.FilterSettingsRepositoryImp
 import ru.practicum.android.diploma.filter.domain.api.FilterSettingsRepository
 import ru.practicum.android.diploma.filter.industry.data.impl.IndustryRepositoryImpl
 import ru.practicum.android.diploma.filter.industry.domain.api.IndustryRepository
+import ru.practicum.android.diploma.filter.workplace.country.data.impl.CountryRepositoryImpl
+import ru.practicum.android.diploma.filter.workplace.country.domain.api.CountryRepository
 import ru.practicum.android.diploma.main.data.impl.VacanciesRepositoryImpl
 import ru.practicum.android.diploma.main.domain.api.VacanciesRepository
 import ru.practicum.android.diploma.vacancy.data.impl.ShareRepositoryImpl
@@ -42,5 +44,9 @@ val repositoryModule = module {
 
     factory<FilterSettingsRepository> {
         FilterSettingsRepositoryImpl(get())
+    }
+
+    factory<CountryRepository> {
+        CountryRepositoryImpl(get())
     }
 }

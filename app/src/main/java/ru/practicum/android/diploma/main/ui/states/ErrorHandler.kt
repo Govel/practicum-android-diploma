@@ -17,29 +17,14 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import ru.practicum.android.diploma.R
 
-object ErrorHandler {
-
-    fun getErrorType(errorMessage: String): Boolean {
-        return errorMessage.contains("интернет", ignoreCase = true) ||
-            errorMessage.contains("network", ignoreCase = true) ||
-            errorMessage.contains("connection", ignoreCase = true)
-    }
-}
-
 @Composable
 fun ErrorScreen(
-    isNetworkError: Boolean
+    errorType: ErrorType
 ) {
-    val imageRes = if (isNetworkError) {
-        R.drawable.no_internet
-    } else {
-        R.drawable.server_error
-    }
-
-    val titleRes = if (isNetworkError) {
-        R.string.no_internet
-    } else {
-        R.string.server_error
+    val (imageRes, titleRes) = when (errorType) {
+        is ErrorType.Network -> R.drawable.no_internet to R.string.no_internet
+        is ErrorType.Server -> R.drawable.server_error to R.string.server_error
+        is ErrorType.Unknown -> R.drawable.server_error to R.string.server_error
     }
 
     Column(

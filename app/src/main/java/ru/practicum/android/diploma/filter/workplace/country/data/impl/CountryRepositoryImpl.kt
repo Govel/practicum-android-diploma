@@ -1,6 +1,6 @@
 package ru.practicum.android.diploma.filter.workplace.country.data.impl
 
-import coil3.network.HttpException
+import android.util.Log
 import ru.practicum.android.diploma.filter.workplace.country.domain.api.CountryRepository
 import ru.practicum.android.diploma.filter.workplace.country.domain.models.Country
 import ru.practicum.android.diploma.filter.workplace.data.FilterAreasResponse
@@ -23,9 +23,11 @@ class CountryRepositoryImpl(
             } else {
                 emptyList()
             }
-        } catch (e: HttpException) {
-            emptyList()
         } catch (e: IOException) {
+            Log.e("CountryRepository", "Network error: ${e.message}", e)
+            emptyList()
+        } catch (e: Exception) {
+            Log.e("CountryRepository", "Unexpected error: ${e.message}", e)
             emptyList()
         }
     }

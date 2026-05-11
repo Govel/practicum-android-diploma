@@ -11,6 +11,8 @@ import ru.practicum.android.diploma.filter.industry.ui.IndustryScreen
 import ru.practicum.android.diploma.filter.ui.screen.FilterScreen
 import ru.practicum.android.diploma.main.ui.screen.SearchScreen
 import ru.practicum.android.diploma.ui.screens.favorites.FavoritesScreen
+import ru.practicum.android.diploma.ui.screens.filter.workplace.CountryScreen
+import ru.practicum.android.diploma.ui.screens.filter.workplace.RegionScreen
 import ru.practicum.android.diploma.ui.screens.filter.workplace.WorkPlaceScreen
 import ru.practicum.android.diploma.ui.screens.team.TeamScreen
 import ru.practicum.android.diploma.vacancy.ui.VacancyDetailScreen
@@ -66,7 +68,19 @@ fun ProjectNavHost(
         }
 
         composable(Routes.WORKPLACE) {
-            WorkPlaceScreen()
+            WorkPlaceScreen(
+                onBack = { navController.popBackStack() },
+                onCountry = {
+                    navController.navigate(Routes.COUNTRY)
+                },
+                onRegion = {
+                    navController.navigate(Routes.REGION)
+                },
+                onApply = {
+                    navController.previousBackStackEntry?.savedStateHandle?.set("filtersChanged", true)
+                    navController.popBackStack()
+                }
+            )
         }
 
         composable(
@@ -85,6 +99,18 @@ fun ProjectNavHost(
                 onBack = { navController.popBackStack() },
                 vacancyId = vacancyId,
                 fromFavorites = fromFavorites
+            )
+        }
+
+        composable(Routes.COUNTRY) {
+            CountryScreen(
+                onBack = { navController.popBackStack() }
+            )
+        }
+
+        composable(Routes.REGION) {
+            RegionScreen(
+                onBack = { navController.popBackStack() }
             )
         }
     }

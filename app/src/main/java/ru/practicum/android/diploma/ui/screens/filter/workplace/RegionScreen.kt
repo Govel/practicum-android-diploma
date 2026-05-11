@@ -12,7 +12,9 @@ import androidx.compose.ui.res.stringResource
 import ru.practicum.android.diploma.R
 
 @Composable
-fun RegionScreen() {
+fun RegionScreen(
+    onBack: () -> Unit = {}
+) {
     Box(
         modifier = Modifier
             .fillMaxSize()

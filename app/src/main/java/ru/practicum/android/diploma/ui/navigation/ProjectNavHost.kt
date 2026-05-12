@@ -19,6 +19,8 @@ import ru.practicum.android.diploma.ui.screens.filter.workplace.WorkPlaceScreen
 import ru.practicum.android.diploma.ui.screens.team.TeamScreen
 import ru.practicum.android.diploma.vacancy.ui.VacancyDetailScreen
 
+private const val DEFAULT_SCREEN_ID = "workplace_main"
+
 @Composable
 fun ProjectNavHost(
     navController: NavHostController,
@@ -75,7 +77,7 @@ fun ProjectNavHost(
             WorkPlaceScreen(
                 onBack = { navController.popBackStack() },
                 onCountry = {
-                    navController.navigate("${Routes.COUNTRY}?returnTo=${screenId}")
+                    navController.navigate(Routes.COUNTRY + "?returnTo=$screenId")
                 },
                 onRegion = {
                     navController.navigate(Routes.REGION)
@@ -111,11 +113,11 @@ fun ProjectNavHost(
             arguments = listOf(
                 navArgument("returnTo") {
                     type = NavType.StringType
-                    defaultValue = "workplace_main"
+                    defaultValue = DEFAULT_SCREEN_ID
                 }
             )
         ) { backStackEntry ->
-            val returnTo = backStackEntry.arguments?.getString("returnTo") ?: "workplace_main"
+            val returnTo = backStackEntry.arguments?.getString("returnTo") ?: DEFAULT_SCREEN_ID
             val workPlaceViewModel: WorkPlaceViewModel = koinViewModel()
             CountryScreen(
                 onBack = {

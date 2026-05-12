@@ -20,7 +20,6 @@ class CountryViewModel(
 
     private val _selectedCountry = MutableStateFlow<Country?>(null)
 
-
     init {
         loadCountries()
     }

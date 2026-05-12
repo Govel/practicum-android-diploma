@@ -6,5 +6,5 @@ data class VacancyFilter(
     val text: String? = null,
     val salary: Int? = null,
     val page: Int? = null,
-    val onlyWithSalary: Boolean? = null
+    val onlyWithSalary: Boolean? = null,
 )

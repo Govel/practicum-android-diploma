@@ -1,6 +1,5 @@
 package ru.practicum.android.diploma.filter.industry.ui
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.Job
@@ -46,7 +45,6 @@ class IndustryViewModel(
 
     fun selectIndustry(industry: FilterIndustry) {
         _selectedIndustry.value = industry
-        Log.d("MyTag", " _selectedId.value: ${industry.name}")
     }
 
     fun loadIndustries() {

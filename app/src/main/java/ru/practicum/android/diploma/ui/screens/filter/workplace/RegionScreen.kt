@@ -46,21 +46,22 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import org.koin.androidx.compose.koinViewModel
 import ru.practicum.android.diploma.R
-import ru.practicum.android.diploma.filter.workplace.region.RegionViewModel
 import ru.practicum.android.diploma.filter.workplace.region.domain.models.FilterRegion
 import ru.practicum.android.diploma.filter.workplace.region.domain.models.RegionsState
+import ru.practicum.android.diploma.filter.workplace.region.ui.RegionViewModel
 import ru.practicum.android.diploma.ui.navigation.ActionBack
 import ru.practicum.android.diploma.ui.navigation.AppBarTop
 
 @Composable
 fun RegionScreen(
     onBack: () -> Unit = {},
+    onRegionSelected: (FilterRegion) -> Unit = {},
     viewModel: RegionViewModel = koinViewModel()
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
 
     LaunchedEffect(Unit) {
-        viewModel.loadRegiones()
+        viewModel.loadRegions()
     }
 
     Scaffold(
@@ -80,7 +81,12 @@ fun RegionScreen(
                 SearchTextField(viewModel = viewModel)
 
                 Box(modifier = Modifier.weight(1f)) {
-                    RenderState(state = state, viewModel = viewModel)
+                    RenderState(
+                        state = state,
+                        viewModel = viewModel,
+                        onRegionSelected = onRegionSelected,
+                        onBack = onBack
+                    )
                 }
             }
         }
@@ -148,19 +154,31 @@ private fun SearchTextField(
 @Composable
 private fun RenderState(
     state: RegionsState,
-    viewModel: RegionViewModel
+    viewModel: RegionViewModel,
+    onRegionSelected: (FilterRegion) -> Unit = {},
+    onBack: () -> Unit = {}
 ) {
     when (state) {
         is RegionsState.Loading -> Loading()
         is RegionsState.Error -> EmptyErrorRegion(
-            painter = painterResource(R.drawable.magic_carpet),
+            painter = painterResource(R.drawable.empty_cat),
             text = stringResource(R.string.region_not_found)
         )
+
         is RegionsState.Empty -> EmptyErrorRegion(
             painter = painterResource(R.drawable.magic_carpet),
             text = stringResource(R.string.failed_to_get_list)
         )
-        is RegionsState.Content -> RegionsResult(viewModel = viewModel)
+
+        is RegionsState.Content -> {
+            val regions = state.regions
+            RegionsResult(
+                regions = regions,
+                viewModel = viewModel,
+                onRegionSelected = onRegionSelected,
+                onBack = onBack
+            )
+        }
     }
 }
 
@@ -207,25 +225,27 @@ private fun EmptyErrorRegion(
 
 @Composable
 private fun RegionsResult(
-    viewModel: RegionViewModel
+    regions: List<FilterRegion>,
+    onRegionSelected: (FilterRegion) -> Unit,
+    viewModel: RegionViewModel,
+    onBack: () -> Unit = {}
 ) {
-    val state by viewModel.state.collectAsStateWithLifecycle()
-
-    if (state is RegionsState.Content) {
-        val regions = (state as RegionsState.Content).regions
-        LazyColumn(
-            modifier = Modifier
-                .background(MaterialTheme.colorScheme.onPrimary),
-        ) {
-            items(
-                items = regions,
-                key = { it.id }
-            ) { region ->
-                RegionItem(
-                    item = region,
-                    onSelect = viewModel::selectRegion
-                )
-            }
+    LazyColumn(
+        modifier = Modifier
+            .background(MaterialTheme.colorScheme.onPrimary),
+    ) {
+        items(
+            items = regions,
+            key = { it.id }
+        ) { region ->
+            RegionItem(
+                item = region,
+                onSelect = { region ->
+                    viewModel.selectRegion(region)
+                    onRegionSelected(region)
+                    onBack()
+                }
+            )
         }
     }
 }

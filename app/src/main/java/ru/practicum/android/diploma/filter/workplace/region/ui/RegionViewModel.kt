@@ -1,8 +1,5 @@
-@file:Suppress("MagicNumber")
+package ru.practicum.android.diploma.filter.workplace.region.ui
 
-package ru.practicum.android.diploma.filter.workplace.region
-
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.Job
@@ -12,15 +9,18 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import ru.practicum.android.diploma.filter.domain.api.FilterSettingsInteractor
+import ru.practicum.android.diploma.filter.workplace.region.domain.api.RegionFilterInteractor
 import ru.practicum.android.diploma.filter.workplace.region.domain.models.FilterRegion
 import ru.practicum.android.diploma.filter.workplace.region.domain.models.RegionsState
 
-class RegionViewModel : ViewModel() {
+class RegionViewModel(
+    private val interactor: RegionFilterInteractor,
+    private val filterInteractor: FilterSettingsInteractor
+) : ViewModel() {
     private val _state = MutableStateFlow<RegionsState>(RegionsState.Loading)
     val state: StateFlow<RegionsState> = _state.asStateFlow()
-
     private val _selectedRegion = MutableStateFlow<FilterRegion?>(null)
-    val selectedRegion: StateFlow<FilterRegion?> = _selectedRegion.asStateFlow()
 
     private val _query = MutableStateFlow("")
     val query: StateFlow<String> = _query.asStateFlow()
@@ -29,15 +29,30 @@ class RegionViewModel : ViewModel() {
     private var currentRegions: List<FilterRegion>? = emptyList()
     private val _filteredRegions = MutableStateFlow<List<FilterRegion>?>(emptyList())
 
-    fun selectRegion(region: FilterRegion) {
-        _selectedRegion.value = region
-        Log.d("MyTag", " _selectedId.value: ${region.name}")
+    init {
+        loadRegions()
     }
 
-    fun loadRegiones() {
-        val regions = getRegions()
-        currentRegions = regions ?: emptyList()
-        filterRegions(_query.value)
+    fun loadRegions() {
+        viewModelScope.launch {
+            _state.update { RegionsState.Loading }
+            currentRegions = interactor.getRegions()
+            if (currentRegions?.isEmpty() ?: false) {
+                _state.update { RegionsState.Error }
+            } else {
+                _state.update { RegionsState.Content(currentRegions!!) }
+            }
+        }
+    }
+
+    fun selectRegion(region: FilterRegion) {
+        _selectedRegion.update { region }
+        filterInteractor.saveRegion(
+            countryId = filterInteractor.getRegion().countryId,
+            countryName = filterInteractor.getRegion().countryName,
+            regionId = region.id,
+            regionName = region.name
+        )
     }
 
     fun onSearchTextChanged(query: String) {
@@ -72,33 +87,7 @@ class RegionViewModel : ViewModel() {
         }
     }
 
-    fun resetSelection() {
-        _selectedRegion.value = null
-    }
-
-    fun saveRegion(region: FilterRegion?) {
-        region?.let {
-            // interactor.saveRegion(it.id, it.name)
-        }
-    }
-
-    private fun getRegions(): List<FilterRegion> {
-        return listOf(
-            FilterRegion(1, "Москва"),
-            FilterRegion(2, "Апрелевка"),
-            FilterRegion(3, "Балашиха"),
-            FilterRegion(4, "Бронницы"),
-            FilterRegion(5, "Верея"),
-            FilterRegion(6, "Видное"),
-            FilterRegion(7, "Волоколамск"),
-            FilterRegion(8, "Воскресенск"),
-            FilterRegion(9, "Высоковск"),
-            FilterRegion(10, "Голицино")
-        )
-    }
-
     companion object {
         private const val SEARCH_DEBOUNCE_DELAY = 2000L
-        private const val STOP_TIMEOUT = 5000L
     }
 }

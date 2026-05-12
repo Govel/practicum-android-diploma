@@ -1,5 +1,8 @@
 package ru.practicum.android.diploma.filter.domain.api
 
+import ru.practicum.android.diploma.filter.domain.models.Industry
+import ru.practicum.android.diploma.filter.domain.models.Region
+
 interface FilterSettingsInteractor {
     fun saveSalary(salary: String)
     fun getSalary(): String
@@ -8,6 +11,7 @@ interface FilterSettingsInteractor {
     fun clearAllFilters()
     fun hasAnyFilter(): Boolean
     fun saveIndustry(industryId: Int, industryName: String)
-    fun getIndustryId(): Int
-    fun getIndustryName(): String
+    fun getIndustry(): Industry
+    fun getRegion(): Region
+    fun saveRegion(countryId: Int, countryName: String, regionId: Int, regionName: String)
 }

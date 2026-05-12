@@ -118,19 +118,21 @@ class SearchViewModel(
 
         val salary = filterSettingsInteractor.getSalary()
         val onlyWithSalary = filterSettingsInteractor.getOnlyWithSalary()
-        val industryId = filterSettingsInteractor.getIndustryId()
+        val industryId = filterSettingsInteractor.getIndustry().industryId
+        val regionId = filterSettingsInteractor.getRegion().regionId
 
         val filter = VacancyFilter(
             text = query,
             page = page,
             salary = salary.toIntOrNull(),
             onlyWithSalary = if (onlyWithSalary) true else null,
-            industry = if (industryId != -1) industryId else null
+            industry = if (industryId != -1) industryId else null,
+            area = if (regionId != -1) regionId else null
         )
 
         viewModelScope.launch {
             interactor.searchVacancies(filter)
-                .catch { e -> handleSearchError(isNewSearch) }
+                .catch { _ -> handleSearchError(isNewSearch) }
                 .collect { result -> handleSearchResult(result, isNewSearch, page) }
         }
     }

@@ -20,6 +20,7 @@ import ru.practicum.android.diploma.ui.screens.team.TeamScreen
 import ru.practicum.android.diploma.vacancy.ui.VacancyDetailScreen
 
 private const val DEFAULT_SCREEN_ID = "workplace_main"
+private const val RETURN = "returnTo"
 
 @Composable
 fun ProjectNavHost(
@@ -111,13 +112,13 @@ fun ProjectNavHost(
         composable(
             route = "${Routes.COUNTRY}?returnTo={returnTo}",
             arguments = listOf(
-                navArgument("returnTo") {
+                navArgument(RETURN) {
                     type = NavType.StringType
                     defaultValue = DEFAULT_SCREEN_ID
                 }
             )
         ) { backStackEntry ->
-            val returnTo = backStackEntry.arguments?.getString("returnTo") ?: DEFAULT_SCREEN_ID
+            val returnTo = backStackEntry.arguments?.getString(RETURN) ?: DEFAULT_SCREEN_ID
             val workPlaceViewModel: WorkPlaceViewModel = koinViewModel()
             CountryScreen(
                 onBack = {
@@ -130,9 +131,23 @@ fun ProjectNavHost(
             )
         }
 
-        composable(Routes.REGION) {
+        composable(
+            route = "${Routes.REGION}?returnTo={returnTo}",
+            arguments = listOf(
+                navArgument(RETURN) {
+                    type = NavType.StringType
+                    defaultValue = DEFAULT_SCREEN_ID
+                }
+            )
+        ) { backStackEntry ->
+            val returnTo = backStackEntry.arguments?.getString(RETURN) ?: DEFAULT_SCREEN_ID
+            val workPlaceViewModel: WorkPlaceViewModel = koinViewModel()
             RegionScreen(
-                onBack = { navController.popBackStack() }
+                onBack = { navController.popBackStack() },
+                onRegionSelected = { region ->
+                    workPlaceViewModel.selectRegion(region)
+                    navController.popBackStack(returnTo, false)
+                }
             )
         }
     }

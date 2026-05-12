@@ -9,6 +9,8 @@ import ru.practicum.android.diploma.filter.industry.domain.api.IndustryInteracto
 import ru.practicum.android.diploma.filter.industry.domain.impl.IndustryInteractorImpl
 import ru.practicum.android.diploma.filter.workplace.country.domain.api.CountryInteractor
 import ru.practicum.android.diploma.filter.workplace.country.domain.impl.CountryInteractorImpl
+import ru.practicum.android.diploma.filter.workplace.region.domain.api.RegionFilterInteractor
+import ru.practicum.android.diploma.filter.workplace.region.domain.impl.RegionFilterInteractorImpl
 import ru.practicum.android.diploma.main.domain.api.VacanciesInteractor
 import ru.practicum.android.diploma.main.domain.impl.VacanciesInteractorImpl
 import ru.practicum.android.diploma.vacancy.domain.api.ShareInteractor
@@ -43,5 +45,9 @@ val interactorModule = module {
 
     factory<CountryInteractor> {
         CountryInteractorImpl(get())
+    }
+
+    factory<RegionFilterInteractor> {
+        RegionFilterInteractorImpl(get())
     }
 }

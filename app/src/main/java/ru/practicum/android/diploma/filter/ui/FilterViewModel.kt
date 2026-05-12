@@ -17,6 +17,7 @@ data class FilterUiState(
     val hasAnyFilter: Boolean = false,
     val industry: String = "",
     val industryId: Int = -1,
+    val region: String = ""
 )
 
 class FilterViewModel(
@@ -29,24 +30,34 @@ class FilterViewModel(
     init {
         loadSavedFilters()
     }
-
+    private fun FilterUiState.hasAnyActive(): Boolean =
+        salary.isNotEmpty() || onlyWithSalary || industryId != -1 || region.isNotEmpty()
     fun loadSavedFilters() {
         viewModelScope.launch {
             val salary = filterSettingsInteractor.getSalary()
             val onlyWithSalary = filterSettingsInteractor.getOnlyWithSalary()
-            val industryName = filterSettingsInteractor.getIndustryName()
-            val industryId = filterSettingsInteractor.getIndustryId()
+            val industryName = filterSettingsInteractor.getIndustry().industryName
+            val industryId = filterSettingsInteractor.getIndustry().industryId
+            val countryText = filterSettingsInteractor.getRegion().countryName
+            val regionText = filterSettingsInteractor.getRegion().regionName
 
-            _state.update {
-                it.copy(
-                    salary = salary,
-                    onlyWithSalary = onlyWithSalary,
-                    industry = industryName,
-                    industryId = industryId,
-                    hasAnyFilter = salary.isNotEmpty() || onlyWithSalary || industryId != -1
-                )
-            }
+            val regionPlaceText = regionText(countryText, regionText)
+
+            val newState = FilterUiState(
+                salary = salary,
+                onlyWithSalary = onlyWithSalary,
+                industry = industryName,
+                industryId = industryId,
+                region = regionPlaceText
+            )
+            _state.value = newState.copy(hasAnyFilter = newState.hasAnyActive())
         }
+    }
+
+    private fun regionText(country: String, region: String): String = buildString {
+        if (country.isNotEmpty()) append(country)
+        if (country.isNotEmpty() && region.isNotEmpty()) append(", ")
+        if (region.isNotEmpty()) append(region)
     }
 
     fun updateSalary(salary: String) {
@@ -67,7 +78,7 @@ class FilterViewModel(
             _state.update {
                 it.copy(
                     onlyWithSalary = checked,
-                    hasAnyFilter = it.salary.isNotEmpty() || checked || it.industryId != -1
+                    hasAnyFilter = it.salary.isNotEmpty() || checked || it.industryId != -1 || it.region.isNotEmpty()
                 )
             }
         }
@@ -91,6 +102,25 @@ class FilterViewModel(
                 )
             }
         }
+    }
 
+    private fun FilterUiState.isAnyFilterActive(): Boolean {
+        return salary.isNotEmpty() ||
+            onlyWithSalary ||
+            industryId != -1 ||
+            region.isNotEmpty()
+    }
+
+    fun updateRegion(countryId: Int, countryName: String, regionId: Int, regionName: String) {
+        viewModelScope.launch {
+            filterSettingsInteractor.saveRegion(countryId, countryName, regionId, regionName)
+            _state.update {
+                val newRegionText = regionText(countryName, regionName)
+                it.copy(
+                    region = newRegionText,
+                    hasAnyFilter = it.copy(region = newRegionText).isAnyFilterActive()
+                )
+            }
+        }
     }
 }

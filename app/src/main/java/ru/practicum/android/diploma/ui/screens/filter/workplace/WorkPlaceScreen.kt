@@ -13,13 +13,9 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
@@ -43,70 +39,38 @@ fun WorkPlaceScreen(
     viewModel: WorkPlaceViewModel = koinViewModel()
 ) {
     val selectedCountry by viewModel.selectedCountry.collectAsStateWithLifecycle()
+    val selectedRegion by viewModel.selectedRegion.collectAsStateWithLifecycle()
 
-    var countryPlaceText by remember(selectedCountry) {
-        mutableStateOf(selectedCountry?.name ?: "")
-    }
+    val countryText = selectedCountry?.name.orEmpty()
+    val regionText = selectedRegion?.name.orEmpty()
 
-    var regionPlaceText by remember { mutableStateOf("") }
-
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(MaterialTheme.colorScheme.onPrimary)
-    ) {
+    Column(modifier = Modifier.fillMaxSize().background(MaterialTheme.colorScheme.onPrimary)) {
         AppBarTop(
             title = stringResource(R.string.select_work_place),
-            back = ActionBack(
-                isView = true,
-                onClick = onBack
-            )
+            back = ActionBack(isView = true, onClick = onBack)
         )
 
         Column(modifier = Modifier.padding(top = 16.dp)) {
             SelectField(
                 label = stringResource(R.string.country),
-                value = countryPlaceText,
-                onClear = {
-                    countryPlaceText = ""
-                    viewModel.selectCountry(null)
-                },
-                onNavigate = { onCountry() }
+                value = countryText,
+                onClear = { viewModel.clearCountry() },
+                onNavigate = onCountry
             )
-
             SelectField(
                 label = stringResource(R.string.region),
-                value = regionPlaceText,
-                onClear = { regionPlaceText = "" },
-                onNavigate = { onRegion() }
+                value = regionText,
+                onClear = { viewModel.clearRegion() },
+                onNavigate = onRegion
             )
         }
 
-        if (countryPlaceText.isNotEmpty() || regionPlaceText.isNotEmpty()) {
+        if (regionText.isNotEmpty()) {
             ButtonApply(
-                onApply = {
-                    onApply()
-                },
-                modifier = Modifier
-                    .fillMaxHeight()
-                    .padding(horizontal = 16.dp)
-                    .padding(bottom = 24.dp)
+                onApply = onApply,
+                modifier = Modifier.fillMaxHeight().padding(horizontal = 16.dp).padding(bottom = 24.dp)
             )
         }
-    }
-}
-
-@Composable
-private fun SelectField(
-    onNavigate: () -> Unit,
-    modifier: Modifier = Modifier
-) {
-    Surface(
-        modifier = modifier
-            .fillMaxWidth()
-            .height(60.dp),
-        onClick = onNavigate
-    ) {
     }
 }
 

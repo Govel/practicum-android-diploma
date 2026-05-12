@@ -132,7 +132,7 @@ class SearchViewModel(
 
         viewModelScope.launch {
             interactor.searchVacancies(filter)
-                .catch { _ -> handleSearchError(isNewSearch) }
+                .catch { e -> handleSearchError(e, isNewSearch) }
                 .collect { result -> handleSearchResult(result, isNewSearch, page) }
         }
     }

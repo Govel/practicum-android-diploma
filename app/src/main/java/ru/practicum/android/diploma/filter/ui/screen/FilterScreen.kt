@@ -43,6 +43,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import org.koin.androidx.compose.koinViewModel
 import ru.practicum.android.diploma.R
 import ru.practicum.android.diploma.filter.ui.FilterViewModel
+import ru.practicum.android.diploma.filter.workplace.country.domain.models.Country
 import ru.practicum.android.diploma.ui.navigation.ActionBack
 import ru.practicum.android.diploma.ui.navigation.AppBarTop
 
@@ -52,10 +53,13 @@ fun FilterScreen(
     onIndustry: () -> Unit = {},
     onApply: () -> Unit = {},
     onWorkPlace: () -> Unit = {},
+    selectedCountry: Country? = null,
     viewModel: FilterViewModel = koinViewModel()
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
-    var workPlaceText by remember { mutableStateOf("") }
+    var workPlaceText by remember(selectedCountry) {
+        mutableStateOf(selectedCountry?.name ?: "")
+    }
 
     LaunchedEffect(Unit) {
         viewModel.loadSavedFilters()
@@ -103,7 +107,7 @@ fun FilterScreen(
             )
         }
 
-        if (state.hasAnyFilter) {
+        if (state.hasAnyFilter || selectedCountry != null) {
             FilterButtons(
                 onApply = {
                     onApply()

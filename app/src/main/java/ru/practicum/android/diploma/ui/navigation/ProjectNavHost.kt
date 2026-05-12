@@ -7,8 +7,10 @@ import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
+import org.koin.androidx.compose.koinViewModel
 import ru.practicum.android.diploma.filter.industry.ui.IndustryScreen
 import ru.practicum.android.diploma.filter.ui.screen.FilterScreen
+import ru.practicum.android.diploma.filter.workplace.ui.WorkPlaceViewModel
 import ru.practicum.android.diploma.main.ui.screen.SearchScreen
 import ru.practicum.android.diploma.ui.screens.favorites.FavoritesScreen
 import ru.practicum.android.diploma.ui.screens.filter.workplace.CountryScreen
@@ -16,6 +18,8 @@ import ru.practicum.android.diploma.ui.screens.filter.workplace.RegionScreen
 import ru.practicum.android.diploma.ui.screens.filter.workplace.WorkPlaceScreen
 import ru.practicum.android.diploma.ui.screens.team.TeamScreen
 import ru.practicum.android.diploma.vacancy.ui.VacancyDetailScreen
+
+private const val DEFAULT_SCREEN_ID = "workplace_main"
 
 @Composable
 fun ProjectNavHost(
@@ -67,11 +71,13 @@ fun ProjectNavHost(
             )
         }
 
-        composable(Routes.WORKPLACE) {
+        composable(Routes.WORKPLACE) { backStackEntry ->
+            val screenId = backStackEntry.arguments?.getString("screenId") ?: "workplace_main"
+
             WorkPlaceScreen(
                 onBack = { navController.popBackStack() },
                 onCountry = {
-                    navController.navigate(Routes.COUNTRY)
+                    navController.navigate(Routes.COUNTRY + "?returnTo=$screenId")
                 },
                 onRegion = {
                     navController.navigate(Routes.REGION)
@@ -102,9 +108,25 @@ fun ProjectNavHost(
             )
         }
 
-        composable(Routes.COUNTRY) {
+        composable(
+            route = "${Routes.COUNTRY}?returnTo={returnTo}",
+            arguments = listOf(
+                navArgument("returnTo") {
+                    type = NavType.StringType
+                    defaultValue = DEFAULT_SCREEN_ID
+                }
+            )
+        ) { backStackEntry ->
+            val returnTo = backStackEntry.arguments?.getString("returnTo") ?: DEFAULT_SCREEN_ID
+            val workPlaceViewModel: WorkPlaceViewModel = koinViewModel()
             CountryScreen(
-                onBack = { navController.popBackStack() }
+                onBack = {
+                    navController.popBackStack()
+                },
+                onCountrySelected = { country ->
+                    workPlaceViewModel.selectCountry(country)
+                    navController.popBackStack(returnTo, false)
+                }
             )
         }
 

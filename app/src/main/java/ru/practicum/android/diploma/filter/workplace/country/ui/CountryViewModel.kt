@@ -9,6 +9,7 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import ru.practicum.android.diploma.filter.workplace.country.domain.api.CountryInteractor
 import ru.practicum.android.diploma.filter.workplace.country.domain.models.CountriesState
+import ru.practicum.android.diploma.filter.workplace.country.domain.models.Country
 
 class CountryViewModel(
     private val interactor: CountryInteractor
@@ -16,6 +17,8 @@ class CountryViewModel(
 
     private val _state = MutableStateFlow<CountriesState>(CountriesState.Loading)
     val state: StateFlow<CountriesState> = _state.asStateFlow()
+
+    private val _selectedCountry = MutableStateFlow<Country?>(null)
 
     init {
         loadCountries()
@@ -31,6 +34,10 @@ class CountryViewModel(
                 _state.update { CountriesState.Content(countries) }
             }
         }
+    }
+
+    fun selectCountry(country: Country) {
+        _selectedCountry.update { country }
     }
 
 }

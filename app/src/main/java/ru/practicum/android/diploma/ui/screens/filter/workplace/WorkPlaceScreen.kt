@@ -25,8 +25,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import org.koin.androidx.compose.koinViewModel
 import ru.practicum.android.diploma.R
 import ru.practicum.android.diploma.filter.ui.screen.SelectField
+import ru.practicum.android.diploma.filter.workplace.ui.WorkPlaceViewModel
 import ru.practicum.android.diploma.ui.navigation.ActionBack
 import ru.practicum.android.diploma.ui.navigation.AppBarTop
 
@@ -36,9 +39,15 @@ fun WorkPlaceScreen(
     onBack: () -> Unit = {},
     onCountry: () -> Unit = {},
     onRegion: () -> Unit = {},
-    onApply: () -> Unit = {}
+    onApply: () -> Unit = {},
+    viewModel: WorkPlaceViewModel = koinViewModel()
 ) {
-    var countryPlaceText by remember { mutableStateOf("") }
+    val selectedCountry by viewModel.selectedCountry.collectAsStateWithLifecycle()
+
+    var countryPlaceText by remember(selectedCountry) {
+        mutableStateOf(selectedCountry?.name ?: "")
+    }
+
     var regionPlaceText by remember { mutableStateOf("") }
 
     Column(
@@ -58,7 +67,10 @@ fun WorkPlaceScreen(
             SelectField(
                 label = stringResource(R.string.country),
                 value = countryPlaceText,
-                onClear = { countryPlaceText = "" },
+                onClear = {
+                    countryPlaceText = ""
+                    viewModel.selectCountry(null)
+                },
                 onNavigate = { onCountry() }
             )
 

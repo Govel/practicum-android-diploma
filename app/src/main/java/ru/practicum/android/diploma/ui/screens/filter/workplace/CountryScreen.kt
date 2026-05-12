@@ -45,6 +45,7 @@ import ru.practicum.android.diploma.ui.navigation.AppBarTop
 @Composable
 fun CountryScreen(
     onBack: () -> Unit = {},
+    onCountrySelected: (Country) -> Unit = {},
     viewModel: CountryViewModel = koinViewModel()
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
@@ -77,7 +78,11 @@ fun CountryScreen(
                         val countries = (state as CountriesState.Content).countries
                         CountriesList(
                             countries = countries,
-                            onCountryClick = { }
+                            onCountryClick = { country ->
+                                viewModel.selectCountry(country)
+                                onCountrySelected(country)
+                                onBack()
+                            }
                         )
                     }
                 }

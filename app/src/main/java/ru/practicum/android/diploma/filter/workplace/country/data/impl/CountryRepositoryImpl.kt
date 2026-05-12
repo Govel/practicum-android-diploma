@@ -26,9 +26,6 @@ class CountryRepositoryImpl(
         } catch (e: IOException) {
             Log.e("CountryRepository", "Network error: ${e.message}", e)
             emptyList()
-        } catch (e: Exception) {
-            Log.e("CountryRepository", "Unexpected error: ${e.message}", e)
-            emptyList()
         }
     }
 

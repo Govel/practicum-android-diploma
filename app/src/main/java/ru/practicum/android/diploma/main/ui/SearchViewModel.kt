@@ -20,7 +20,7 @@ import ru.practicum.android.diploma.main.data.model.NetworkState
 import ru.practicum.android.diploma.main.domain.api.VacanciesInteractor
 import ru.practicum.android.diploma.main.domain.models.VacancyCard
 import ru.practicum.android.diploma.main.domain.models.VacancyFilter
-import ru.practicum.android.diploma.main.ui.states.ErrorHandler
+import ru.practicum.android.diploma.main.ui.states.ErrorType
 import ru.practicum.android.diploma.main.ui.states.SearchState
 
 class SearchViewModel(
@@ -155,19 +155,14 @@ class SearchViewModel(
         _state.update { it.copy(isLoadingMore = true) }
     }
 
-    private fun handleSearchError(isNewSearch: Boolean) {
-        if (isNewSearch) {
-            _state.update {
-                it.copy(
-                    isLoading = false,
-                    isLoadingMore = false,
-                    isNetworkError = true
-                )
-            }
-        } else {
-            _state.update { it.copy(isLoadingMore = false) }
-            showPaginationErrorToast()
+    private fun handleSearchError(throwable: Throwable, isNewSearch: Boolean) {
+        val errorType = when (throwable) {
+            is java.net.UnknownHostException,
+            is java.net.SocketTimeoutException,
+            is java.io.IOException -> ErrorType.Network
+            else -> ErrorType.Unknown
         }
+        updateErrorState(errorType, isNewSearch)
     }
 
     private fun handleSearchResult(
@@ -188,15 +183,17 @@ class SearchViewModel(
     }
 
     private fun handleSearchErrorState(error: String, isNewSearch: Boolean) {
-        val isNetworkError = ErrorHandler.getErrorType(error)
+        val errorType = mapToErrorType(error)
+        updateErrorState(errorType, isNewSearch)
+    }
 
+    private fun updateErrorState(errorType: ErrorType, isNewSearch: Boolean) {
         if (isNewSearch) {
             _state.update {
                 it.copy(
                     isLoading = false,
                     isLoadingMore = false,
-                    isNetworkError = isNetworkError,
-                    isServerError = !isNetworkError,
+                    errorType = errorType,
                     isEmptyResult = false
                 )
             }
@@ -246,8 +243,7 @@ class SearchViewModel(
                 vacancies = vacancyList,
                 totalFound = totalFound,
                 isEmptyResult = vacancyList.isEmpty() || error == NetworkState.Empty.state,
-                isNetworkError = false,
-                isServerError = false,
+                errorType = null,
                 currentPage = page,
                 hasMorePages = hasMore
             )
@@ -269,6 +265,14 @@ class SearchViewModel(
                 currentPage = page,
                 hasMorePages = hasMore
             )
+        }
+    }
+
+    private fun mapToErrorType(rawError: String): ErrorType {
+        return when {
+            rawError == NetworkState.NoConnection.state || rawError == "no_connection" -> ErrorType.Network
+            rawError == NetworkState.Error.state || rawError.startsWith("5") -> ErrorType.Server
+            else -> ErrorType.Unknown
         }
     }
 

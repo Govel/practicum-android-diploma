@@ -24,7 +24,6 @@ import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -39,10 +38,13 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.compose.LifecycleEventEffect
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import org.koin.androidx.compose.koinViewModel
 import ru.practicum.android.diploma.R
 import ru.practicum.android.diploma.filter.ui.FilterViewModel
+import ru.practicum.android.diploma.filter.workplace.country.domain.models.Country
 import ru.practicum.android.diploma.ui.navigation.ActionBack
 import ru.practicum.android.diploma.ui.navigation.AppBarTop
 
@@ -52,12 +54,12 @@ fun FilterScreen(
     onIndustry: () -> Unit = {},
     onApply: () -> Unit = {},
     onWorkPlace: () -> Unit = {},
+    selectedCountry: Country? = null,
     viewModel: FilterViewModel = koinViewModel()
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
-    var workPlaceText by remember { mutableStateOf("") }
 
-    LaunchedEffect(Unit) {
+    LifecycleEventEffect(Lifecycle.Event.ON_RESUME) {
         viewModel.loadSavedFilters()
     }
 
@@ -77,8 +79,8 @@ fun FilterScreen(
         Column(modifier = Modifier.padding(top = 16.dp)) {
             SelectField(
                 label = stringResource(R.string.work_place),
-                value = workPlaceText,
-                onClear = { workPlaceText = "" },
+                value = state.region,
+                onClear = { viewModel.updateRegion(-1, "", -1, "") },
                 onNavigate = onWorkPlace
             )
 
@@ -103,7 +105,7 @@ fun FilterScreen(
             )
         }
 
-        if (state.hasAnyFilter) {
+        if (state.hasAnyFilter || selectedCountry != null) {
             FilterButtons(
                 onApply = {
                     onApply()
@@ -142,7 +144,6 @@ fun SelectField(
             label = {
                 Text(
                     label,
-                    color = MaterialTheme.colorScheme.secondary,
                     style = MaterialTheme.typography.bodyLarge
                 )
             },
@@ -151,7 +152,7 @@ fun SelectField(
                     IconButton(onClick = onClear) {
                         Icon(
                             painter = painterResource(R.drawable.ic_close_24),
-                            contentDescription = "Clear",
+                            contentDescription = stringResource(R.string.clear),
                             tint = MaterialTheme.colorScheme.onSurfaceVariant
                         )
                     }
@@ -170,11 +171,19 @@ fun SelectField(
             colors = OutlinedTextFieldDefaults.colors(
                 focusedBorderColor = Color.Transparent,
                 unfocusedBorderColor = Color.Transparent,
-                focusedLabelColor = MaterialTheme.colorScheme.secondary,
-                unfocusedLabelColor = MaterialTheme.colorScheme.secondary,
+                focusedLabelColor = MaterialTheme.colorScheme.onBackground,
+                unfocusedLabelColor = if (value.isNotEmpty()) {
+                    MaterialTheme.colorScheme.onBackground
+                } else {
+                    MaterialTheme.colorScheme.onSecondary
+                },
                 disabledTextColor = MaterialTheme.colorScheme.onBackground,
                 disabledBorderColor = Color.Transparent,
-                disabledLabelColor = MaterialTheme.colorScheme.secondary
+                disabledLabelColor = if (value.isNotEmpty()) {
+                    MaterialTheme.colorScheme.onBackground
+                } else {
+                    MaterialTheme.colorScheme.secondary
+                }
             )
         )
     }
@@ -299,7 +308,7 @@ private fun SalaryClearButton(value: String, onClear: () -> Unit) {
             ) {
                 Icon(
                     painter = painterResource(R.drawable.ic_close_24),
-                    contentDescription = "Clear",
+                    contentDescription = stringResource(R.string.clear),
                     tint = MaterialTheme.colorScheme.onSurfaceVariant,
                     modifier = Modifier.size(24.dp)
                 )

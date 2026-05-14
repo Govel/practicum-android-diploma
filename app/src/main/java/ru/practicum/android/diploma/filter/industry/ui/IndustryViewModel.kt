@@ -1,6 +1,5 @@
 package ru.practicum.android.diploma.filter.industry.ui
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.Job
@@ -35,11 +34,8 @@ class IndustryViewModel(
     val query: StateFlow<String> = _query.asStateFlow()
 
     private var searchJob: Job? = null
-
-    var currentIndustries: List<FilterIndustry>? = emptyList()
-
+    private var currentIndustries: List<FilterIndustry>? = emptyList()
     private val _filteredIndustries = MutableStateFlow<List<FilterIndustry>?>(emptyList())
-    val filteredIndustries: StateFlow<List<FilterIndustry>?> = _filteredIndustries.asStateFlow()
 
     val isSelected: StateFlow<Boolean> = selectedIndustry.map { it != null }.stateIn(
         scope = viewModelScope,
@@ -49,7 +45,6 @@ class IndustryViewModel(
 
     fun selectIndustry(industry: FilterIndustry) {
         _selectedIndustry.value = industry
-        Log.d("MyTag", " _selectedId.value: ${industry.name}")
     }
 
     fun loadIndustries() {
@@ -89,7 +84,6 @@ class IndustryViewModel(
         val searchText = query.lowercase()
         val filtered = currentIndustries?.filter { it.name.lowercase().contains(searchText) }
 
-        // Сброс выбранного значения при пустом результате поиска
         val currentSelection = _selectedIndustry.value
         if (currentSelection != null && (filtered == null || !filtered.contains(currentSelection))) {
             _selectedIndustry.value = null

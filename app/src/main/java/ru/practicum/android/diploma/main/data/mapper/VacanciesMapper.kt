@@ -1,8 +1,9 @@
 package ru.practicum.android.diploma.main.data.mapper
 
+import android.content.res.Resources
 import com.google.gson.Gson
-import com.google.gson.JsonSyntaxException
 import com.google.gson.reflect.TypeToken
+import ru.practicum.android.diploma.R
 import ru.practicum.android.diploma.database.data.dto.FavoriteVacancyEntity
 import ru.practicum.android.diploma.main.data.dto.VacancyCardDto
 import ru.practicum.android.diploma.main.data.dto.VacancySalary
@@ -17,13 +18,16 @@ import ru.practicum.android.diploma.vacancy.domain.models.ContactsEmployer
 import ru.practicum.android.diploma.vacancy.domain.models.Employer
 import ru.practicum.android.diploma.vacancy.domain.models.Phone
 import ru.practicum.android.diploma.vacancy.domain.models.VacancyDetail
+import java.util.Currency
 import kotlin.Int
 import kotlin.String
 
-object VacanciesMapper {
+class VacanciesMapper(
+    private val resources: Resources
+) {
 
     private val gson = Gson()
-    private const val SEPARATE_COUNT_NUMBER = 3
+
     private fun mapDtoToDomain(vacancyCardDto: VacancyCardDto): VacancyCard {
         return VacancyCard(
             id = vacancyCardDto.id,
@@ -40,21 +44,23 @@ object VacanciesMapper {
     }
 
     private fun salaryDtoToSalaryModelConverter(salary: VacancySalary?): String? {
-        var result: String
         val from = formatSalary(salary?.from)
         val to = formatSalary(salary?.to)
         val currency = formatCurrency(salary?.currency)
-        if (from == "" && to == "") return null
-        if (from != "") {
-            result = "От $from"
-            if (to != "") {
-                result += " до $to"
+        if (from.isEmpty() && to.isEmpty()) return null
+        return when {
+            from.isNotEmpty() && to.isNotEmpty() -> {
+                this.resources.getString(R.string.salary_from_to, from, to, currency)
             }
-        } else {
-            result = to
+
+            from.isNotEmpty() -> {
+                this.resources.getString(R.string.salary_from, from, currency)
+            }
+
+            else -> {
+                this.resources.getString(R.string.salary_to, to, currency)
+            }
         }
-        result += " $currency"
-        return result
     }
 
     private fun formatSalary(salary: Int?): String {
@@ -69,14 +75,24 @@ object VacanciesMapper {
     private fun formatCurrency(currency: String?): String {
         if (currency == "" || currency == null) return ""
         return when (currency) {
-            "RUB" -> "₽"
-            "RUR" -> "₽"
-            "EUR" -> "€"
+            "RUB", "RUR" -> "₽"
+            "BYR" -> "Br"
             "USD" -> "$"
+            "EUR" -> "€"
             "KZT" -> "₸"
-            "KGT" -> "₸"
+            "UAH" -> "₴"
+            "AZN" -> "₼"
+            "UZS" -> "So’m"
             "GEL" -> "₾"
-            else -> currency
+            "KGS", "KGT" -> "с"
+            else -> {
+                try {
+                    val currencyInstance = Currency.getInstance(currency)
+                    currencyInstance.symbol
+                } catch (_: IllegalArgumentException) {
+                    currency
+                }
+            }
         }
     }
 
@@ -127,12 +143,7 @@ object VacanciesMapper {
             name = entity.name,
             company = getValueCompany(entity.employer),
             city = getValueCity(entity.address),
-            salary = try {
-                salaryDtoToSalaryModelConverter(salaryFromString(entity.salary))
-            } catch (e: JsonSyntaxException) {
-                android.util.Log.e("VacanciesMapper", "Failed to parse salary: ${entity.salary}", e)
-                entity.salary ?: "зарплата не указана"
-            },
+            salary = entity.salary ?: "",
             logo = entity.url
         )
     }
@@ -168,9 +179,7 @@ object VacanciesMapper {
         return VacancyDetail(
             id = vacancy.id,
             name = vacancy.name,
-            salary = salaryFromString(vacancy.salary)?.let {
-                salaryDtoToSalaryModelConverter(it)
-            } ?: "",
+            salary = vacancy.salary,
             address = gson.fromJson(vacancy.address, AddressEmployer::class.java),
             experience = vacancy.experience,
             schedule = vacancy.schedule,
@@ -190,14 +199,6 @@ object VacanciesMapper {
         return entityList.map { entity -> mapEntityToDetail(entity) }
     }
 
-    private fun salaryFromString(salaryString: String?): VacancySalary? {
-        return if (!salaryString.isNullOrEmpty()) {
-            gson.fromJson(salaryString, VacancySalary::class.java)
-        } else {
-            null
-        }
-    }
-
     private fun getValueCompany(employer: String): String? {
         val value = gson.fromJson(employer, Employer::class.java)
         return value.name ?: null
@@ -206,5 +207,9 @@ object VacanciesMapper {
     private fun getValueCity(city: String?): String? {
         val value = gson.fromJson(city, AddressEmployer::class.java)
         return value.city ?: null
+    }
+
+    companion object {
+        private const val SEPARATE_COUNT_NUMBER = 3
     }
 }

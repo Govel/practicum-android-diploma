@@ -8,4 +8,6 @@ object Routes {
     const val VACANCY = "vacancy"
     const val INDUSTRY = "industry"
     const val WORKPLACE = "workplace"
+    const val COUNTRY = "country"
+    const val REGION = "region"
 }

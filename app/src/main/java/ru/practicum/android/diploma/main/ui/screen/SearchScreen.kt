@@ -118,7 +118,7 @@ fun SearchScreen(
                         }) {
                             Icon(
                                 painter = painterResource(R.drawable.ic_close_24),
-                                contentDescription = "Clear",
+                                contentDescription = stringResource(R.string.clear),
                                 tint = MaterialTheme.colorScheme.onSurfaceVariant
                             )
                         }
@@ -176,12 +176,8 @@ private fun SearchContent(state: SearchState, viewModel: SearchViewModel, onVaca
             LoadingIndicator()
         }
 
-        state.isNetworkError -> {
-            ErrorScreen(true)
-        }
-
-        state.isServerError -> {
-            ErrorScreen(false)
+        state.errorType != null -> {
+            ErrorScreen(errorType = state.errorType)
         }
 
         state.isEmptyResult && state.searchText.isNotEmpty() -> {

@@ -11,7 +11,10 @@ import ru.practicum.android.diploma.vacancy.data.dto.VacancyDetailResponse
 import ru.practicum.android.diploma.vacancy.domain.api.VacancyDetailRepository
 import ru.practicum.android.diploma.vacancy.domain.models.VacancyDetail
 
-class VacancyDetailRepositoryImpl(val networkClient: NetworkClient) : VacancyDetailRepository {
+class VacancyDetailRepositoryImpl(
+    val networkClient: NetworkClient,
+    private val vm: VacanciesMapper
+) : VacancyDetailRepository {
     override fun getVacancyById(vacancyId: String): Flow<Resource<VacancyDetail>?> = flow {
         val response = networkClient.doRequestVacancyById(vacancyId)
         when (response.resultCode) {
@@ -22,7 +25,7 @@ class VacancyDetailRepositoryImpl(val networkClient: NetworkClient) : VacancyDet
             NetworkResponse.OK_RESULT -> {
                 val vacanciesResponse = response.data as VacancyDetailResponse
                 if (vacanciesResponse.id.isNotEmpty()) {
-                    emit(Resource.Success(VacanciesMapper.mapVacancyDetailDtoToDomain(vacanciesResponse)))
+                    emit(Resource.Success(vm.mapVacancyDetailDtoToDomain(vacanciesResponse)))
                 } else {
                     emit(Resource.Error(NetworkState.Empty.state))
                 }
